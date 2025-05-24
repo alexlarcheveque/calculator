@@ -1,4 +1,7 @@
 {
-  "/page": "app/page.js",
-  "/mortgage/page": "app/mortgage/page.js"
+  "/not-found": "app/not-found.js",
+  "/loan/page": "app/loan/page.js",
+  "/mortgage/page": "app/mortgage/page.js",
+  "/auto-loan/page": "app/auto-loan/page.js",
+  "/interest/page": "app/interest/page.js"
 }

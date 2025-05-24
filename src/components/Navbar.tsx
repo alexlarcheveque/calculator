@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState } from "react";
+import Link from "next/link";
 
 type CalculatorCategory = {
   title: string;
@@ -30,7 +30,7 @@ const calculatorCategories: CalculatorCategory[] = [
       { name: "Salary Calculator", path: "/salary" },
       { name: "Interest Rate Calculator", path: "/interest-rate" },
       { name: "Sales Tax Calculator", path: "/sales-tax" },
-    ]
+    ],
   },
   {
     title: "Fitness & Health Calculators",
@@ -44,7 +44,7 @@ const calculatorCategories: CalculatorCategory[] = [
       { name: "Pregnancy Calculator", path: "/pregnancy" },
       { name: "Pregnancy Conception Calculator", path: "/conception" },
       { name: "Due Date Calculator", path: "/due-date" },
-    ]
+    ],
   },
   {
     title: "Math Calculators",
@@ -55,7 +55,7 @@ const calculatorCategories: CalculatorCategory[] = [
       { name: "Random Number Generator", path: "/random" },
       { name: "Triangle Calculator", path: "/triangle" },
       { name: "Standard Deviation Calculator", path: "/standard-deviation" },
-    ]
+    ],
   },
   {
     title: "Other Calculators",
@@ -70,14 +70,16 @@ const calculatorCategories: CalculatorCategory[] = [
       { name: "Subnet Calculator", path: "/subnet" },
       { name: "Password Generator", path: "/password" },
       { name: "Conversion Calculator", path: "/conversion" },
-    ]
-  }
+    ],
+  },
 ];
 
 export default function Navbar() {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileOpenCategory, setMobileOpenCategory] = useState<string | null>(null);
+  const [mobileOpenCategory, setMobileOpenCategory] = useState<string | null>(
+    null
+  );
 
   const toggleCategory = (title: string) => {
     setOpenCategory(openCategory === title ? null : title);
@@ -94,36 +96,44 @@ export default function Navbar() {
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <Link href="/" className="text-2xl font-bold text-blue-600">
-                Calculator Hub
+                Calcy.net
               </Link>
             </div>
           </div>
-          
+
           <div className="hidden md:flex items-center space-x-6">
             {calculatorCategories.map((category) => (
               <div key={category.title} className="relative group">
-                <button 
+                <button
                   onClick={() => toggleCategory(category.title)}
                   className="px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
                 >
                   {category.title}
-                  <svg 
-                    className={`ml-1 inline-block w-4 h-4 transition-transform ${openCategory === category.title ? 'rotate-180' : ''}`} 
+                  <svg
+                    className={`ml-1 inline-block w-4 h-4 transition-transform ${
+                      openCategory === category.title ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
-                
+
                 {openCategory === category.title && (
                   <div className="absolute z-10 left-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1">
                     {category.items.map((item) => (
-                      <Link 
-                        key={item.name} 
+                      <Link
+                        key={item.name}
                         href={item.path}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600"
+                        onClick={() => setOpenCategory(null)}
                       >
                         {item.name}
                       </Link>
@@ -133,7 +143,7 @@ export default function Navbar() {
               </div>
             ))}
           </div>
-          
+
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
             <button
@@ -151,7 +161,12 @@ export default function Navbar() {
                   stroke="currentColor"
                   aria-hidden="true"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               ) : (
                 <svg
@@ -162,7 +177,12 @@ export default function Navbar() {
                   stroke="currentColor"
                   aria-hidden="true"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               )}
             </button>
@@ -182,15 +202,22 @@ export default function Navbar() {
                 >
                   <span>{category.title}</span>
                   <svg
-                    className={`w-5 h-5 transition-transform ${mobileOpenCategory === category.title ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 transition-transform ${
+                      mobileOpenCategory === category.title ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
-                
+
                 {mobileOpenCategory === category.title && (
                   <div className="pl-4 mt-2 space-y-1">
                     {category.items.map((item) => (
@@ -204,7 +231,7 @@ export default function Navbar() {
                     ))}
                   </div>
                 )}
-                
+
                 <div className="mt-2 border-t border-gray-200"></div>
               </div>
             ))}
@@ -213,4 +240,4 @@ export default function Navbar() {
       )}
     </nav>
   );
-} 
+}
