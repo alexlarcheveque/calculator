@@ -7,12 +7,7 @@ import {
 interface InterestFormProps {
   inputs: Partial<InterestCalculatorInput>;
   onInputChange: (field: keyof InterestCalculatorInput, value: any) => void;
-  onSubmit: () => void;
 }
-
-const commonInputClass =
-  "block w-full px-3 py-2 border border-input bg-background rounded-md focus:ring-primary focus:border-primary text-sm text-foreground placeholder-muted-foreground";
-const commonLabelClass = "block text-sm font-medium text-foreground mb-1";
 
 // Helper to format number with commas for display
 const formatNumberWithCommas = (value: number | string | undefined): string => {
@@ -26,7 +21,7 @@ const formatNumberWithCommas = (value: number | string | undefined): string => {
 const parseFormattedNumber = (value: string): number | "" => {
   const cleaned = value.replace(/[^\d.,-]/g, ""); // Allow comma for parsing if user types it
   if (cleaned === "") return "";
-  const num = parseFloat(cleaned.replace(/,/g, ".")); // Replace comma with dot for parseFloat
+  const num = parseFloat(cleaned.replace(/,/g, "")); // Remove commas entirely for parseFloat
   return isNaN(num) ? "" : num;
 };
 
@@ -53,13 +48,14 @@ const contributionTimingOptions: {
 export default function InterestForm({
   inputs,
   onInputChange,
-  onSubmit,
 }: InterestFormProps) {
   const handleGenericChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
     let processedValue: string | number = value;
+
+    console.log("inputs", inputs);
 
     if (
       name === "initialInvestment" ||
@@ -81,235 +77,260 @@ export default function InterestForm({
     onInputChange(name as keyof InterestCalculatorInput, processedValue);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit();
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-xl font-semibold mb-6 text-primary">
+    <div className="bg-white p-6 rounded-lg shadow-md">
+      <h2 className="text-xl font-semibold mb-6 text-gray-800">
         Investment Details
       </h2>
 
-      <div>
-        <label htmlFor="initialInvestment" className={commonLabelClass}>
-          Initial Investment
-        </label>
-        <div className="relative rounded-md shadow-sm">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span className="text-muted-foreground">$</span>
-          </div>
-          <input
-            type="text"
-            id="initialInvestment"
-            name="initialInvestment"
-            className={`${commonInputClass} pl-7`}
-            value={formatNumberWithCommas(inputs.initialInvestment)}
-            onChange={handleGenericChange}
-            placeholder="e.g., 20,000"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="annualContribution" className={commonLabelClass}>
-          Annual Contribution
-        </label>
-        <div className="relative rounded-md shadow-sm">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span className="text-muted-foreground">$</span>
-          </div>
-          <input
-            type="text"
-            id="annualContribution"
-            name="annualContribution"
-            className={`${commonInputClass} pl-7`}
-            value={formatNumberWithCommas(inputs.annualContribution)}
-            onChange={handleGenericChange}
-            placeholder="e.g., 5,000"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="monthlyContribution" className={commonLabelClass}>
-          Monthly Contribution
-        </label>
-        <div className="relative rounded-md shadow-sm">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span className="text-muted-foreground">$</span>
-          </div>
-          <input
-            type="text"
-            id="monthlyContribution"
-            name="monthlyContribution"
-            className={`${commonInputClass} pl-7`}
-            value={formatNumberWithCommas(inputs.monthlyContribution)}
-            onChange={handleGenericChange}
-            placeholder="e.g., 0"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="contributionTiming" className={commonLabelClass}>
-          Contribute At The
-        </label>
-        <select
-          id="contributionTiming"
-          name="contributionTiming"
-          className={commonInputClass}
-          value={inputs.contributionTiming ?? "beginning"}
-          onChange={handleGenericChange}
-        >
-          {contributionTimingOptions.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label htmlFor="interestRate" className={commonLabelClass}>
-          Interest Rate
-        </label>
-        <div className="relative rounded-md shadow-sm">
-          <input
-            type="number"
-            id="interestRate"
-            name="interestRate"
-            className={`${commonInputClass} pr-7`}
-            value={inputs.interestRate ?? ""}
-            onChange={handleGenericChange}
-            min="0"
-            step="0.01"
-            placeholder="e.g., 5"
-          />
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-            <span className="text-muted-foreground">%</span>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="compoundFrequency" className={commonLabelClass}>
-          Compound Frequency
-        </label>
-        <select
-          id="compoundFrequency"
-          name="compoundFrequency"
-          className={commonInputClass}
-          value={inputs.compoundFrequency ?? "annually"}
-          onChange={handleGenericChange}
-        >
-          {compoundOptions.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label className={commonLabelClass}>Investment Length</label>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label
-              htmlFor="investmentLengthYears"
-              className="text-xs text-muted-foreground"
-            >
-              Years
-            </label>
+      <div className="space-y-4">
+        {/* Initial Investment */}
+        <div className="form-group">
+          <label
+            htmlFor="initialInvestment"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Initial Investment
+          </label>
+          <div className="relative rounded-md shadow-sm">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span className="text-gray-500">$</span>
+            </div>
             <input
-              type="number"
-              id="investmentLengthYears"
-              name="investmentLengthYears"
-              className={commonInputClass}
-              value={inputs.investmentLengthYears ?? ""}
+              type="text"
+              id="initialInvestment"
+              name="initialInvestment"
+              className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              value={formatNumberWithCommas(inputs.initialInvestment)}
               onChange={handleGenericChange}
-              min="0"
-              max="100"
-              step="1"
-              placeholder="e.g., 5"
+              placeholder="e.g., 20,000"
             />
           </div>
-          <div>
-            <label
-              htmlFor="investmentLengthMonths"
-              className="text-xs text-muted-foreground"
-            >
-              Months
-            </label>
+        </div>
+
+        {/* Annual Contribution */}
+        <div className="form-group">
+          <label
+            htmlFor="annualContribution"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Annual Contribution
+          </label>
+          <div className="relative rounded-md shadow-sm">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span className="text-gray-500">$</span>
+            </div>
             <input
-              type="number"
-              id="investmentLengthMonths"
-              name="investmentLengthMonths"
-              className={commonInputClass}
-              value={inputs.investmentLengthMonths ?? ""}
+              type="text"
+              id="annualContribution"
+              name="annualContribution"
+              className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              value={formatNumberWithCommas(inputs.annualContribution)}
               onChange={handleGenericChange}
-              min="0"
-              max="11"
-              step="1"
+              placeholder="e.g., 5,000"
+            />
+          </div>
+        </div>
+
+        {/* Monthly Contribution */}
+        <div className="form-group">
+          <label
+            htmlFor="monthlyContribution"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Monthly Contribution
+          </label>
+          <div className="relative rounded-md shadow-sm">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span className="text-gray-500">$</span>
+            </div>
+            <input
+              type="text"
+              id="monthlyContribution"
+              name="monthlyContribution"
+              className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              value={formatNumberWithCommas(inputs.monthlyContribution)}
+              onChange={handleGenericChange}
               placeholder="e.g., 0"
             />
           </div>
         </div>
-      </div>
 
-      <div>
-        <label htmlFor="taxRate" className={commonLabelClass}>
-          Tax Rate (on interest)
-        </label>
-        <div className="relative rounded-md shadow-sm">
-          <input
-            type="number"
-            id="taxRate"
-            name="taxRate"
-            className={`${commonInputClass} pr-7`}
-            value={inputs.taxRate ?? ""}
+        {/* Contribution Timing */}
+        <div className="form-group">
+          <label
+            htmlFor="contributionTiming"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Contribute At The
+          </label>
+          <select
+            id="contributionTiming"
+            name="contributionTiming"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            value={inputs.contributionTiming ?? "beginning"}
             onChange={handleGenericChange}
-            min="0"
-            max="100"
-            step="0.01"
-            placeholder="e.g., 0 (if not taxable)"
-          />
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-            <span className="text-muted-foreground">%</span>
+          >
+            {contributionTimingOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Interest Rate */}
+        <div className="form-group">
+          <label
+            htmlFor="interestRate"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Interest Rate
+          </label>
+          <div className="relative rounded-md shadow-sm">
+            <input
+              type="number"
+              id="interestRate"
+              name="interestRate"
+              className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              value={inputs.interestRate ?? ""}
+              onChange={handleGenericChange}
+              min="0"
+              step="0.01"
+              placeholder="e.g., 5"
+            />
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <span className="text-gray-500">%</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Compound Frequency */}
+        <div className="form-group">
+          <label
+            htmlFor="compoundFrequency"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Compound Frequency
+          </label>
+          <select
+            id="compoundFrequency"
+            name="compoundFrequency"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            value={inputs.compoundFrequency ?? "annually"}
+            onChange={handleGenericChange}
+          >
+            {compoundOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Investment Length */}
+        <div className="form-group">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Investment Length
+          </label>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="investmentLengthYears"
+                className="block text-xs font-medium text-gray-500 mb-1"
+              >
+                Years
+              </label>
+              <input
+                type="number"
+                id="investmentLengthYears"
+                name="investmentLengthYears"
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                value={inputs.investmentLengthYears ?? ""}
+                onChange={handleGenericChange}
+                min="0"
+                max="100"
+                step="1"
+                placeholder="e.g., 5"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="investmentLengthMonths"
+                className="block text-xs font-medium text-gray-500 mb-1"
+              >
+                Months
+              </label>
+              <input
+                type="number"
+                id="investmentLengthMonths"
+                name="investmentLengthMonths"
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                value={inputs.investmentLengthMonths ?? ""}
+                onChange={handleGenericChange}
+                min="0"
+                max="11"
+                step="1"
+                placeholder="e.g., 0"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Tax Rate */}
+        <div className="form-group">
+          <label
+            htmlFor="taxRate"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Tax Rate (on interest)
+          </label>
+          <div className="relative rounded-md shadow-sm">
+            <input
+              type="number"
+              id="taxRate"
+              name="taxRate"
+              className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              value={inputs.taxRate ?? ""}
+              onChange={handleGenericChange}
+              min="0"
+              max="100"
+              step="0.01"
+              placeholder="e.g., 0 (if not taxable)"
+            />
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <span className="text-gray-500">%</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Inflation Rate */}
+        <div className="form-group">
+          <label
+            htmlFor="inflationRate"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Inflation Rate (for buying power adjustment)
+          </label>
+          <div className="relative rounded-md shadow-sm">
+            <input
+              type="number"
+              id="inflationRate"
+              name="inflationRate"
+              className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              value={inputs.inflationRate ?? ""}
+              onChange={handleGenericChange}
+              min="0"
+              max="100"
+              step="0.01"
+              placeholder="e.g., 3"
+            />
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <span className="text-gray-500">%</span>
+            </div>
           </div>
         </div>
       </div>
-
-      <div>
-        <label htmlFor="inflationRate" className={commonLabelClass}>
-          Inflation Rate (for buying power adjustment)
-        </label>
-        <div className="relative rounded-md shadow-sm">
-          <input
-            type="number"
-            id="inflationRate"
-            name="inflationRate"
-            className={`${commonInputClass} pr-7`}
-            value={inputs.inflationRate ?? ""}
-            onChange={handleGenericChange}
-            min="0"
-            max="100"
-            step="0.01"
-            placeholder="e.g., 3"
-          />
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-            <span className="text-muted-foreground">%</span>
-          </div>
-        </div>
-      </div>
-
-      <button
-        type="submit"
-        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-150 ease-in-out"
-      >
-        Calculate
-      </button>
-    </form>
+    </div>
   );
 }

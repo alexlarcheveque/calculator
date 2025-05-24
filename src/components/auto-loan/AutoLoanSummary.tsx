@@ -68,13 +68,7 @@ export default function AutoLoanSummary({ results }: AutoLoanSummaryProps) {
           </div>
           <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
             <div className="text-sm text-gray-600">Total Loan Interest</div>
-            <div
-              className={
-                results.totalLoanInterest > 0
-                  ? "text-xl font-bold text-red-600"
-                  : "text-xl font-bold text-gray-800"
-              }
-            >
+            <div className={"text-xl font-bold text-gray-800"}>
               {formatCurrency(results.totalLoanInterest)}
             </div>
           </div>

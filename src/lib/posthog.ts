@@ -1,13 +1,11 @@
-import { PostHog } from "posthog-node"
+import { PostHog } from "posthog-node";
 
 // Initialize a single PostHog Node.js client instance
-const posthogClient = new PostHog(
-  process.env.NEXT_PUBLIC_POSTHOG_KEY!,
-  {
-    host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-    flushAt: 1,
-    flushInterval: 0,
-  }
-)
+const posthogClient = new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+  host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+  flushAt: 1,
+  flushInterval: 0,
+  
+});
 
-export default posthogClient
+export default posthogClient;

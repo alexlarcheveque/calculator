@@ -176,18 +176,18 @@ const SectionItem: React.FC<{
   isOpen: boolean;
   onToggle: () => void;
 }> = ({ item, isOpen, onToggle }) => (
-  <div className="border-b border-border last:border-b-0">
+  <div className="border-b border-gray-200 last:border-b-0">
     <button
       onClick={onToggle}
-      className="flex justify-between items-center w-full py-4 px-1 text-left focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-sm"
+      className="flex justify-between items-center w-full py-4 px-1 text-left focus:outline-none focus:ring-2 focus:ring-blue-500/50 rounded-sm"
       aria-expanded={isOpen}
       aria-controls={item.id}
     >
-      <span className="text-lg font-medium text-foreground hover:text-primary transition-colors">
+      <span className="text-lg font-medium text-gray-900 hover:text-blue-600 transition-colors">
         {item.title}
       </span>
       <svg
-        className={`w-5 h-5 text-muted-foreground transform transition-transform duration-200 ${
+        className={`w-5 h-5 text-gray-500 transform transition-transform duration-200 ${
           isOpen ? "rotate-180" : ""
         }`}
         fill="none"
@@ -208,7 +208,7 @@ const SectionItem: React.FC<{
         isOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
       }`}
     >
-      <div className="px-1 py-3 text-muted-foreground text-sm leading-relaxed">
+      <div className="px-1 py-3 text-gray-600 text-sm leading-relaxed">
         {item.content}
       </div>
     </div>
@@ -241,24 +241,26 @@ export default function InterestInfoSection() {
   };
 
   return (
-    <section className="mt-12 bg-card p-6 md:p-8 rounded-lg shadow-lg">
+    <section>
       <Script
         id="interest-faq-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(interestFAQSchema) }}
       />
-      <h2 className="text-2xl md:text-3xl font-bold text-primary mb-6 text-center">
+      <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">
         Understanding Interest Calculations
       </h2>
-      <div className="divide-y divide-border">
-        {interestInfoItems.map((item, index) => (
-          <SectionItem
-            key={item.id}
-            item={item}
-            isOpen={openIndex === index}
-            onToggle={() => toggleSection(index)}
-          />
-        ))}
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="divide-y divide-gray-200">
+          {interestInfoItems.map((item, index) => (
+            <SectionItem
+              key={item.id}
+              item={item}
+              isOpen={openIndex === index}
+              onToggle={() => toggleSection(index)}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

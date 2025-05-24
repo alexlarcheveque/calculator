@@ -56,39 +56,40 @@ export default function AutoLoanPage() {
   }, [formValues]);
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        {/* Left Column: Form */}
-        <div className="lg:col-span-1">
+    <div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
+        {/* Input form */}
+        <div className="lg:col-span-4">
           <AutoLoanForm values={formValues} onChange={handleFormChange} />
         </div>
-        {/* Right Column: Summary and Charts */}
-        <div className="lg:col-span-2 space-y-8">
-          <AutoLoanSummary results={results} />
-          {results &&
-            results.monthlyAmortization &&
-            results.monthlyAmortization.length > 0 && (
-              <AutoLoanCharts
-                results={results}
-                amortizationData={results.monthlyAmortization}
-                loanTermMonths={formValues.loanTermMonths}
-              />
-            )}
+
+        {/* Results */}
+        <div className="lg:col-span-8 space-y-8">
+          {results && (
+            <>
+              <AutoLoanSummary results={results} />
+              {results.monthlyAmortization &&
+                results.monthlyAmortization.length > 0 && (
+                  <AutoLoanCharts
+                    results={results}
+                    amortizationData={results.monthlyAmortization}
+                    loanTermMonths={formValues.loanTermMonths}
+                  />
+                )}
+              {results.monthlyAmortization &&
+                results.monthlyAmortization.length > 0 && (
+                  <AmortizationTable
+                    monthlyData={results.monthlyAmortization}
+                    yearlyData={results.yearlyAmortization}
+                    loanTermMonths={formValues.loanTermMonths}
+                  />
+                )}
+            </>
+          )}
         </div>
       </div>
-      {/* Full Width: Amortization Table */}
-      {results &&
-        results.monthlyAmortization &&
-        results.monthlyAmortization.length > 0 && (
-          <div className="mt-8">
-            <AmortizationTable
-              monthlyData={results.monthlyAmortization}
-              yearlyData={results.yearlyAmortization}
-              loanTermMonths={formValues.loanTermMonths}
-            />
-          </div>
-        )}
-      {/* Full Width: FAQ Section */}
+
+      {/* FAQ Section */}
       <FAQSection />
     </div>
   );

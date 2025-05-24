@@ -1,3 +1,4 @@
+import AutoLoanPage from "@/components/auto-loan/AutoLoanPage";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ export default function AutoLoanCalculatorRoute() {
           adjustments for taxes, fees, and trade-ins.
         </p>
       </header>
+      <AutoLoanPage />
     </div>
   );
 }

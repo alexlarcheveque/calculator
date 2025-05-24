@@ -7,89 +7,126 @@ interface InterestSummaryProps {
   results: InterestCalculatorResult;
 }
 
-const SummaryItem: React.FC<{
-  label: string;
-  value: string | number;
-  isHighlighted?: boolean;
-  className?: string;
-}> = ({ label, value, isHighlighted, className }) => (
-  <div
-    className={`flex justify-between items-center py-3 px-4 rounded-md ${
-      isHighlighted
-        ? "bg-primary/10 border border-primary/30"
-        : "bg-muted/50 border border-border"
-    } ${className}`}
-  >
-    <span
-      className={`text-sm font-medium ${
-        isHighlighted ? "text-primary" : "text-foreground"
-      }`}
-    >
-      {label}
-    </span>
-    <span
-      className={`text-lg font-semibold ${
-        isHighlighted ? "text-primary" : "text-foreground"
-      }`}
-    >
-      {value}
-    </span>
-  </div>
-);
-
 export default function InterestSummary({ results }: InterestSummaryProps) {
   if (!results) {
     return (
-      <div className="p-6 rounded-lg shadow-lg bg-card text-center">
-        <p className="text-muted-foreground">
-          Enter your investment details and click "Calculate" to see the
-          results.
+      <div className="bg-white p-6 rounded-lg shadow-md text-center">
+        <p className="text-gray-600">
+          Enter your investment details to see the results.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-semibold text-center text-primary mb-6">
-        Calculation Results
+    <div className="bg-white p-6 rounded-lg shadow-md">
+      <h2 className="text-xl font-semibold mb-6 text-gray-800">
+        Investment Summary
       </h2>
-      <SummaryItem
-        label="Ending Balance"
-        value={formatCurrency(results.endingBalance)}
-        isHighlighted
-        className="text-lg md:text-xl"
-      />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <SummaryItem
-          label="Total Principal Invested"
-          value={formatCurrency(results.totalPrincipal)}
-        />
-        <SummaryItem
-          label="Total Contributions"
-          value={formatCurrency(results.totalContributions)}
-        />
+
+      {/* Final Balance Section */}
+      <div className="mb-6">
+        <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
+          Final Results
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Main Ending Balance */}
+          <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+            <div className="text-sm text-gray-600">Ending Balance</div>
+            <div className="text-2xl font-bold text-gray-800">
+              {formatCurrency(results.endingBalance)}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              Total value after investment period
+            </div>
+          </div>
+
+          {/* Buying Power After Inflation */}
+          <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+            <div className="text-sm text-gray-600">
+              Buying Power (After Inflation)
+            </div>
+            <div className="text-2xl font-bold text-gray-800">
+              {formatCurrency(results.buyingPowerAfterInflation)}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              Value in today's purchasing power
+            </div>
+          </div>
+        </div>
       </div>
-      <SummaryItem
-        label="Total Interest Earned"
-        value={formatCurrency(results.totalInterest)}
-        isHighlighted
-      />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-        <SummaryItem
-          label="Interest from Initial Investment"
-          value={formatCurrency(results.interestOfInitialInvestment)}
-        />
-        <SummaryItem
-          label="Interest from Contributions"
-          value={formatCurrency(results.interestOfContributions)}
-        />
+
+      {/* Investment Breakdown Section */}
+      <div className="mb-6">
+        <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
+          Investment Breakdown
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <div className="text-sm text-gray-600">
+              Total Principal Invested
+            </div>
+            <div className="text-2xl font-bold text-gray-800">
+              {formatCurrency(results.totalPrincipal)}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              Initial investment plus contributions
+            </div>
+          </div>
+
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <div className="text-sm text-gray-600">Total Contributions</div>
+            <div className="text-2xl font-bold text-gray-800">
+              {formatCurrency(results.totalContributions)}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              Additional contributions made
+            </div>
+          </div>
+        </div>
       </div>
-      <SummaryItem
-        label="Buying Power (After Inflation)"
-        value={formatCurrency(results.buyingPowerAfterInflation)}
-        className="mt-2 border-t border-border pt-4"
-      />
+
+      {/* Interest Earnings Section */}
+      <div>
+        <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
+          Interest Earnings
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
+            <div className="text-sm text-gray-600">Total Interest Earned</div>
+            <div className="text-2xl font-bold text-gray-800">
+              {formatCurrency(results.totalInterest)}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              Total growth from compound interest
+            </div>
+          </div>
+
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <div className="text-sm text-gray-600">
+              Interest from Initial Investment
+            </div>
+            <div className="text-2xl font-bold text-gray-800">
+              {formatCurrency(results.interestOfInitialInvestment)}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              Growth from starting amount
+            </div>
+          </div>
+
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <div className="text-sm text-gray-600">
+              Interest from Contributions
+            </div>
+            <div className="text-2xl font-bold text-gray-800">
+              {formatCurrency(results.interestOfContributions)}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              Growth from additional contributions
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -61,6 +61,32 @@ const usStates = [
   { value: "WY", label: "Wyoming" },
 ];
 
+// Helper functions for currency formatting
+const formatCurrency = (value: string | number): string => {
+  if (!value && value !== 0) return "";
+  const numValue =
+    typeof value === "string" ? parseFloat(value.replace(/,/g, "")) : value;
+  if (isNaN(numValue)) return "";
+  return numValue.toLocaleString("en-US");
+};
+
+const parseCurrency = (value: string): number | "" => {
+  const cleaned = value.replace(/[^\d.-]/g, "");
+  if (cleaned === "") return "";
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? "" : num;
+};
+
+// Fields that should have currency formatting
+const currencyFields = [
+  "autoPrice",
+  "cashIncentives",
+  "downPayment",
+  "tradeInValue",
+  "amountOwedOnTradeIn",
+  "titleRegFees",
+];
+
 export default function AutoLoanForm({ values, onChange }: AutoLoanFormProps) {
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -68,6 +94,10 @@ export default function AutoLoanForm({ values, onChange }: AutoLoanFormProps) {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
       onChange(name, (e.target as HTMLInputElement).checked);
+    } else if (currencyFields.includes(name)) {
+      // For currency fields, store the raw numeric value but allow formatted display
+      const numericValue = parseCurrency(value);
+      onChange(name, numericValue);
     } else {
       onChange(name, parseFloat(value) || value); // Keep string for state if not a number
     }
@@ -77,13 +107,21 @@ export default function AutoLoanForm({ values, onChange }: AutoLoanFormProps) {
     onChange(name, value);
   };
 
+  // Get display value for currency fields
+  const getDisplayValue = (fieldName: string, fieldValue: any): string => {
+    if (currencyFields.includes(fieldName)) {
+      return formatCurrency(fieldValue);
+    }
+    return fieldValue || "";
+  };
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold mb-6 text-gray-800">
         Auto Loan Details
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+      <div className="space-y-4">
         {/* Auto Price */}
         <div className="form-group">
           <label
@@ -97,14 +135,13 @@ export default function AutoLoanForm({ values, onChange }: AutoLoanFormProps) {
               <span className="text-gray-500">$</span>
             </div>
             <input
-              type="number"
+              type="text"
               id="autoPrice"
               name="autoPrice"
-              className="block w-full pl-7 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.autoPrice || ""}
+              className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              value={getDisplayValue("autoPrice", values.autoPrice)}
               onChange={handleChange}
-              min="0"
-              step="100"
+              placeholder="0"
             />
           </div>
         </div>
@@ -121,7 +158,7 @@ export default function AutoLoanForm({ values, onChange }: AutoLoanFormProps) {
             type="number"
             id="loanTermMonths"
             name="loanTermMonths"
-            className="block w-full pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             value={values.loanTermMonths || ""}
             onChange={handleChange}
             min="1"
@@ -142,7 +179,7 @@ export default function AutoLoanForm({ values, onChange }: AutoLoanFormProps) {
               type="number"
               id="interestRate"
               name="interestRate"
-              className="block w-full pl-3 pr-7 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               value={values.interestRate || ""}
               onChange={handleChange}
               min="0"
@@ -168,14 +205,13 @@ export default function AutoLoanForm({ values, onChange }: AutoLoanFormProps) {
               <span className="text-gray-500">$</span>
             </div>
             <input
-              type="number"
+              type="text"
               id="cashIncentives"
               name="cashIncentives"
-              className="block w-full pl-7 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.cashIncentives || ""}
+              className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              value={getDisplayValue("cashIncentives", values.cashIncentives)}
               onChange={handleChange}
-              min="0"
-              step="100"
+              placeholder="0"
             />
           </div>
         </div>
@@ -193,14 +229,13 @@ export default function AutoLoanForm({ values, onChange }: AutoLoanFormProps) {
               <span className="text-gray-500">$</span>
             </div>
             <input
-              type="number"
+              type="text"
               id="downPayment"
               name="downPayment"
-              className="block w-full pl-7 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.downPayment || ""}
+              className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              value={getDisplayValue("downPayment", values.downPayment)}
               onChange={handleChange}
-              min="0"
-              step="100"
+              placeholder="0"
             />
           </div>
         </div>
@@ -218,14 +253,13 @@ export default function AutoLoanForm({ values, onChange }: AutoLoanFormProps) {
               <span className="text-gray-500">$</span>
             </div>
             <input
-              type="number"
+              type="text"
               id="tradeInValue"
               name="tradeInValue"
-              className="block w-full pl-7 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.tradeInValue || ""}
+              className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              value={getDisplayValue("tradeInValue", values.tradeInValue)}
               onChange={handleChange}
-              min="0"
-              step="100"
+              placeholder="0"
             />
           </div>
         </div>
@@ -243,14 +277,16 @@ export default function AutoLoanForm({ values, onChange }: AutoLoanFormProps) {
               <span className="text-gray-500">$</span>
             </div>
             <input
-              type="number"
+              type="text"
               id="amountOwedOnTradeIn"
               name="amountOwedOnTradeIn"
-              className="block w-full pl-7 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.amountOwedOnTradeIn || ""}
+              className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              value={getDisplayValue(
+                "amountOwedOnTradeIn",
+                values.amountOwedOnTradeIn
+              )}
               onChange={handleChange}
-              min="0"
-              step="100"
+              placeholder="0"
             />
           </div>
         </div>
@@ -268,7 +304,7 @@ export default function AutoLoanForm({ values, onChange }: AutoLoanFormProps) {
             name="state"
             value={values.state || ""}
             onChange={handleChange}
-            className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">-- Select State --</option>
             {usStates.map((s) => (
@@ -292,7 +328,7 @@ export default function AutoLoanForm({ values, onChange }: AutoLoanFormProps) {
               type="number"
               id="salesTaxRate"
               name="salesTaxRate"
-              className="block w-full pl-3 pr-7 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               value={values.salesTaxRate || ""}
               onChange={handleChange}
               min="0"
@@ -318,21 +354,20 @@ export default function AutoLoanForm({ values, onChange }: AutoLoanFormProps) {
               <span className="text-gray-500">$</span>
             </div>
             <input
-              type="number"
+              type="text"
               id="titleRegFees"
               name="titleRegFees"
-              className="block w-full pl-7 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.titleRegFees || ""}
+              className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              value={getDisplayValue("titleRegFees", values.titleRegFees)}
               onChange={handleChange}
-              min="0"
-              step="10"
+              placeholder="0"
             />
           </div>
         </div>
 
-        {/* Include Taxes and Fees in Loan - Checkbox (spans two columns) */}
-        <div className="form-group md:col-span-2">
-          <div className="flex items-center mt-2">
+        {/* Include Taxes and Fees in Loan - Checkbox */}
+        <div className="form-group">
+          <div className="flex items-center">
             <input
               id="includeTaxesAndFeesInLoan"
               name="includeTaxesAndFeesInLoan"

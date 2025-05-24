@@ -18,10 +18,6 @@ interface AccumulationScheduleTableProps {
   // Potentially add a prop to switch between monthly/yearly view if detailed monthly data is generated
 }
 
-const thClass =
-  "px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider";
-const tdClass = "px-4 py-3 whitespace-nowrap text-sm";
-
 export default function AccumulationScheduleTable({
   data,
 }: AccumulationScheduleTableProps) {
@@ -44,8 +40,8 @@ export default function AccumulationScheduleTable({
 
   if (!data || data.length === 0) {
     return (
-      <div className="p-6 rounded-lg shadow-lg bg-card mt-8">
-        <p className="text-center text-muted-foreground">
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <p className="text-center text-gray-500">
           Accumulation schedule data is not available.
         </p>
       </div>
@@ -62,33 +58,31 @@ export default function AccumulationScheduleTable({
   };
 
   return (
-    <div className="bg-card p-6 rounded-lg shadow-lg mt-8">
+    <div className="bg-white p-6 rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold text-primary">
+        <h3 className="text-xl font-semibold text-gray-900">
           Accumulation Schedule
         </h3>
         {hasMonthlyData && yearlyData.length > 0 && (
           <div className="flex space-x-2">
             <button
               onClick={() => handleScheduleTypeChange("yearly")}
-              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors
-                ${
-                  scheduleType === "yearly"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80"
-                }`}
+              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                scheduleType === "yearly"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
             >
               Yearly
             </button>
             <button
               onClick={() => handleScheduleTypeChange("periodic")}
               disabled={!hasMonthlyData} // Disable if only yearly data exists
-              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors
-                ${
-                  scheduleType === "periodic"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80 disabled:opacity-50"
-                }`}
+              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                scheduleType === "periodic"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
+              }`}
             >
               {/* Adjust label if periods are not monthly, e.g. "Detailed" */}
               Monthly / Detailed
@@ -97,43 +91,43 @@ export default function AccumulationScheduleTable({
         )}
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-border">
-          <thead className="bg-muted/50">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
             <tr>
-              <th className={thClass}>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 {scheduleType === "yearly" ? "Year" : "Period"}
               </th>
-              <th className={thClass}>Deposits / Contributions</th>
-              <th className={thClass}>Interest Earned</th>
-              <th className={thClass}>Ending Balance</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Deposits / Contributions
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Interest Earned
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Ending Balance
+              </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody className="bg-white divide-y divide-gray-200">
             {paginatedData.map((item, index) => (
-              <tr
-                key={index}
-                className="hover:bg-muted/30 transition-colors duration-150"
-              >
-                <td className={`${tdClass} text-foreground`}>
+              <tr key={index}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {scheduleType === "yearly" ? item.year : item.period}
                 </td>
-                <td className={`${tdClass} text-foreground`}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {formatCurrency(item.deposit)}
                 </td>
-                <td className={`${tdClass} text-foreground`}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {formatCurrency(item.interest)}
                 </td>
-                <td className={`${tdClass} text-foreground font-semibold`}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {formatCurrency(item.endingBalance)}
                 </td>
               </tr>
             ))}
             {paginatedData.length === 0 && (
               <tr>
-                <td
-                  colSpan={4}
-                  className="text-center py-10 text-muted-foreground"
-                >
+                <td colSpan={4} className="text-center py-10 text-gray-500">
                   No data available for this view.
                 </td>
               </tr>
@@ -143,15 +137,15 @@ export default function AccumulationScheduleTable({
       </div>
 
       {totalPages > 1 && (
-        <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+        <div className="mt-4 flex items-center justify-between">
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="px-4 py-2 text-sm font-medium text-foreground bg-background border border-border rounded-md shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
           >
             Previous
           </button>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-sm text-gray-700">
             Page {currentPage} of {totalPages}
           </span>
           <button
@@ -159,7 +153,7 @@ export default function AccumulationScheduleTable({
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
             }
             disabled={currentPage === totalPages}
-            className="px-4 py-2 text-sm font-medium text-foreground bg-background border border-border rounded-md shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
           >
             Next
           </button>
