@@ -18,6 +18,7 @@ const calculatorCategories: CalculatorCategory[] = [
     description: "Calculate loans, investments, mortgage payments and more",
     items: [
       { name: "Mortgage Calculator", path: "/mortgage", icon: "🏠" },
+      { name: "Refinance Calculator", path: "/refinance", icon: "🔄" },
       { name: "Loan Calculator", path: "/loan", icon: "💰" },
       { name: "Investment Calculator", path: "/investment", icon: "📈" },
       { name: "Retirement Calculator", path: "/retirement", icon: "🏖️" },

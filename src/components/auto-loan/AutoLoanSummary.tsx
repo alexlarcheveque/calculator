@@ -22,7 +22,9 @@ export default function AutoLoanSummary({ results }: AutoLoanSummaryProps) {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-6 text-gray-800">Loan Summary</h2>
+      <h2 className="text-xl font-semibold mb-6 text-gray-800 border-b pb-2">
+        Loan Summary
+      </h2>
 
       {/* Key Metrics Section */}
       <div className="mb-6 p-4 bg-primary-50 rounded-lg border border-primary-100">

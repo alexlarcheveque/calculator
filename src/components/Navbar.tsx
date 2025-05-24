@@ -16,6 +16,7 @@ const calculatorCategories: CalculatorCategory[] = [
     title: "Financial Calculators",
     items: [
       { name: "Mortgage Calculator", path: "/mortgage" },
+      { name: "Refinance Calculator", path: "/refinance" },
       { name: "Loan Calculator", path: "/loan" },
       { name: "Auto Loan Calculator", path: "/auto-loan" },
       { name: "Interest Calculator", path: "/interest" },
