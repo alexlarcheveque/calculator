@@ -1,21 +1,23 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://mortgagecalculator.com';
-  
+  const baseUrl = "https://mortgagecalculator.com";
+
   const routes = [
-    '',
-    '/about',
-    '/contact',
-    '/mortgage-guides',
-    '/refinance-calculator',
-    '/blog'
+    "",
+    "/about",
+    "/contact",
+    "/mortgage-guides",
+    "/refinance-calculator",
+    "/retirement",
+    "/blog",
+    "/amortization",
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
-    changeFrequency: 'monthly' as const,
-    priority: route === '' ? 1 : 0.8,
+    changeFrequency: "monthly" as const,
+    priority: route === "" ? 1 : 0.8,
   }));
 
   return routes;
-} 
+}
