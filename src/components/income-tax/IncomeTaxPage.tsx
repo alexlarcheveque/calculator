@@ -1,0 +1,123 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import IncomeTaxForm from "@/components/income-tax/IncomeTaxForm";
+import IncomeTaxSummary from "@/components/income-tax/IncomeTaxSummary";
+import IncomeTaxCharts from "@/components/income-tax/IncomeTaxCharts";
+import FAQSection from "@/components/income-tax/FAQSection";
+import {
+  calculateIncomeTax,
+  calculateTaxBreakdown,
+} from "@/utils/incomeTaxCalculations";
+import {
+  IncomeTaxFormValues,
+  IncomeTaxResults,
+  TaxCalculationBreakdown,
+  FilingStatus,
+  TaxYear,
+} from "@/types/incomeTax";
+
+export default function IncomeTaxPage() {
+  const [formValues, setFormValues] = useState<IncomeTaxFormValues>({
+    filingStatus: FilingStatus.SINGLE,
+    youngDependents: 0,
+    otherDependents: 0,
+    taxYear: TaxYear.YEAR_2024,
+
+    // Person 1 Income
+    salaryIncome: 80000,
+    federalTaxWithheld: 9000,
+    stateTaxWithheld: 0,
+    localTaxWithheld: 0,
+    hasBusiness: false,
+    businessIncome: 0,
+    estimatedTaxPaid: 0,
+    medicareWages: 0,
+
+    // Person 2 Income
+    salaryIncome2: 0,
+    federalTaxWithheld2: 0,
+    stateTaxWithheld2: 0,
+    localTaxWithheld2: 0,
+    hasBusiness2: false,
+    businessIncome2: 0,
+    estimatedTaxPaid2: 0,
+    medicareWages2: 0,
+
+    // Other Income
+    interestIncome: 0,
+    ordinaryDividends: 0,
+    qualifiedDividends: 0,
+    passiveIncome: 0,
+    shortTermCapitalGain: 0,
+    longTermCapitalGain: 0,
+    otherIncome: 0,
+    stateLocalTaxRate: 0,
+
+    // Deductions & Credits
+    iraContributions: 0,
+    realEstateTax: 0,
+    mortgageInterest: 0,
+    charitableDonations: 0,
+    studentLoanInterest: 0,
+    childCareExpense: 0,
+    tuition1: 0,
+    tuition2: 0,
+    tuition3: 0,
+    tuition4: 0,
+    otherDeductibles: 0,
+  });
+
+  const [results, setResults] = useState<IncomeTaxResults | null>(null);
+  const [breakdown, setBreakdown] = useState<TaxCalculationBreakdown | null>(
+    null
+  );
+
+  useEffect(() => {
+    try {
+      const taxResults = calculateIncomeTax(formValues);
+      const taxBreakdown = calculateTaxBreakdown(formValues);
+
+      setResults(taxResults);
+      setBreakdown(taxBreakdown);
+    } catch (error) {
+      console.error("Error calculating tax:", error);
+      setResults(null);
+      setBreakdown(null);
+    }
+  }, [formValues]);
+
+  const handleInputChange = (
+    name: string,
+    value: number | string | boolean
+  ) => {
+    setFormValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  return (
+    <div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
+        {/* Input form */}
+        <div className="lg:col-span-4">
+          <IncomeTaxForm values={formValues} onChange={handleInputChange} />
+        </div>
+
+        {/* Results */}
+        <div className="lg:col-span-8 space-y-8">
+          {results && breakdown && (
+            <>
+              <IncomeTaxSummary results={results} />
+              <IncomeTaxCharts results={results} breakdown={breakdown} />
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* FAQ Section */}
+      <FAQSection />
+    </div>
+  );
+}
