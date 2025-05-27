@@ -28,9 +28,9 @@ export default function BigNumberFractionCalculator() {
 
   // Helper function to find GCD for big integers
   const gcdBig = (a: bigint, b: bigint): bigint => {
-    a = a < 0n ? -a : a;
-    b = b < 0n ? -b : b;
-    while (b !== 0n) {
+    a = a < BigInt(0) ? -a : a;
+    b = b < BigInt(0) ? -b : b;
+    while (b !== BigInt(0)) {
       const temp = b;
       b = a % b;
       a = temp;
@@ -54,7 +54,7 @@ export default function BigNumberFractionCalculator() {
       const num2 = BigInt(numerator2);
       const den2 = BigInt(denominator2);
 
-      if (den1 === 0n || den2 === 0n) {
+      if (den1 === BigInt(0) || den2 === BigInt(0)) {
         setError("Denominator cannot be zero");
         return;
       }
@@ -85,7 +85,7 @@ export default function BigNumberFractionCalculator() {
           break;
 
         case FractionOperation.DIVIDE:
-          if (num2 === 0n) {
+          if (num2 === BigInt(0)) {
             setError("Cannot divide by zero");
             return;
           }
@@ -106,7 +106,7 @@ export default function BigNumberFractionCalculator() {
       // Handle negative denominators
       let finalNum = simplifiedNum;
       let finalDen = simplifiedDen;
-      if (finalDen < 0n) {
+      if (finalDen < BigInt(0)) {
         finalNum = -finalNum;
         finalDen = -finalDen;
       }

@@ -1,6 +1,7 @@
 {
-  "/not-found": "app/not-found.js",
-  "/time/page": "app/time/page.js",
+  "/grade/page": "app/grade/page.js",
+  "/page": "app/page.js",
   "/gpa/page": "app/gpa/page.js",
-  "/grade/page": "app/grade/page.js"
+  "/time/page": "app/time/page.js",
+  "/concrete/page": "app/concrete/page.js"
 }

@@ -28,11 +28,9 @@ export function validateTriangleInput(
     input.angleB,
     input.angleC,
   ];
-  const definedValues = values.filter(
-    (v) => v !== undefined && v !== null && v !== ""
-  );
+  const definedValues = values.filter((v) => v !== undefined && v !== null);
   const sides = [input.sideA, input.sideB, input.sideC].filter(
-    (v) => v !== undefined && v !== null && v !== ""
+    (v) => v !== undefined && v !== null
   );
 
   // Check minimum input requirement
@@ -47,12 +45,7 @@ export function validateTriangleInput(
 
   // Check for negative values
   values.forEach((value, index) => {
-    if (
-      value !== undefined &&
-      value !== null &&
-      value !== "" &&
-      Number(value) <= 0
-    ) {
+    if (value !== undefined && value !== null && Number(value) <= 0) {
       const labels = [
         "side a",
         "side b",
@@ -67,7 +60,7 @@ export function validateTriangleInput(
 
   // Check angle constraints
   const angles = [input.angleA, input.angleB, input.angleC].filter(
-    (v) => v !== undefined && v !== null && v !== ""
+    (v) => v !== undefined && v !== null
   );
   const maxAngle = input.angleUnit === "degrees" ? 180 : Math.PI;
 
@@ -113,16 +106,16 @@ export function solveTriangle(input: TriangleCalculationInput): TriangleResult {
     input.angleUnit === "degrees" ? angle : radiansToDegrees(angle);
 
   // Convert input angles to radians
-  if (angleA !== undefined && angleA !== "") angleA = toRadians(Number(angleA));
-  if (angleB !== undefined && angleB !== "") angleB = toRadians(Number(angleB));
-  if (angleC !== undefined && angleC !== "") angleC = toRadians(Number(angleC));
+  if (angleA !== undefined) angleA = toRadians(Number(angleA));
+  if (angleB !== undefined) angleB = toRadians(Number(angleB));
+  if (angleC !== undefined) angleC = toRadians(Number(angleC));
 
   // Count known values
   const knownSides = [sideA, sideB, sideC].filter(
-    (s) => s !== undefined && s !== ""
+    (s) => s !== undefined
   ).length;
   const knownAngles = [angleA, angleB, angleC].filter(
-    (a) => a !== undefined && a !== ""
+    (a) => a !== undefined
   ).length;
 
   steps.push(
@@ -142,14 +135,7 @@ export function solveTriangle(input: TriangleCalculationInput): TriangleResult {
     return result;
   } else if (knownSides === 2 && knownAngles === 1) {
     // SAS or SSA
-    if (
-      sideA !== undefined &&
-      sideA !== "" &&
-      sideB !== undefined &&
-      sideB !== "" &&
-      angleC !== undefined &&
-      angleC !== ""
-    ) {
+    if (sideA !== undefined && sideB !== undefined && angleC !== undefined) {
       // SAS
       steps.push("Using SAS (Side-Angle-Side) method");
       return solveSASTriangle(
@@ -302,27 +288,23 @@ function solveASATriangle(
   const toRadians = (angle: number) =>
     input.angleUnit === "degrees" ? degreesToRadians(angle) : angle;
 
-  if (angleA !== undefined && angleA !== "") angleA = toRadians(Number(angleA));
-  if (angleB !== undefined && angleB !== "") angleB = toRadians(Number(angleB));
-  if (angleC !== undefined && angleC !== "") angleC = toRadians(Number(angleC));
+  if (angleA !== undefined) angleA = toRadians(Number(angleA));
+  if (angleB !== undefined) angleB = toRadians(Number(angleB));
+  if (angleC !== undefined) angleC = toRadians(Number(angleC));
 
   // Find missing angle
-  if (
-    angleA !== undefined &&
-    angleB !== undefined &&
-    (angleC === undefined || angleC === "")
-  ) {
+  if (angleA !== undefined && angleB !== undefined && angleC === undefined) {
     angleC = Math.PI - Number(angleA) - Number(angleB);
   } else if (
     angleA !== undefined &&
     angleC !== undefined &&
-    (angleB === undefined || angleB === "")
+    angleB === undefined
   ) {
     angleB = Math.PI - Number(angleA) - Number(angleC);
   } else if (
     angleB !== undefined &&
     angleC !== undefined &&
-    (angleA === undefined || angleA === "")
+    angleA === undefined
   ) {
     angleA = Math.PI - Number(angleB) - Number(angleC);
   }
@@ -331,13 +313,13 @@ function solveASATriangle(
   let knownSide: number;
   let knownAngle: number;
 
-  if (sideA !== undefined && sideA !== "") {
+  if (sideA !== undefined) {
     knownSide = Number(sideA);
     knownAngle = Number(angleA);
-  } else if (sideB !== undefined && sideB !== "") {
+  } else if (sideB !== undefined) {
     knownSide = Number(sideB);
     knownAngle = Number(angleB);
-  } else if (sideC !== undefined && sideC !== "") {
+  } else if (sideC !== undefined) {
     knownSide = Number(sideC);
     knownAngle = Number(angleC);
   } else {

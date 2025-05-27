@@ -5,10 +5,8 @@ import {
   StandardDeviationFormValues,
   StandardDeviationResult,
 } from "@/types/standardDeviation";
-import {
-  calculateStandardDeviation,
-  CalculationType,
-} from "@/utils/standardDeviationCalculations";
+import { calculateStandardDeviation } from "@/utils/standardDeviationCalculations";
+import { CalculationType } from "@/types/standardDeviation";
 import StandardDeviationResults from "@/components/standard-deviation/StandardDeviationResults";
 
 export default function StandardDeviationCalculator() {
