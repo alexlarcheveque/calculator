@@ -1,3 +1,4 @@
 {
+  "/refinance/page": "app/refinance/page.js",
   "/mortgage/page": "app/mortgage/page.js"
 }

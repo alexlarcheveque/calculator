@@ -20,20 +20,30 @@ const parseFormattedNumber = (value: string): number => {
   return isNaN(parsed) ? 0 : parsed;
 };
 
+// Helper function to format interest rate
+const formatInterestRate = (value: number): string => {
+  if (isNaN(value) || value === 0) return "";
+  return value.toFixed(2);
+};
+
+// Helper function to get display value for currency fields
+const getCurrencyDisplayValue = (value: number): string => {
+  return value === 0 ? "" : formatNumberWithCommas(value);
+};
+
+// Helper function to get display value for interest rate fields
+const getInterestRateDisplayValue = (value: number): string => {
+  return value === 0 ? "" : formatInterestRate(value);
+};
+
 export default function RefinanceForm({
   values,
   onChange,
 }: RefinanceFormProps) {
-  // State for display values (with commas)
-  const [displayValues, setDisplayValues] = useState({
-    remainingBalance: formatNumberWithCommas(values.remainingBalance),
-    originalLoanAmount: formatNumberWithCommas(values.originalLoanAmount),
-    costsAndFees: formatNumberWithCommas(values.costsAndFees),
-    cashOutAmount:
-      values.cashOutAmount === 0
-        ? ""
-        : formatNumberWithCommas(Math.abs(values.cashOutAmount)),
-  });
+  // Local state to track input values during editing
+  const [editingStates, setEditingStates] = useState<Record<string, string>>(
+    {}
+  );
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -48,45 +58,54 @@ export default function RefinanceForm({
 
   const handleCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const numericValue = parseFormattedNumber(value);
 
-    // Special handling for cash out amount to preserve negative values
+    // Handle cash out amount separately since it can be negative
     if (name === "cashOutAmount") {
       const isNegative = value.startsWith("-") || value.startsWith("($");
+      const cleanedValue = value.replace(/[^\d.]/g, "");
+      const numericValue = parseFloat(cleanedValue) || 0;
       const finalValue = isNegative ? -Math.abs(numericValue) : numericValue;
       onChange(name, finalValue);
-      setDisplayValues((prev) => ({
-        ...prev,
-        [name]:
-          value === "" ? "" : formatNumberWithCommas(Math.abs(numericValue)),
-      }));
     } else {
+      const numericValue = parseFormattedNumber(value);
       onChange(name, numericValue);
-      setDisplayValues((prev) => ({
-        ...prev,
-        [name]: formatNumberWithCommas(numericValue),
-      }));
     }
   };
 
-  const handleCurrencyBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const { name } = e.target;
-    const currentValue = values[name as keyof RefinanceFormValues] as number;
+  const handleInterestRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
 
-    if (name === "cashOutAmount") {
-      setDisplayValues((prev) => ({
-        ...prev,
-        [name]:
-          currentValue === 0
-            ? ""
-            : formatNumberWithCommas(Math.abs(currentValue)),
-      }));
-    } else {
-      setDisplayValues((prev) => ({
-        ...prev,
-        [name]: formatNumberWithCommas(currentValue),
-      }));
+    // Store the raw input value for display while editing
+    setEditingStates((prev) => ({ ...prev, [name]: value }));
+
+    // Allow empty string, numbers, and decimal points
+    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+      const numericValue = parseFloat(value) || 0;
+      onChange(name, numericValue);
     }
+  };
+
+  const handleInterestRateBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name } = e.target;
+    // Clear the editing state when input loses focus
+    setEditingStates((prev) => {
+      const newState = { ...prev };
+      delete newState[name];
+      return newState;
+    });
+  };
+
+  // Get the display value for interest rate inputs
+  const getInterestRateInputValue = (
+    fieldName: string,
+    numericValue: number
+  ): string => {
+    // If we're currently editing this field, use the raw input value
+    if (editingStates[fieldName] !== undefined) {
+      return editingStates[fieldName];
+    }
+    // Otherwise, use the formatted display value
+    return getInterestRateDisplayValue(numericValue);
   };
 
   return (
@@ -142,9 +161,8 @@ export default function RefinanceForm({
                     id="remainingBalance"
                     name="remainingBalance"
                     className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                    value={displayValues.remainingBalance}
+                    value={getCurrencyDisplayValue(values.remainingBalance)}
                     onChange={handleCurrencyChange}
-                    onBlur={handleCurrencyBlur}
                     placeholder="250,000"
                   />
                 </div>
@@ -162,14 +180,14 @@ export default function RefinanceForm({
                     <span className="text-gray-500">$</span>
                   </div>
                   <input
-                    type="number"
+                    type="text"
                     id="currentMonthlyPayment"
                     name="currentMonthlyPayment"
                     className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                    value={values.currentMonthlyPayment}
-                    onChange={handleChange}
-                    min="0"
-                    step="10"
+                    value={getCurrencyDisplayValue(
+                      values.currentMonthlyPayment
+                    )}
+                    onChange={handleCurrencyChange}
                     placeholder="1,800"
                   />
                 </div>
@@ -197,9 +215,8 @@ export default function RefinanceForm({
                     id="originalLoanAmount"
                     name="originalLoanAmount"
                     className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                    value={displayValues.originalLoanAmount}
+                    value={getCurrencyDisplayValue(values.originalLoanAmount)}
                     onChange={handleCurrencyChange}
-                    onBlur={handleCurrencyBlur}
                     placeholder="300,000"
                   />
                 </div>
@@ -281,15 +298,16 @@ export default function RefinanceForm({
             </label>
             <div className="relative rounded-md shadow-sm">
               <input
-                type="number"
+                type="text"
                 id="currentInterestRate"
                 name="currentInterestRate"
                 className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                value={values.currentInterestRate}
-                onChange={handleChange}
-                min="0"
-                max="20"
-                step="0.125"
+                value={getInterestRateInputValue(
+                  "currentInterestRate",
+                  values.currentInterestRate
+                )}
+                onChange={handleInterestRateChange}
+                onBlur={handleInterestRateBlur}
                 placeholder="7.000"
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -335,15 +353,16 @@ export default function RefinanceForm({
               </label>
               <div className="relative rounded-md shadow-sm">
                 <input
-                  type="number"
+                  type="text"
                   id="newInterestRate"
                   name="newInterestRate"
                   className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  value={values.newInterestRate}
-                  onChange={handleChange}
-                  min="0"
-                  max="20"
-                  step="0.125"
+                  value={getInterestRateInputValue(
+                    "newInterestRate",
+                    values.newInterestRate
+                  )}
+                  onChange={handleInterestRateChange}
+                  onBlur={handleInterestRateBlur}
                   placeholder="6.000"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -364,15 +383,13 @@ export default function RefinanceForm({
               </label>
               <div className="relative rounded-md shadow-sm">
                 <input
-                  type="number"
+                  type="text"
                   id="points"
                   name="points"
                   className="block w-full pl-3 pr-12 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  value={values.points}
-                  onChange={handleChange}
-                  min="0"
-                  max="10"
-                  step="0.25"
+                  value={getInterestRateInputValue("points", values.points)}
+                  onChange={handleInterestRateChange}
+                  onBlur={handleInterestRateBlur}
                   placeholder="2.0"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -400,9 +417,8 @@ export default function RefinanceForm({
                   id="costsAndFees"
                   name="costsAndFees"
                   className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  value={displayValues.costsAndFees}
+                  value={getCurrencyDisplayValue(values.costsAndFees)}
                   onChange={handleCurrencyChange}
-                  onBlur={handleCurrencyBlur}
                   placeholder="1,500"
                 />
               </div>
@@ -429,9 +445,10 @@ export default function RefinanceForm({
                   id="cashOutAmount"
                   name="cashOutAmount"
                   className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  value={displayValues.cashOutAmount}
+                  value={getCurrencyDisplayValue(
+                    Math.abs(values.cashOutAmount)
+                  )}
                   onChange={handleCurrencyChange}
-                  onBlur={handleCurrencyBlur}
                   placeholder="0"
                 />
                 {values.cashOutAmount < 0 && (

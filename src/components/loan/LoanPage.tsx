@@ -85,6 +85,7 @@ export type LoanResult =
   | BondLoanResult;
 
 const LoanPage = () => {
+
   const [loanType, setLoanType] = useState<LoanType>("amortized");
   const [inputs, setInputs] = useState<Partial<LoanInput>>({
     loanAmount: 100000,

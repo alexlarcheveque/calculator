@@ -1,10 +1,4 @@
-import { useState } from "react";
-
-interface FAQItem {
-  question: string;
-  answer: React.ReactNode;
-  id: string;
-}
+import FAQSection, { FAQItem } from "@/components/ui/FAQSection";
 
 const faqItems: FAQItem[] = [
   {
@@ -115,63 +109,13 @@ const faqItems: FAQItem[] = [
 ];
 
 export default function RefinanceFAQ() {
-  const [openItems, setOpenItems] = useState<string[]>([]);
-
-  const toggleItem = (id: string) => {
-    setOpenItems((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
-
   return (
-    <div className="bg-white p-8 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        Frequently Asked Questions
-      </h2>
-
-      <div className="space-y-4">
-        {faqItems.map((item) => (
-          <div key={item.id} className="border border-gray-200 rounded-lg">
-            <button
-              className="w-full text-left p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
-              onClick={() => toggleItem(item.id)}
-              aria-expanded={openItems.includes(item.id)}
-              aria-controls={`content-${item.id}`}
-            >
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium text-gray-800 pr-4">
-                  {item.question}
-                </h3>
-                <div className="flex-shrink-0">
-                  <svg
-                    className={`w-5 h-5 text-gray-500 transform transition-transform duration-200 ${
-                      openItems.includes(item.id) ? "rotate-180" : ""
-                    }`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </button>
-
-            {openItems.includes(item.id) && (
-              <div id={`content-${item.id}`} className="px-4 pb-4">
-                <div className="text-gray-700 text-sm leading-relaxed">
-                  {item.answer}
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
+    <FAQSection
+      items={faqItems}
+      title="Frequently Asked Questions"
+      allowMultipleOpen={true}
+      includeSchema={true}
+      schemaId="refinance-faq-schema"
+    />
   );
 }
