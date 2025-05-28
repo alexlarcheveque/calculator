@@ -1,7 +1,7 @@
 import { MortgageResults } from "@/types/mortgage";
 import {
-  formatCurrency,
   formatCurrencyDetailed,
+  formatCurrency,
 } from "@/utils/mortgageCalculations";
 
 interface MortgageSummaryProps {
@@ -27,19 +27,8 @@ export default function MortgageSummary({ results }: MortgageSummaryProps) {
           Monthly Payments
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Main Monthly Payment */}
-          <div className="bg-primary-50 p-4 rounded-lg border border-primary-100">
-            <div className="text-sm text-gray-600">Total Monthly Payment</div>
-            <div className="text-2xl font-bold text-gray-800">
-              {formatCurrencyDetailed(results.totalMonthlyPayment)}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Principal, interest, taxes & insurance
-            </div>
-          </div>
-
           {/* Principal & Interest */}
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+          <div className="bg-primary-50 p-4 rounded-lg border border-gray-100">
             <div className="text-sm text-gray-600">Principal & Interest</div>
             <div className="text-2xl font-bold text-gray-800">
               {formatCurrencyDetailed(results.monthlyPrincipalAndInterest)}
@@ -49,6 +38,16 @@ export default function MortgageSummary({ results }: MortgageSummaryProps) {
             </div>
           </div>
 
+          {/* Main Monthly Payment */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-primary-100">
+            <div className="text-sm text-gray-600">Total Monthly Payment</div>
+            <div className="text-2xl font-bold text-gray-800">
+              {formatCurrencyDetailed(results.totalMonthlyPayment)}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              Including principal, interest, taxes & insurance
+            </div>
+          </div>
           {/* Additional Monthly Expenses */}
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 flex flex-col">
             <div className="flex justify-between items-center mb-1">

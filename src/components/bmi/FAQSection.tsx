@@ -1,11 +1,6 @@
 "use client";
 
-import { useState } from "react";
-
-interface FAQItem {
-  question: string;
-  answer: string;
-}
+import FAQSection, { FAQItem } from "@/components/ui/FAQSection";
 
 const faqData: FAQItem[] = [
   {
@@ -50,53 +45,24 @@ const faqData: FAQItem[] = [
   },
 ];
 
-export default function FAQSection() {
-  const [openItems, setOpenItems] = useState<number[]>([]);
+const disclaimer = (
+  <>
+    <h3 className="text-lg font-semibold text-blue-800 mb-2">Important Note</h3>
+    <p className="text-blue-700 text-sm">
+      This BMI calculator is for informational purposes only and should not
+      replace professional medical advice. Always consult with a healthcare
+      provider for personalized health assessments and recommendations.
+    </p>
+  </>
+);
 
-  const toggleItem = (index: number) => {
-    setOpenItems((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-    );
-  };
-
+export default function BMIFAQSection() {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">
-        Frequently Asked Questions
-      </h2>
-
-      <div className="space-y-4">
-        {faqData.map((item, index) => (
-          <div key={index} className="border border-gray-200 rounded-lg">
-            <button
-              onClick={() => toggleItem(index)}
-              className="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset rounded-lg"
-            >
-              <span className="font-medium text-gray-800">{item.question}</span>
-              <span className="text-gray-500 text-xl">
-                {openItems.includes(index) ? "−" : "+"}
-              </span>
-            </button>
-
-            {openItems.includes(index) && (
-              <div className="px-4 pb-3">
-                <p className="text-gray-600 leading-relaxed">{item.answer}</p>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-        <h3 className="text-lg font-semibold text-blue-800 mb-2">
-          Important Note
-        </h3>
-        <p className="text-blue-700 text-sm">
-          This BMI calculator is for informational purposes only and should not
-          replace professional medical advice. Always consult with a healthcare
-          provider for personalized health assessments and recommendations.
-        </p>
-      </div>
-    </div>
+    <FAQSection
+      items={faqData}
+      title="Frequently Asked Questions"
+      allowMultipleOpen={true}
+      disclaimer={disclaimer}
+    />
   );
 }

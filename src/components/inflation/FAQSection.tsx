@@ -1,11 +1,6 @@
 "use client";
 
-import { useState } from "react";
-
-interface FAQItem {
-  question: string;
-  answer: string;
-}
+import FAQSection, { FAQItem } from "@/components/ui/FAQSection";
 
 const faqData: FAQItem[] = [
   {
@@ -50,98 +45,19 @@ const faqData: FAQItem[] = [
   },
 ];
 
-export default function FAQSection() {
-  const [openItems, setOpenItems] = useState<number[]>([]);
+const relatedLinks = [
+  { href: "/investment", label: "Investment Calculator" },
+  { href: "/loan", label: "Loan Calculator" },
+  { href: "/retirement", label: "Retirement Calculator" },
+];
 
-  const toggleItem = (index: number) => {
-    setOpenItems((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-    );
-  };
-
+export default function InflationFAQSection() {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-        Frequently Asked Questions
-      </h2>
-
-      <div className="space-y-4">
-        {faqData.map((item, index) => (
-          <div key={index} className="border border-gray-200 rounded-lg">
-            <button
-              className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
-              onClick={() => toggleItem(index)}
-            >
-              <span className="font-medium text-gray-900">{item.question}</span>
-              <span className="ml-6 flex-shrink-0">
-                {openItems.includes(index) ? (
-                  <svg
-                    className="h-5 w-5 text-gray-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 15l7-7 7 7"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="h-5 w-5 text-gray-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                )}
-              </span>
-            </button>
-
-            {openItems.includes(index) && (
-              <div className="px-6 pb-4">
-                <p className="text-gray-700 leading-relaxed">{item.answer}</p>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-        <h3 className="text-lg font-medium text-blue-800 mb-2">
-          Related Calculators
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          <a
-            href="/investment"
-            className="text-blue-600 hover:text-blue-800 underline"
-          >
-            Investment Calculator
-          </a>
-          <span className="text-gray-400">|</span>
-          <a
-            href="/loan"
-            className="text-blue-600 hover:text-blue-800 underline"
-          >
-            Loan Calculator
-          </a>
-          <span className="text-gray-400">|</span>
-          <a
-            href="/retirement"
-            className="text-blue-600 hover:text-blue-800 underline"
-          >
-            Retirement Calculator
-          </a>
-        </div>
-      </div>
-    </div>
+    <FAQSection
+      items={faqData}
+      title="Frequently Asked Questions"
+      allowMultipleOpen={true}
+      relatedLinks={relatedLinks}
+    />
   );
 }

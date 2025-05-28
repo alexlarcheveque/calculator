@@ -1,7 +1,3 @@
 {
-  "/grade/page": "app/grade/page.js",
-  "/page": "app/page.js",
-  "/gpa/page": "app/gpa/page.js",
-  "/time/page": "app/time/page.js",
-  "/concrete/page": "app/concrete/page.js"
+  "/mortgage/page": "app/mortgage/page.js"
 }

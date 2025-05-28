@@ -16,24 +16,29 @@ import {
   CalculatorType,
 } from "@/types/mortgage";
 import FAQSection from "@/components/mortgage/FAQSection";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export default function MortgagePage() {
-  const [formValues, setFormValues] = useState<MortgageFormValues>({
-    calculatorType: CalculatorType.FIXED_30,
-    homeValue: 400000,
-    downPayment: 80000,
-    loanTerm: 30,
-    interestRate: 5.75,
-    propertyTax: 3000,
-    homeInsurance: 1500,
-    hoa: 0,
-  });
+  const [formValues, setFormValues] = useLocalStorage<MortgageFormValues>(
+    "mortgageFormValues",
+    {
+      calculatorType: CalculatorType.FIXED_30,
+      homeValue: 400000,
+      downPayment: 80000,
+      loanTerm: 30,
+      interestRate: 5.75,
+      propertyTax: 3000,
+      homeInsurance: 1500,
+      hoa: 0,
+    }
+  );
 
   const [results, setResults] = useState<MortgageResults | null>(null);
   const [amortizationData, setAmortizationData] = useState<
     AmortizationDataPoint[]
   >([]);
 
+  // Calculate mortgage results whenever form values change
   useEffect(() => {
     const {
       homeValue,
@@ -71,15 +76,19 @@ export default function MortgagePage() {
   }, [formValues]);
 
   const handleInputChange = (name: string, value: number) => {
-    const newValues = { ...formValues, [name]: value };
+    setFormValues((prevValues) => {
+      const newValues = { ...prevValues, [name]: value };
 
-    // Ensure down payment isn't greater than home value
-    if (name === "downPayment" && value > formValues.homeValue) {
-      newValues.downPayment = formValues.homeValue;
-    }
+      // Ensure down payment isn't greater than home value
+      if (name === "downPayment" && value > prevValues.homeValue) {
+        newValues.downPayment = prevValues.homeValue;
+      }
 
-    setFormValues(newValues);
+      return newValues;
+    });
   };
+
+  console.log("amortization data", amortizationData);
 
   return (
     <div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 type CalculatorCategory = {
   title: string;
@@ -96,8 +97,17 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link href="/" className="text-2xl font-bold text-blue-600">
-                Calcy.net
+              <Link href="/" className="flex items-center space-x-2">
+                <Image
+                  src="/logo.png"
+                  alt="Calcy.net Logo"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8"
+                />
+                <span className="text-2xl font-bold text-blue-600">
+                  Calcy.net
+                </span>
               </Link>
             </div>
           </div>
