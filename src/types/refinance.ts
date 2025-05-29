@@ -47,12 +47,14 @@ export interface RefinanceResults {
   pointsCost: number;
   totalClosingCosts: number;
   netCashOut: number;
+  cashOutAmount: number;
 
   // Comparison
   monthlyPaymentDifference: number;
   totalInterestSavings: number;
   totalCostSavings: number;
   breakEvenMonths: number;
+  breakEvenMonthsFormatted: string;
 
   // Time analysis
   timeToPayOffCurrent: {

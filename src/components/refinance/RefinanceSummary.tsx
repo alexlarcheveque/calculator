@@ -1,316 +1,225 @@
 import { RefinanceResults } from "@/types/refinance";
-import {
-  formatCurrency,
-  formatCurrencyDetailed,
-} from "@/utils/refinanceCalculations";
+import { formatCurrency } from "@/utils/refinanceCalculations";
 
-interface RefinanceSummaryProps {
+interface LoanComparisonSummaryProps {
   results: RefinanceResults;
+  currentInterestRate: number;
+  newInterestRate: number;
 }
 
-export default function RefinanceSummary({ results }: RefinanceSummaryProps) {
-  const isPositiveSavings = results.monthlyPaymentDifference < 0;
-  const hasBreakEven =
-    results.breakEvenMonths > 0 && results.breakEvenMonths < 360; // 30 years max
+export default function LoanComparisonSummary({
+  results,
+  currentInterestRate,
+  newInterestRate,
+}: LoanComparisonSummaryProps) {
+  const formatPercentage = (value: number, decimals: number = 2): string => {
+    return `${value.toFixed(decimals)}%`;
+  };
+
+  const aprDifference = currentInterestRate - results.newLoanAPR;
+  let aprComparisonText;
+  let isFavorableAPRDifference = false;
+  if (aprDifference > 0.001) {
+    aprComparisonText = "lower than";
+    isFavorableAPRDifference = true;
+  } else if (aprDifference < -0.001) {
+    aprComparisonText = "higher than";
+    isFavorableAPRDifference = false;
+  } else {
+    aprComparisonText = "effectively the same as";
+    // Consider this neutral or slightly unfavorable for simplicity unless APR is strictly lower
+    isFavorableAPRDifference = results.newLoanAPR < currentInterestRate - 0.001;
+  }
+
+  const financialVerdictText =
+    results.totalCostSavings > 0 ? "less expensive" : "more expensive";
+  const isFavorableVerdict = results.totalCostSavings > 0;
+
+  const monthlyDifferenceText =
+    results.monthlyPaymentDifference < 0 ? "decrease" : "increase";
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-6 text-gray-800 border-b pb-2">
+      <h2 className="text-xl font-semibold mb-6 text-gray-800">
         Refinance Summary
       </h2>
 
-      {/* Main Comparison Section */}
+      {/* Informational Verdict Card - Option 1 */}
+      <div
+        className={`mb-6 p-4 rounded-lg border ${
+          isFavorableVerdict
+            ? "bg-green-50 border-green-200"
+            : "bg-red-50 border-red-200"
+        } text-left`}
+      >
+        <p
+          className={`text-sm ${
+            isFavorableVerdict ? "text-green-700" : "text-red-700"
+          } leading-relaxed`}
+        >
+          Your new estimated monthly payment would be{" "}
+          <strong
+            className={isFavorableVerdict ? "text-green-800" : "text-red-800"}
+          >
+            {formatCurrency(results.newMonthlyPayment)}
+          </strong>
+          . This is a {monthlyDifferenceText} of{" "}
+          <strong
+            className={isFavorableVerdict ? "text-green-800" : "text-red-800"}
+          >
+            {formatCurrency(Math.abs(results.monthlyPaymentDifference))}
+          </strong>{" "}
+          per month. Overall, refinancing would be financially{" "}
+          <strong
+            className={isFavorableVerdict ? "text-green-800" : "text-red-800"}
+          >
+            {financialVerdictText}
+          </strong>
+          .
+        </p>
+      </div>
+
+      {/* Key Comparison */}
       <div className="mb-6">
         <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
-          Monthly Payment Comparison
+          Key Comparison
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
             <div className="text-sm text-gray-600">Current Payment</div>
             <div className="text-2xl font-bold text-gray-800">
               {formatCurrency(results.currentMonthlyPayment)}
             </div>
             <div className="text-xs text-gray-500 mt-1">
-              Monthly principal & interest
+              at {formatPercentage(currentInterestRate)} interest rate
             </div>
           </div>
 
-          <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-            <div className="text-sm text-blue-600">New Payment</div>
-            <div className="text-2xl font-bold text-blue-800">
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <div className="text-sm text-gray-600">New Payment</div>
+            <div className="text-2xl font-bold text-gray-800">
               {formatCurrency(results.newMonthlyPayment)}
             </div>
-            <div className="text-xs text-blue-500 mt-1">
-              Monthly principal & interest
-            </div>
-          </div>
-
-          <div
-            className={`p-4 rounded-lg border ${
-              isPositiveSavings
-                ? "bg-green-50 border-green-100"
-                : "bg-red-50 border-red-100"
-            }`}
-          >
-            <div
-              className={`text-sm ${
-                isPositiveSavings ? "text-green-600" : "text-red-600"
-              }`}
-            >
-              Monthly Difference
-            </div>
-            <div
-              className={`text-2xl font-bold ${
-                isPositiveSavings ? "text-green-800" : "text-red-800"
-              }`}
-            >
-              {formatCurrency(Math.abs(results.monthlyPaymentDifference))}
-            </div>
-            <div
-              className={`text-xs mt-1 ${
-                isPositiveSavings ? "text-green-500" : "text-red-500"
-              }`}
-            >
-              {isPositiveSavings ? "Monthly savings" : "Monthly increase"}
+            <div className="text-xs text-gray-500 mt-1">
+              at {formatPercentage(newInterestRate)} interest rate
             </div>
           </div>
         </div>
       </div>
 
-      {/* Break-Even Analysis */}
-      {hasBreakEven && (
-        <div className="mb-6">
-          <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-100">
-            <div className="text-sm text-yellow-600 font-medium">
-              Break-Even Point
-            </div>
-            <div className="text-3xl font-bold text-yellow-800 mb-2">
-              {Math.floor(results.breakEvenMonths / 12)} years{" "}
-              {results.breakEvenMonths % 12} months
-            </div>
-            <div className="text-sm text-yellow-600">
-              Time to recover closing costs through monthly savings
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Financial Overview */}
+      {/* Bottom Line Impact */}
       <div className="mb-6">
         <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
-          Financial Overview
+          Bottom Line Impact
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div className="text-sm text-gray-600">New Loan Amount</div>
-            <div className="text-2xl font-bold text-gray-800">
-              {formatCurrency(results.newLoanAmount)}
+            <div className="text-sm text-gray-600">Monthly Change</div>
+            <div
+              className={`text-2xl font-bold ${
+                results.monthlyPaymentDifference < 0
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {results.monthlyPaymentDifference < 0 ? "" : "+"}
+              {results.monthlyPaymentDifference < 0
+                ? formatCurrency(Math.abs(results.monthlyPaymentDifference))
+                : formatCurrency(results.monthlyPaymentDifference)}
             </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Remaining balance + cash out + costs
+            <div
+              className={`text-xs mt-1 ${
+                results.monthlyPaymentDifference < 0
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {results.monthlyPaymentDifference < 0
+                ? "Monthly savings"
+                : "Monthly increase"}
             </div>
           </div>
 
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div className="text-sm text-gray-600">Total Closing Costs</div>
-            <div className="text-2xl font-bold text-gray-800">
-              {formatCurrency(results.totalClosingCosts)}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Points: {formatCurrency(results.pointsCost)} + Fees:{" "}
-              {formatCurrency(results.totalClosingCosts - results.pointsCost)}
-            </div>
-          </div>
-
-          {results.netCashOut !== 0 && (
+            <div className="text-sm text-gray-600">Total Cost Impact</div>
             <div
-              className={`p-4 rounded-lg border col-span-1 sm:col-span-2 ${
-                results.netCashOut > 0
-                  ? "bg-blue-50 border-blue-100"
-                  : "bg-orange-50 border-orange-100"
+              className={`text-2xl font-bold ${
+                results.totalCostSavings > 0 ? "text-green-600" : "text-red-600"
               }`}
             >
-              <div
-                className={`text-sm ${
-                  results.netCashOut > 0 ? "text-blue-600" : "text-orange-600"
-                }`}
-              >
-                {results.netCashOut > 0
-                  ? "Net Cash Received"
-                  : "Net Cash Contributed"}
-              </div>
-              <div
-                className={`text-2xl font-bold ${
-                  results.netCashOut > 0 ? "text-blue-800" : "text-orange-800"
-                }`}
-              >
-                {formatCurrency(Math.abs(results.netCashOut))}
-              </div>
-              <div
-                className={`text-xs mt-1 ${
-                  results.netCashOut > 0 ? "text-blue-500" : "text-orange-500"
-                }`}
-              >
-                {results.netCashOut > 0
-                  ? "Cash you receive after closing costs"
-                  : "Additional cash you pay at closing"}
-              </div>
+              {results.totalCostSavings > 0 ? "" : "+"}
+              {formatCurrency(Math.abs(results.totalCostSavings))}
+            </div>
+            <div
+              className={`text-xs mt-1 ${
+                results.totalCostSavings > 0 ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {results.totalCostSavings > 0
+                ? "Lifetime savings"
+                : "Extra lifetime cost"}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Upfront Cost */}
+      <div className={results.cashOutAmount !== 0 ? "mb-6" : ""}>
+        <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
+          Upfront Cost
+        </h3>
+        <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+          <div className="text-sm text-gray-600">Total Closing Costs</div>
+          <div className="text-2xl font-bold text-gray-800">
+            {formatCurrency(results.totalClosingCosts)}
+          </div>
+          {results.breakEvenMonths > 0 && results.breakEvenMonths < 360 && (
+            <div className="text-xs text-gray-500 mt-1">
+              Break-even in {results.breakEvenMonthsFormatted}
             </div>
           )}
         </div>
       </div>
 
-      {/* Interest Comparison */}
-      <div className="mb-6">
-        <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
-          Interest Comparison
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div className="text-sm text-gray-600">
-              Current Loan Remaining Interest
+      {/* Cash Out (if applicable) */}
+      {results.cashOutAmount !== 0 && (
+        <div>
+          <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
+            Cash Out from Home Equity
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+              <div className="text-sm text-gray-600">Amount You'll Receive</div>
+              <div className="text-2xl font-bold text-gray-800">
+                {formatCurrency(results.cashOutAmount)}
+              </div>
+              <div className="text-xs text-gray-500 mt-1">
+                Cash from your home's equity
+              </div>
             </div>
-            <div className="text-2xl font-bold text-gray-800">
-              {formatCurrency(results.currentTotalRemainingInterest)}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Interest left to pay on current loan
-            </div>
-          </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div className="text-sm text-gray-600">New Loan Total Interest</div>
-            <div className="text-2xl font-bold text-gray-800">
-              {formatCurrency(results.newTotalInterest)}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Total interest on new loan
-            </div>
-          </div>
-
-          <div
-            className={`p-4 rounded-lg border col-span-1 sm:col-span-2 ${
-              results.totalInterestSavings > 0
-                ? "bg-green-50 border-green-100"
-                : "bg-red-50 border-red-100"
-            }`}
-          >
-            <div
-              className={`text-sm ${
-                results.totalInterestSavings > 0
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
-            >
-              {results.totalInterestSavings > 0
-                ? "Interest Savings"
-                : "Additional Interest Cost"}
-            </div>
-            <div
-              className={`text-2xl font-bold ${
-                results.totalInterestSavings > 0
-                  ? "text-green-800"
-                  : "text-red-800"
-              }`}
-            >
-              {formatCurrency(Math.abs(results.totalInterestSavings))}
-            </div>
-            <div
-              className={`text-xs mt-1 ${
-                results.totalInterestSavings > 0
-                  ? "text-green-500"
-                  : "text-red-500"
-              }`}
-            >
-              {results.totalInterestSavings > 0
-                ? "Total interest savings over loan life"
-                : "Additional interest you will pay"}
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+              <div className="text-sm text-gray-600">
+                {results.netCashOut > 0
+                  ? "Cash You'll Receive"
+                  : "Extra Cash Needed"}
+              </div>
+              <div
+                className={`text-2xl font-bold ${
+                  results.netCashOut > 0 ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {formatCurrency(Math.abs(results.netCashOut))}
+              </div>
+              <div className="text-xs text-gray-500 mt-1">
+                {results.netCashOut > 0
+                  ? "After paying closing costs"
+                  : "To fully cover closing costs"}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Time Comparison */}
-      <div>
-        <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
-          Payoff Time Comparison
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div className="text-sm text-gray-600">Current Loan Payoff</div>
-            <div className="text-xl font-bold text-gray-800">
-              {results.timeToPayOffCurrent.years}y{" "}
-              {results.timeToPayOffCurrent.months}m
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Time remaining on current loan
-            </div>
-          </div>
-
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div className="text-sm text-gray-600">New Loan Payoff</div>
-            <div className="text-xl font-bold text-gray-800">
-              {results.timeToPayOffNew.years}y {results.timeToPayOffNew.months}m
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Full term of new loan
-            </div>
-          </div>
-
-          <div
-            className={`p-4 rounded-lg border ${
-              results.timeToPayOffNew.years * 12 +
-                results.timeToPayOffNew.months <
-              results.timeToPayOffCurrent.years * 12 +
-                results.timeToPayOffCurrent.months
-                ? "bg-green-50 border-green-100"
-                : "bg-red-50 border-red-100"
-            }`}
-          >
-            <div
-              className={`text-sm ${
-                results.timeToPayOffNew.years * 12 +
-                  results.timeToPayOffNew.months <
-                results.timeToPayOffCurrent.years * 12 +
-                  results.timeToPayOffCurrent.months
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
-            >
-              Time Difference
-            </div>
-            <div
-              className={`text-xl font-bold ${
-                results.timeToPayOffNew.years * 12 +
-                  results.timeToPayOffNew.months <
-                results.timeToPayOffCurrent.years * 12 +
-                  results.timeToPayOffCurrent.months
-                  ? "text-green-800"
-                  : "text-red-800"
-              }`}
-            >
-              {results.timeSavings.years}y {results.timeSavings.months}m
-            </div>
-            <div
-              className={`text-xs mt-1 ${
-                results.timeToPayOffNew.years * 12 +
-                  results.timeToPayOffNew.months <
-                results.timeToPayOffCurrent.years * 12 +
-                  results.timeToPayOffCurrent.months
-                  ? "text-green-500"
-                  : "text-red-500"
-              }`}
-            >
-              {results.timeToPayOffNew.years * 12 +
-                results.timeToPayOffNew.months <
-              results.timeToPayOffCurrent.years * 12 +
-                results.timeToPayOffCurrent.months
-                ? "Time saved"
-                : "Additional time"}
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

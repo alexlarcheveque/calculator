@@ -1,3 +1,5 @@
+"use client";
+
 import { RefinanceFormValues, CurrentLoanInputMode } from "@/types/refinance";
 import { formatCurrency } from "@/utils/refinanceCalculations";
 import { useState } from "react";
@@ -7,105 +9,192 @@ interface RefinanceFormProps {
   onChange: (name: string, value: number | CurrentLoanInputMode) => void;
 }
 
-// Helper function to format number with commas
-const formatNumberWithCommas = (value: number): string => {
-  if (isNaN(value) || value === 0) return "";
-  return value.toLocaleString("en-US");
+// Helper to format number to string for display (empty for 0, else locale string for currency)
+const formatForDisplay = (
+  num: number,
+  type: "currency" | "interest" | "points" | "integer"
+): string => {
+  if (isNaN(num)) return ""; // Return empty if NaN to prevent displaying "NaN"
+  if (num === 0) return ""; // Return empty for zero, so input field can be empty
+  if (type === "currency") return num.toLocaleString("en-US");
+  if (type === "interest") return num.toFixed(2);
+  if (type === "points") return num.toFixed(2);
+  if (type === "integer") return num.toString(); // For years/months
+  return num.toString(); // Default
 };
 
-// Helper function to parse comma-formatted string to number
-const parseFormattedNumber = (value: string): number => {
-  const cleaned = value.replace(/[^\d.-]/g, "");
-  const parsed = parseFloat(cleaned);
-  return isNaN(parsed) ? 0 : parsed;
-};
+// Helper to parse string input to number
+const parseInputToNumber = (
+  input: string,
+  isCurrency: boolean,
+  allowNegative: boolean = false
+): number => {
+  let cleaned = input.replace(/[^\d.-]/g, "");
+  if (isCurrency) {
+    cleaned = cleaned.replace(/[$,]/g, "");
+  }
 
-// Helper function to format interest rate
-const formatInterestRate = (value: number): string => {
-  if (isNaN(value) || value === 0) return "";
-  return value.toFixed(2);
-};
+  if (!allowNegative && cleaned.includes("-")) {
+    cleaned = cleaned.replace(/-/g, "");
+  } else if (allowNegative) {
+    const minusCount = (cleaned.match(/-/g) || []).length;
+    if (minusCount > 0 && cleaned.indexOf("-") !== 0) {
+      // If minus is present but not at the start, it's invalid or needs cleaning
+      // This logic keeps only the first char if it's '-' and removes others
+      cleaned =
+        (cleaned.startsWith("-") ? "-" : "") + cleaned.replace(/-/g, "");
+    } else if (minusCount > 1 && cleaned.indexOf("-") === 0) {
+      // If multiple minus signs e.g. "--5"
+      cleaned = "-" + cleaned.substring(1).replace(/-/g, "");
+    }
+  }
 
-// Helper function to get display value for currency fields
-const getCurrencyDisplayValue = (value: number): string => {
-  return value === 0 ? "" : formatNumberWithCommas(value);
-};
-
-// Helper function to get display value for interest rate fields
-const getInterestRateDisplayValue = (value: number): string => {
-  return value === 0 ? "" : formatInterestRate(value);
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? 0 : num;
 };
 
 export default function RefinanceForm({
   values,
   onChange,
 }: RefinanceFormProps) {
-  // Local state to track input values during editing
-  const [editingStates, setEditingStates] = useState<Record<string, string>>(
+  const [editingValues, setEditingValues] = useState<Record<string, string>>(
     {}
   );
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    if (name === "currentLoanInputMode") {
-      onChange(name, value as CurrentLoanInputMode);
+  const getDisplayValue = (
+    fieldName: keyof RefinanceFormValues,
+    type: "currency" | "interest" | "points" | "integer"
+  ): string => {
+    if (editingValues[fieldName] !== undefined) {
+      return editingValues[fieldName];
+    }
+    const numericValue = values[fieldName] as number;
+    if (fieldName === "cashOutAmount") {
+      // For cashOutAmount, format its absolute value, sign is handled outside
+      return formatForDisplay(Math.abs(numericValue), type);
+    }
+    return formatForDisplay(numericValue, type);
+  };
+
+  const handleNumericInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value: rawInputValue } = e.target as {
+      name: keyof RefinanceFormValues;
+      value: string;
+    };
+
+    const standardCurrencyField = [
+      "remainingBalance",
+      "currentMonthlyPayment",
+      "originalLoanAmount",
+      "costsAndFees",
+    ].includes(name);
+    const isCashOutField = name === "cashOutAmount";
+    // Non-currency, non-cashout fields will just store raw input in editingValues
+
+    // Parse the raw input to get the actual numeric value for the parent state
+    const numericValue = parseInputToNumber(
+      rawInputValue,
+      standardCurrencyField || isCashOutField,
+      isCashOutField
+    );
+    onChange(name, numericValue); // Update parent with the actual number
+
+    if (standardCurrencyField) {
+      if (rawInputValue === "") {
+        setEditingValues((prev) => ({ ...prev, [name]: "" }));
+        return;
+      }
+      // Try to format for live comma display
+      const numberPart = rawInputValue.replace(/[$,]/g, ""); // Remove existing dollar/commas for re-formatting
+
+      if (/^\d*\.?\d*$/.test(numberPart) || numberPart === ".") {
+        // Valid number structure or just a decimal point
+        const parts = numberPart.split(".");
+        const integerString = parts[0];
+        const decimalString = parts[1];
+
+        let formattedInteger = "";
+        if (integerString) {
+          if (integerString === "0" || /^0+$/.test(integerString)) {
+            formattedInteger = integerString; // Keep leading zeros as user types them before other digits
+          } else {
+            const parsedInt = parseInt(integerString, 10);
+            formattedInteger = isNaN(parsedInt)
+              ? ""
+              : parsedInt.toLocaleString("en-US");
+          }
+        } else if (numberPart === ".") {
+          formattedInteger = ".";
+        }
+
+        // If original integer part was just "0" and parsing/formatting made it empty (e.g. parseInt("0").toLocaleString might give issues if not handled)
+        // Ensure "0" is preserved if that's what user typed and it's the only integer part.
+        if (integerString === "0" && formattedInteger === "") {
+          formattedInteger = "0";
+        }
+
+        let result = formattedInteger;
+        if (decimalString !== undefined) {
+          // If there's a decimal part (even if empty after ".")
+          result += "." + decimalString;
+        }
+
+        // If the raw input was only "0" and the result is empty, ensure "0" is displayed.
+        if (rawInputValue === "0" && result === "") {
+          result = "0";
+        }
+
+        setEditingValues((prev) => ({ ...prev, [name]: result }));
+      } else {
+        // Not a simple number pattern (e.g. contains letters), keep raw input in editing state
+        setEditingValues((prev) => ({ ...prev, [name]: rawInputValue }));
+      }
     } else {
-      onChange(name, parseFloat(value) || 0);
+      // For cashOutAmount, interest, points, years, months: just store the raw input value.
+      // Their specific formatting or parsing is handled by getDisplayValue or onBlur.
+      setEditingValues((prev) => ({ ...prev, [name]: rawInputValue }));
     }
   };
 
-  const handleCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleNumericInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target as {
+      name: keyof RefinanceFormValues;
+      value: string;
+    };
 
-    // Handle cash out amount separately since it can be negative
-    if (name === "cashOutAmount") {
-      const isNegative = value.startsWith("-") || value.startsWith("($");
-      const cleanedValue = value.replace(/[^\d.]/g, "");
-      const numericValue = parseFloat(cleanedValue) || 0;
-      const finalValue = isNegative ? -Math.abs(numericValue) : numericValue;
-      onChange(name, finalValue);
-    } else {
-      const numericValue = parseFormattedNumber(value);
-      onChange(name, numericValue);
-    }
-  };
+    const isCurrencyField = [
+      "remainingBalance",
+      "currentMonthlyPayment",
+      "originalLoanAmount",
+      "costsAndFees",
+      "cashOutAmount",
+    ].includes(name);
+    const allowNegative = name === "cashOutAmount";
 
-  const handleInterestRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const finalNumericValue = parseInputToNumber(
+      value,
+      isCurrencyField,
+      allowNegative
+    );
+    onChange(name, finalNumericValue);
 
-    // Store the raw input value for display while editing
-    setEditingStates((prev) => ({ ...prev, [name]: value }));
-
-    // Allow empty string, numbers, and decimal points
-    if (value === "" || /^\d*\.?\d*$/.test(value)) {
-      const numericValue = parseFloat(value) || 0;
-      onChange(name, numericValue);
-    }
-  };
-
-  const handleInterestRateBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const { name } = e.target;
-    // Clear the editing state when input loses focus
-    setEditingStates((prev) => {
+    setEditingValues((prev) => {
       const newState = { ...prev };
       delete newState[name];
       return newState;
     });
   };
 
-  // Get the display value for interest rate inputs
-  const getInterestRateInputValue = (
-    fieldName: string,
-    numericValue: number
-  ): string => {
-    // If we're currently editing this field, use the raw input value
-    if (editingStates[fieldName] !== undefined) {
-      return editingStates[fieldName];
+  const handleSelectChange = (
+    e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    if (name === "currentLoanInputMode") {
+      onChange(name, value as CurrentLoanInputMode);
+    } else {
+      // For numeric select/inputs like terms, years, months
+      onChange(name, parseFloat(value) || 0);
     }
-    // Otherwise, use the formatted display value
-    return getInterestRateDisplayValue(numericValue);
   };
 
   return (
@@ -129,7 +218,7 @@ export default function RefinanceForm({
             <select
               name="currentLoanInputMode"
               value={values.currentLoanInputMode}
-              onChange={handleChange}
+              onChange={handleSelectChange}
               className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             >
               <option value={CurrentLoanInputMode.REMAINING_BALANCE}>
@@ -161,9 +250,10 @@ export default function RefinanceForm({
                     id="remainingBalance"
                     name="remainingBalance"
                     className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                    value={getCurrencyDisplayValue(values.remainingBalance)}
-                    onChange={handleCurrencyChange}
-                    placeholder="250,000"
+                    value={getDisplayValue("remainingBalance", "currency")}
+                    onChange={handleNumericInputChange}
+                    onBlur={handleNumericInputBlur}
+                    placeholder="e.g., 250,000"
                   />
                 </div>
               </div>
@@ -184,11 +274,10 @@ export default function RefinanceForm({
                     id="currentMonthlyPayment"
                     name="currentMonthlyPayment"
                     className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                    value={getCurrencyDisplayValue(
-                      values.currentMonthlyPayment
-                    )}
-                    onChange={handleCurrencyChange}
-                    placeholder="1,800"
+                    value={getDisplayValue("currentMonthlyPayment", "currency")}
+                    onChange={handleNumericInputChange}
+                    onBlur={handleNumericInputBlur}
+                    placeholder="e.g., 1,800"
                   />
                 </div>
               </div>
@@ -215,9 +304,10 @@ export default function RefinanceForm({
                     id="originalLoanAmount"
                     name="originalLoanAmount"
                     className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                    value={getCurrencyDisplayValue(values.originalLoanAmount)}
-                    onChange={handleCurrencyChange}
-                    placeholder="300,000"
+                    value={getDisplayValue("originalLoanAmount", "currency")}
+                    onChange={handleNumericInputChange}
+                    onBlur={handleNumericInputBlur}
+                    placeholder="e.g., 300,000"
                   />
                 </div>
               </div>
@@ -233,7 +323,7 @@ export default function RefinanceForm({
                   id="originalLoanTerm"
                   name="originalLoanTerm"
                   value={values.originalLoanTerm}
-                  onChange={handleChange}
+                  onChange={handleSelectChange}
                   className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="10">10 years</option>
@@ -252,14 +342,15 @@ export default function RefinanceForm({
                   <div>
                     <div className="relative rounded-md shadow-sm">
                       <input
-                        type="number"
+                        type="text"
                         id="timeRemainingYears"
                         name="timeRemainingYears"
                         className="block w-full pl-3 pr-16 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        value={values.timeRemainingYears}
-                        onChange={handleChange}
+                        value={getDisplayValue("timeRemainingYears", "integer")}
+                        onChange={handleNumericInputChange}
+                        onBlur={handleNumericInputBlur}
                         min="0"
-                        max={values.originalLoanTerm}
+                        max={values.originalLoanTerm.toString()}
                       />
                       <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                         <span className="text-gray-500 text-sm">years</span>
@@ -269,12 +360,16 @@ export default function RefinanceForm({
                   <div>
                     <div className="relative rounded-md shadow-sm">
                       <input
-                        type="number"
+                        type="text"
                         id="timeRemainingMonths"
                         name="timeRemainingMonths"
                         className="block w-full pl-3 pr-16 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        value={values.timeRemainingMonths}
-                        onChange={handleChange}
+                        value={getDisplayValue(
+                          "timeRemainingMonths",
+                          "integer"
+                        )}
+                        onChange={handleNumericInputChange}
+                        onBlur={handleNumericInputBlur}
                         min="0"
                         max="11"
                       />
@@ -302,13 +397,10 @@ export default function RefinanceForm({
                 id="currentInterestRate"
                 name="currentInterestRate"
                 className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                value={getInterestRateInputValue(
-                  "currentInterestRate",
-                  values.currentInterestRate
-                )}
-                onChange={handleInterestRateChange}
-                onBlur={handleInterestRateBlur}
-                placeholder="7.000"
+                value={getDisplayValue("currentInterestRate", "interest")}
+                onChange={handleNumericInputChange}
+                onBlur={handleNumericInputBlur}
+                placeholder="e.g., 7.00"
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                 <span className="text-gray-500">%</span>
@@ -333,7 +425,7 @@ export default function RefinanceForm({
                 id="newLoanTerm"
                 name="newLoanTerm"
                 value={values.newLoanTerm}
-                onChange={handleChange}
+                onChange={handleSelectChange}
                 className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="10">10 years</option>
@@ -357,13 +449,10 @@ export default function RefinanceForm({
                   id="newInterestRate"
                   name="newInterestRate"
                   className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  value={getInterestRateInputValue(
-                    "newInterestRate",
-                    values.newInterestRate
-                  )}
-                  onChange={handleInterestRateChange}
-                  onBlur={handleInterestRateBlur}
-                  placeholder="6.000"
+                  value={getDisplayValue("newInterestRate", "interest")}
+                  onChange={handleNumericInputChange}
+                  onBlur={handleNumericInputBlur}
+                  placeholder="e.g., 6.00"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                   <span className="text-gray-500">%</span>
@@ -387,10 +476,10 @@ export default function RefinanceForm({
                   id="points"
                   name="points"
                   className="block w-full pl-3 pr-12 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  value={getInterestRateInputValue("points", values.points)}
-                  onChange={handleInterestRateChange}
-                  onBlur={handleInterestRateBlur}
-                  placeholder="2.0"
+                  value={getDisplayValue("points", "points")}
+                  onChange={handleNumericInputChange}
+                  onBlur={handleNumericInputBlur}
+                  placeholder="e.g., 2.0"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                   <span className="text-gray-500">points</span>
@@ -417,9 +506,10 @@ export default function RefinanceForm({
                   id="costsAndFees"
                   name="costsAndFees"
                   className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  value={getCurrencyDisplayValue(values.costsAndFees)}
-                  onChange={handleCurrencyChange}
-                  placeholder="1,500"
+                  value={getDisplayValue("costsAndFees", "currency")}
+                  onChange={handleNumericInputChange}
+                  onBlur={handleNumericInputBlur}
+                  placeholder="e.g., 1,500"
                 />
               </div>
             </div>
@@ -437,25 +527,34 @@ export default function RefinanceForm({
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <span className="text-gray-500">
-                    {values.cashOutAmount < 0 ? "($" : "$"}
+                    {editingValues.cashOutAmount?.startsWith("-") ||
+                    (editingValues.cashOutAmount === undefined &&
+                      values.cashOutAmount < 0)
+                      ? "-"
+                      : ""}
+                    $
                   </span>
                 </div>
                 <input
                   type="text"
                   id="cashOutAmount"
                   name="cashOutAmount"
-                  className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  value={getCurrencyDisplayValue(
-                    Math.abs(values.cashOutAmount)
-                  )}
-                  onChange={handleCurrencyChange}
-                  placeholder="0"
+                  className={`block w-full pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                    editingValues.cashOutAmount?.startsWith("-") ||
+                    (editingValues.cashOutAmount === undefined &&
+                      values.cashOutAmount < 0)
+                      ? "pl-7"
+                      : "pl-6"
+                  }`}
+                  value={
+                    editingValues.cashOutAmount !== undefined
+                      ? editingValues.cashOutAmount.replace(/^-/, "")
+                      : getDisplayValue("cashOutAmount", "currency")
+                  }
+                  onChange={handleNumericInputChange}
+                  onBlur={handleNumericInputBlur}
+                  placeholder="e.g., 0"
                 />
-                {values.cashOutAmount < 0 && (
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500">)</span>
-                  </div>
-                )}
               </div>
               <p className="mt-1 text-xs text-gray-500">
                 Current value: {values.cashOutAmount < 0 ? "-" : ""}

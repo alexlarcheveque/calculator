@@ -4,13 +4,15 @@ import { formatCurrency } from "@/utils/refinanceCalculations";
 interface LoanComparisonDetailsProps {
   results: RefinanceResults;
   currentInterestRate: number;
+  newInterestRate: number;
 }
 
 export default function LoanComparisonDetails({
   results,
   currentInterestRate,
+  newInterestRate,
 }: LoanComparisonDetailsProps) {
-  const formatPercentage = (value: number, decimals: number = 3): string => {
+  const formatPercentage = (value: number, decimals: number = 2): string => {
     return `${value.toFixed(decimals)}%`;
   };
 
@@ -141,47 +143,26 @@ export default function LoanComparisonDetails({
             {/* Interest Rate/APR */}
             <tr className="bg-gray-25">
               <td className="border border-gray-300 px-4 py-3 font-medium text-gray-700">
-                Interest rate/APR
+                Interest rate
               </td>
               <td className="border border-gray-300 px-4 py-3 text-center">
-                {formatPercentage(currentInterestRate, 1)}
+                {formatPercentage(currentInterestRate)}
               </td>
               <td className="border border-gray-300 px-4 py-3 text-center">
-                {formatPercentage(results.newLoanAPR)}
-              </td>
-              <td className="border border-gray-300 px-4 py-3 text-center">
-                <span
-                  className={
-                    aprDifference > 0
-                      ? "text-green-600 font-medium"
-                      : "text-red-600 font-medium"
-                  }
-                >
-                  {formatDifference(-aprDifference, true)}
-                </span>
-              </td>
-            </tr>
-
-            {/* Total Monthly Payments */}
-            <tr>
-              <td className="border border-gray-300 px-4 py-3 font-medium text-gray-700">
-                Total monthly payments
-              </td>
-              <td className="border border-gray-300 px-4 py-3 text-center">
-                {formatCurrency(results.currentTotalRemainingPayments)}
-              </td>
-              <td className="border border-gray-300 px-4 py-3 text-center">
-                {formatCurrency(results.newTotalPayments)}
+                {formatPercentage(newInterestRate)}
               </td>
               <td className="border border-gray-300 px-4 py-3 text-center">
                 <span
                   className={
-                    results.totalCostSavings > 0
+                    currentInterestRate - newInterestRate > 0
                       ? "text-green-600 font-medium"
                       : "text-red-600 font-medium"
                   }
                 >
-                  {formatDifference(-results.totalCostSavings, false, true)}
+                  {formatDifference(
+                    -(currentInterestRate - newInterestRate),
+                    true
+                  )}
                 </span>
               </td>
             </tr>
@@ -210,6 +191,30 @@ export default function LoanComparisonDetails({
               </td>
             </tr>
 
+            {/* Total Monthly Payments */}
+            <tr>
+              <td className="border border-gray-300 px-4 py-3 font-medium text-gray-700">
+                Total monthly payments
+              </td>
+              <td className="border border-gray-300 px-4 py-3 text-center">
+                {formatCurrency(results.currentTotalRemainingPayments)}
+              </td>
+              <td className="border border-gray-300 px-4 py-3 text-center">
+                {formatCurrency(results.newTotalPayments)}
+              </td>
+              <td className="border border-gray-300 px-4 py-3 text-center">
+                <span
+                  className={
+                    results.totalCostSavings > 0
+                      ? "text-green-600 font-medium"
+                      : "text-red-600 font-medium"
+                  }
+                >
+                  {formatDifference(-results.totalCostSavings, false, true)}
+                </span>
+              </td>
+            </tr>
+
             {/* Cost + Points (Upfront) */}
             <tr>
               <td className="border border-gray-300 px-4 py-3 font-medium text-gray-700">
@@ -230,10 +235,10 @@ export default function LoanComparisonDetails({
             {results.netCashOut > 0 && (
               <tr className="bg-gray-25">
                 <td className="border border-gray-300 px-4 py-3 font-medium text-gray-700">
-                  Cash out
+                  Cash out (net)
                 </td>
                 <td className="border border-gray-300 px-4 py-3 text-center">
-                  $0.00
+                  —
                 </td>
                 <td className="border border-gray-300 px-4 py-3 text-center">
                   {formatCurrency(results.netCashOut)}
@@ -251,7 +256,7 @@ export default function LoanComparisonDetails({
                   Take home amount after cost/point
                 </td>
                 <td className="border border-gray-300 px-4 py-3 text-center">
-                  $0.00
+                  —
                 </td>
                 <td className="border border-gray-300 px-4 py-3 text-center">
                   {formatCurrency(
@@ -274,7 +279,7 @@ export default function LoanComparisonDetails({
               </td>
               <td className="border border-gray-300 px-4 py-3 text-center">
                 {results.breakEvenMonths > 0 && results.breakEvenMonths < 360
-                  ? `${results.breakEvenMonths} months`
+                  ? results.breakEvenMonthsFormatted
                   : "Not applicable"}
               </td>
               <td className="border border-gray-300 px-4 py-3 text-center">

@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from "react";
 import RefinanceForm from "@/components/refinance/RefinanceForm";
-import RefinanceSummary from "@/components/refinance/RefinanceSummary";
 import RefinanceCharts from "@/components/refinance/RefinanceCharts";
-import RefinanceComparisonTable from "@/components/refinance/RefinanceComparisonTable";
 import RefinanceFAQ from "@/components/refinance/RefinanceFAQ";
 import RefinanceInfo from "@/components/refinance/RefinanceInfo";
 import {
@@ -17,8 +15,9 @@ import {
   CurrentLoanInputMode,
 } from "@/types/refinance";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import LoanComparisonSummary from "./LoanComparisonSummary";
+import LoanComparisonSummary from "./RefinanceSummary";
 import LoanComparisonDetails from "./LoanComparisonDetails";
+import LoanBalanceChart from "./LoanBalanceChart";
 
 export default function RefinancePage() {
   const [formValues, setFormValues, isLoaded] =
@@ -189,15 +188,21 @@ export default function RefinancePage() {
               <LoanComparisonSummary
                 results={results}
                 currentInterestRate={formValues.currentInterestRate}
+                newInterestRate={formValues.newInterestRate}
               />
               <div className="space-y-8">
                 <LoanComparisonDetails
                   results={results}
                   currentInterestRate={formValues.currentInterestRate}
+                  newInterestRate={formValues.newInterestRate}
                 />
               </div>
-              <div>
-                <RefinanceCharts results={results} />
+              <div className="space-y-8">
+                <RefinanceCharts
+                  results={results}
+                  currentInterestRate={formValues.currentInterestRate}
+                  newInterestRate={formValues.newInterestRate}
+                />
               </div>
             </>
           )}

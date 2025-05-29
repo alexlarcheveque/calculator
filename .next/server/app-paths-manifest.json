@@ -1,4 +1,6 @@
 {
+  "/not-found": "app/not-found.js",
   "/refinance/page": "app/refinance/page.js",
+  "/loan/page": "app/loan/page.js",
   "/mortgage/page": "app/mortgage/page.js"
 }
