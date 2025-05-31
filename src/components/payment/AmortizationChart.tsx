@@ -115,7 +115,7 @@ export default function AmortizationChart({ data }: AmortizationChartProps) {
           labels: {
             usePointStyle: true,
             pointStyle: "circle",
-            padding: 20,
+            padding: 15,
           },
         },
         tooltip: {
@@ -142,6 +142,14 @@ export default function AmortizationChart({ data }: AmortizationChartProps) {
               return [];
             },
           },
+        },
+      },
+      layout: {
+        padding: {
+          top: 10,
+          bottom: 10,
+          left: 10,
+          right: 10,
         },
       },
       interaction: {

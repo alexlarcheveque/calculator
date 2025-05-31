@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import LoanForm from "@/components/loan/LoanForm";
 import LoanSummary from "@/components/loan/LoanSummary";
 import LoanCharts from "@/components/loan/LoanCharts";
@@ -97,17 +98,26 @@ export type LoanResult =
   | BondLoanResult;
 
 const LoanPage = () => {
-  const [loanType, setLoanType] = useState<LoanType>("amortized");
-  const [inputs, setInputs] = useState<Partial<LoanInput>>({
-    loanAmount: 100000,
-    loanTermYears: 10,
-    loanTermMonths: 0,
-    interestRate: 6,
-    compoundFrequency: "monthly",
-    payBackFrequency: "month",
-    predeterminedDueAmount: 100000,
-  });
-  const [results, setResults] = useState<LoanResult | null>(null);
+  const [loanType, setLoanType] = useLocalStorage<LoanType>(
+    "loan-calculator-type",
+    "amortized"
+  );
+  const [inputs, setInputs] = useLocalStorage<Partial<LoanInput>>(
+    "loan-calculator-inputs",
+    {
+      loanAmount: 100000,
+      loanTermYears: 10,
+      loanTermMonths: 0,
+      interestRate: 6,
+      compoundFrequency: "monthly",
+      payBackFrequency: "month",
+      predeterminedDueAmount: 100000,
+    }
+  );
+  const [results, setResults] = useLocalStorage<LoanResult | null>(
+    "loan-calculator-results",
+    null
+  );
 
   const handleInputChange = (field: keyof LoanInput, value: any) => {
     setInputs((prev) => ({ ...prev, [field]: value }));
@@ -412,6 +422,23 @@ const LoanPage = () => {
               <AmortizationTable
                 data={currentAmortizedResult.amortizationSchedule}
                 formatCurrency={formatCurrency}
+                paymentsPerYear={
+                  (currentLoanInput as AmortizedLoanInput).payBackFrequency
+                    ? {
+                        daily: 365,
+                        weekly: 52,
+                        biweekly: 26,
+                        halfmonth: 24,
+                        month: 12,
+                        quarter: 4,
+                        halfyear: 2,
+                        year: 1,
+                      }[
+                        (currentLoanInput as AmortizedLoanInput)
+                          .payBackFrequency
+                      ]
+                    : 12
+                }
               />
             </div>
           </div>
