@@ -74,7 +74,7 @@ export default function LoanCharts({
         ))}
       </div>
 
-      <div className="h-[400px] sm:h-[500px]">
+      <div className="w-full">
         {loanType === "amortized" && activeTab === "distribution" && (
           <PaymentDistributionChart
             key={`dist-amort-${JSON.stringify(results)}`}

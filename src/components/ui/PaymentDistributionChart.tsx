@@ -71,8 +71,8 @@ export default function PaymentDistributionChart({
           typeof window !== "undefined" && window.innerWidth < 768;
         const labelFontSize = isMobile ? 12 : 18;
         const amountFontSize = isMobile ? 18 : 28;
-        const labelOffset = isMobile ? 40 : 50;
-        const amountOffset = isMobile ? 20 : 15;
+        const labelOffset = isMobile ? 40 : 30;
+        const amountOffset = isMobile ? 20 : 0;
 
         // Draw label
         ctx.font = `500 ${labelFontSize}px system-ui`;
@@ -150,7 +150,7 @@ export default function PaymentDistributionChart({
   const plugins = centerTextPlugin ? [centerTextPlugin] : [];
 
   return (
-    <div className="w-full px-4 sm:px-0">
+    <div className="w-full h-96 px-4 sm:px-0">
       <div className="relative w-full max-w-sm mx-auto">
         <Doughnut data={chartData} options={options} plugins={plugins} />
       </div>

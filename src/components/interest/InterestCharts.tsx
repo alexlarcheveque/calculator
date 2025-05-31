@@ -52,7 +52,7 @@ export default function InterestCharts({
         </button>
       </div>
 
-      <div className="h-96">
+      <div>
         {activeTab === "breakdown" ? (
           <BreakdownPieChart results={results} />
         ) : (

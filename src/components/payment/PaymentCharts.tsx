@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { PaymentResults, PaymentAmortizationDataPoint } from "@/types/payment";
-import PaymentDistributionChart from "./PaymentDistributionChart";
-import AmortizationChart from "./AmortizationChart";
+import PaymentDistributionChart from "@/components/payment/PaymentDistributionChart";
+import AmortizationChart from "@/components/payment/AmortizationChart";
 
 interface PaymentChartsProps {
   results: PaymentResults;

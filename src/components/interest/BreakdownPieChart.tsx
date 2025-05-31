@@ -125,7 +125,7 @@ export default function BreakdownPieChart({ results }: BreakdownPieChartProps) {
   };
 
   return (
-    <div className="w-full h-72 md:h-80 mx-auto relative">
+    <div className="w-full md:h-80 mx-auto relative">
       <Doughnut data={data} options={options} />
       <div
         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none"

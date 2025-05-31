@@ -153,5 +153,9 @@ export default function AmortizationOverTimeChart({
     },
   };
 
-  return <Chart type="bar" options={options} data={chartData} />;
+  return (
+    <div className="h-96">
+      <Chart type="bar" options={options} data={chartData} />
+    </div>
+  );
 }
