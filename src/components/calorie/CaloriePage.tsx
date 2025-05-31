@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import CalorieForm from "@/components/calorie/CalorieForm";
 import CalorieSummary from "@/components/calorie/CalorieSummary";
 import CalorieCharts from "@/components/calorie/CalorieCharts";
+import MacroTable from "@/components/calorie/MacroTable";
 import FoodEnergyConverter from "@/components/calorie/FoodEnergyConverter";
 import FAQSection from "@/components/calorie/FAQSection";
 import {
@@ -20,11 +21,6 @@ import {
   UnitSystem,
   ResultUnit,
 } from "@/types/calorie";
-import MacroTable from "@/components/calorie/MacroTable";
-import CalorieBasics from "@/components/calorie/CalorieBasics";
-import CalorieStrategies from "@/components/calorie/CalorieStrategies";
-import CalorieTerms from "@/components/calorie/CalorieTerms";
-import CalorieFAQSection from "@/components/calorie/CalorieFAQSection";
 
 export default function CaloriePage() {
   const [formValues, setFormValues] = useState<CalorieFormValues>({
@@ -115,9 +111,19 @@ export default function CaloriePage() {
         <div className="lg:col-span-8 space-y-8">
           {results && (
             <>
-              <CalorieSummary results={results} />
-              <CalorieCharts results={results} />
-              <MacroTable results={results} />
+              <CalorieSummary
+                results={results}
+                resultUnit={formValues.resultUnit}
+              />
+              <CalorieCharts
+                results={results}
+                resultUnit={formValues.resultUnit}
+              />
+              <MacroTable
+                results={results}
+                resultUnit={formValues.resultUnit}
+                unitSystem={formValues.unitSystem}
+              />
             </>
           )}
 
@@ -129,15 +135,13 @@ export default function CaloriePage() {
         </div>
       </div>
 
-      {/* Info Cards Section */}
-      <div className="space-y-8 mb-16">
-        <CalorieBasics />
-        <CalorieStrategies />
-        <CalorieTerms />
+      {/* Food Energy Converter Section */}
+      <div className="mb-16">
+        <FoodEnergyConverter />
       </div>
 
       {/* FAQ Section */}
-      <CalorieFAQSection />
+      <FAQSection />
     </div>
   );
 }
