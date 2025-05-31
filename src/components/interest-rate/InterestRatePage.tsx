@@ -73,6 +73,24 @@ export default function InterestRatePage() {
 
   return (
     <div>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          Interest Rate Calculator
+        </h1>
+        <p className="text-lg text-gray-600 max-w-4xl">
+          Advanced interest rate calculator for reverse-engineering rates from
+          payment information. Discover the actual APR when you know loan
+          amount, monthly payment, and term length. Perfect for verifying dealer
+          financing quotes, comparing loan offers, and detecting rate markups.
+          Uses Newton-Raphson method for precise calculations. Essential for
+          auto loans, personal loans, and mortgage verification. Features
+          detailed amortization schedules, payment breakdowns, and rate analysis
+          to help you make informed borrowing decisions and negotiate better
+          loan terms.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">
@@ -90,6 +108,12 @@ export default function InterestRatePage() {
               />
               <AmortizationTable data={amortizationData} />
             </>
+          )}
+
+          {!results && (
+            <p className="text-center text-gray-500 lg:mt-20">
+              Enter loan details to calculate the interest rate automatically.
+            </p>
           )}
         </div>
       </div>

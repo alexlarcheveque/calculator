@@ -1,112 +1,290 @@
 "use client";
 
 import { useState } from "react";
+import FAQSection, { FAQItem } from "../ui/FAQSection";
 
-interface FAQItem {
-  question: string;
-  answer: string;
-}
-
-const faqData: FAQItem[] = [
+const incomeTaxFAQItems: FAQItem[] = [
   {
+    id: "how-accurate-tax-calculator",
     question: "How accurate is this income tax calculator?",
-    answer:
-      "This calculator provides estimates based on current federal tax brackets and standard deductions. Actual tax calculations may vary based on additional factors not included in this calculator, such as alternative minimum tax (AMT), additional Medicare tax, or specific tax situations. Always consult a tax professional for complex situations.",
+    answer: (
+      <>
+        <p className="mb-2">
+          This calculator provides reliable estimates based on current federal
+          tax brackets, standard deductions, and common tax credits. However,
+          actual tax calculations may vary due to:
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>Alternative Minimum Tax (AMT) considerations</li>
+          <li>Additional Medicare tax on high earners</li>
+          <li>Net Investment Income Tax (NIIT)</li>
+          <li>Complex deduction limitations and phase-outs</li>
+          <li>State-specific tax rules and credits</li>
+        </ul>
+        <p>
+          For complex tax situations or professional preparation, consult a
+          qualified tax professional.
+        </p>
+      </>
+    ),
   },
   {
-    question: "What's the difference between standard and itemized deductions?",
-    answer:
-      "The standard deduction is a fixed amount that reduces your taxable income, while itemized deductions are specific expenses you can deduct (like mortgage interest, charitable donations, state/local taxes). The calculator automatically uses whichever deduction method gives you the larger benefit.",
+    id: "standard-vs-itemized-deductions",
+    question: "Should I take the standard deduction or itemize?",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Standard Deduction (2024):</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>Single: $14,600</li>
+          <li>Married Filing Jointly: $29,200</li>
+          <li>Head of Household: $21,900</li>
+        </ul>
+        <p className="mb-2">
+          <strong>
+            Consider itemizing if your total deductions exceed the standard
+            deduction:
+          </strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>State/local taxes (SALT) up to $10,000</li>
+          <li>Mortgage interest and property taxes</li>
+          <li>Charitable donations</li>
+          <li>Medical expenses exceeding 7.5% of AGI</li>
+        </ul>
+      </>
+    ),
   },
   {
-    question: "What are tax credits and how do they work?",
-    answer:
-      "Tax credits directly reduce the amount of tax you owe, dollar for dollar. For example, a $1,000 tax credit reduces your tax bill by $1,000. This is different from deductions, which only reduce your taxable income. Common credits include the Child Tax Credit, Child and Dependent Care Credit, and Education Credits.",
+    id: "tax-credits-vs-deductions",
+    question: "What's the difference between tax credits and deductions?",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Tax Deductions:</strong> Reduce your taxable income. A $1,000
+          deduction saves you $220 in taxes if you're in the 22% bracket.
+        </p>
+        <p className="mb-2">
+          <strong>Tax Credits:</strong> Directly reduce your tax bill
+          dollar-for-dollar. A $1,000 credit saves you $1,000 in taxes.
+        </p>
+        <p className="mb-2">
+          <strong>Common Tax Credits:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>Child Tax Credit: $2,000 per qualifying child</li>
+          <li>Child and Dependent Care Credit: Up to $3,000</li>
+          <li>American Opportunity Tax Credit: Up to $2,500</li>
+          <li>Earned Income Tax Credit: Up to $7,430 (2024)</li>
+        </ul>
+      </>
+    ),
   },
   {
-    question: "What's the difference between effective and marginal tax rates?",
-    answer:
-      "Your marginal tax rate is the percentage of tax you pay on your last dollar of income - essentially the tax bracket you're in. Your effective tax rate is your total tax divided by your total income, representing the average rate you pay on all your income.",
+    id: "marginal-vs-effective-tax-rate",
+    question: "What's the difference between marginal and effective tax rates?",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Marginal Tax Rate:</strong> The tax rate on your last dollar
+          of income (your tax bracket). This determines how much tax you'll pay
+          on additional income.
+        </p>
+        <p className="mb-2">
+          <strong>Effective Tax Rate:</strong> Your total tax divided by your
+          total income. This represents your average tax rate across all income.
+        </p>
+        <p className="mb-2">
+          <strong>Example:</strong> $100,000 income with $18,000 tax bill:
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>Marginal rate: 22% (if in 22% bracket)</li>
+          <li>Effective rate: 18% ($18,000 ÷ $100,000)</li>
+        </ul>
+      </>
+    ),
   },
   {
-    question: "How is the Child Tax Credit calculated?",
-    answer:
-      "For 2024, the Child Tax Credit is $2,000 per qualifying child under 17. The credit begins to phase out for single filers with income over $200,000 and married filing jointly over $400,000. Up to $1,400 of the credit may be refundable.",
+    id: "what-income-to-include",
+    question: "What income should I include in my tax calculation?",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Include all taxable income:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>Wages, salaries, tips (Form W-2)</li>
+          <li>Interest income (Form 1099-INT)</li>
+          <li>Dividend income (Form 1099-DIV)</li>
+          <li>Capital gains (Form 1099-B)</li>
+          <li>Business/self-employment income</li>
+          <li>Rental income</li>
+          <li>Retirement distributions</li>
+        </ul>
+        <p className="mb-2">
+          <strong>Generally exclude:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>Municipal bond interest</li>
+          <li>Life insurance proceeds</li>
+          <li>Gifts and inheritances</li>
+          <li>Some Social Security benefits</li>
+        </ul>
+      </>
+    ),
   },
   {
-    question: "What income should I include in my calculation?",
-    answer:
-      "Include all taxable income such as wages, tips, business income, interest, dividends, capital gains, and other income reported on tax forms like W-2, 1099-INT, 1099-DIV, etc. Don't include non-taxable income like municipal bond interest or certain Social Security benefits.",
-  },
-  {
+    id: "salt-deduction-cap",
     question: "How does the SALT deduction cap work?",
-    answer:
-      "The State and Local Tax (SALT) deduction is capped at $10,000 for both single and married filing jointly taxpayers. This includes state income taxes, local income taxes, and property taxes combined. Any amount over $10,000 cannot be deducted.",
+    answer: (
+      <>
+        <p className="mb-2">
+          The State and Local Tax (SALT) deduction is capped at $10,000 for all
+          filing statuses through 2025.
+        </p>
+        <p className="mb-2">
+          <strong>SALT includes:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>State income taxes</li>
+          <li>Local income taxes</li>
+          <li>Property taxes on personal residence</li>
+          <li>State/local sales taxes (if elected instead of income tax)</li>
+        </ul>
+        <p>
+          High-tax states may see limited benefit from itemizing due to this
+          cap. Consider strategies like prepaying property taxes or timing state
+          tax payments.
+        </p>
+      </>
+    ),
   },
   {
-    question: "When should I use this calculator?",
-    answer:
-      "Use this calculator for tax planning, estimating quarterly payments, comparing tax scenarios, or getting a rough estimate of your tax liability. It's particularly useful for planning major financial decisions that could affect your taxes.",
+    id: "child-tax-credit-calculation",
+    question: "How is the Child Tax Credit calculated?",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>2024 Child Tax Credit:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>$2,000 per qualifying child under 17</li>
+          <li>$500 for other dependents (17-18, full-time students 19-24)</li>
+          <li>Up to $1,400 is refundable (Additional Child Tax Credit)</li>
+        </ul>
+        <p className="mb-2">
+          <strong>Phase-out thresholds:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>Single: Begins at $200,000 AGI</li>
+          <li>Married Filing Jointly: Begins at $400,000 AGI</li>
+          <li>Credit reduces by $50 for each $1,000 over threshold</li>
+        </ul>
+      </>
+    ),
   },
   {
-    question: "What if I'm married filing separately?",
-    answer:
-      "Married filing separately typically results in higher taxes than filing jointly, but may be beneficial in certain situations like when one spouse has significant medical expenses or miscellaneous deductions. The calculator supports this filing status with appropriate tax brackets and deduction limits.",
+    id: "quarterly-tax-payments",
+    question: "When should I make quarterly estimated tax payments?",
+    answer: (
+      <>
+        <p className="mb-2">
+          Make quarterly payments if you expect to owe $1,000 or more when you
+          file your return, and your withholding and credits don't cover at
+          least 90% of this year's tax or 100% of last year's tax.
+        </p>
+        <p className="mb-2">
+          <strong>2024 Quarterly Due Dates:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>Q1 2024: April 15, 2024</li>
+          <li>Q2 2024: June 17, 2024</li>
+          <li>Q3 2024: September 16, 2024</li>
+          <li>Q4 2024: January 15, 2025</li>
+        </ul>
+        <p>
+          Common situations requiring quarterly payments include self-employment
+          income, investment gains, rental income, or insufficient withholding.
+        </p>
+      </>
+    ),
   },
   {
-    question: "How do I handle business income and self-employment?",
-    answer:
-      "Business income from self-employment is subject to both income tax and self-employment tax (Social Security and Medicare). This calculator estimates the income tax portion. For complete self-employment tax calculations, consult a tax professional or use specialized business tax software.",
+    id: "business-income-self-employment",
+    question: "How do I handle business income and self-employment taxes?",
+    answer: (
+      <>
+        <p className="mb-2">
+          Self-employment income is subject to both income tax and
+          self-employment tax:
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>
+            <strong>Income Tax:</strong> Based on your regular tax brackets
+          </li>
+          <li>
+            <strong>Self-Employment Tax:</strong> 15.3% (12.4% Social Security +
+            2.9% Medicare)
+          </li>
+          <li>
+            <strong>Additional Medicare Tax:</strong> 0.9% on income over
+            $200,000 (single)
+          </li>
+        </ul>
+        <p className="mb-2">
+          <strong>Deductions available:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>50% of self-employment tax</li>
+          <li>Business expenses (home office, equipment, etc.)</li>
+          <li>Health insurance premiums (if self-employed)</li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    id: "tax-planning-strategies",
+    question: "What are some effective tax planning strategies?",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Income timing strategies:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>Defer income to lower-tax years</li>
+          <li>Accelerate deductions into higher-tax years</li>
+          <li>Harvest capital losses to offset gains</li>
+          <li>Consider Roth conversions in low-income years</li>
+        </ul>
+        <p className="mb-2">
+          <strong>Retirement planning:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>Maximize 401(k) contributions ($23,000 limit for 2024)</li>
+          <li>IRA contributions ($7,000 limit for 2024)</li>
+          <li>HSA contributions (triple tax advantage)</li>
+          <li>Consider traditional vs. Roth options</li>
+        </ul>
+      </>
+    ),
   },
 ];
 
-export default function FAQSection() {
-  const [openItems, setOpenItems] = useState<number[]>([]);
-
-  const toggleItem = (index: number) => {
-    setOpenItems((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-    );
-  };
-
+export default function IncomeTaxFAQSection() {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-        Frequently Asked Questions
-      </h2>
-
-      <div className="space-y-4">
-        {faqData.map((item, index) => (
-          <div key={index} className="border border-gray-200 rounded-lg">
-            <button
-              className="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset rounded-lg"
-              onClick={() => toggleItem(index)}
-            >
-              <span className="font-medium text-gray-800">{item.question}</span>
-              <span className="text-gray-500 ml-2">
-                {openItems.includes(index) ? "−" : "+"}
-              </span>
-            </button>
-
-            {openItems.includes(index) && (
-              <div className="px-4 pb-3 text-gray-600 leading-relaxed">
-                {item.answer}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <h3 className="font-medium text-blue-800 mb-2">Disclaimer</h3>
-        <p className="text-sm text-blue-700">
-          This calculator is for estimation purposes only and should not be used
-          as a substitute for professional tax advice. Tax laws are complex and
-          subject to change. For accurate tax planning and preparation, please
-          consult with a qualified tax professional or use official IRS
-          resources.
-        </p>
-      </div>
-    </div>
+    <FAQSection
+      items={incomeTaxFAQItems}
+      title="Frequently Asked Questions About Income Tax Calculations"
+      allowMultipleOpen={false}
+      includeSchema={true}
+      schemaId="income-tax-calculator-faq-schema"
+      relatedLinks={[
+        { href: "/salary", label: "Salary Calculator" },
+        { href: "/investment", label: "Investment Calculator" },
+        { href: "/retirement", label: "Retirement Calculator" },
+        { href: "/sales-tax", label: "Sales Tax Calculator" },
+      ]}
+    />
   );
 }

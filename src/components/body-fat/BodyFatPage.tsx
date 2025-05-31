@@ -153,6 +153,21 @@ export default function BodyFatPage() {
 
   return (
     <div>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          Body Fat Calculator (US Navy Method & Body Composition Analysis)
+        </h1>
+        <p className="text-lg text-gray-600 max-w-4xl">
+          Calculate your body fat percentage using the proven US Navy method
+          with circumference measurements. Determine body composition, lean body
+          mass, and fat mass based on scientifically validated formulas for men
+          and women. Features comprehensive body fat analysis, fitness category
+          classifications, health risk assessments, and progress tracking for
+          weight management and fitness goals.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

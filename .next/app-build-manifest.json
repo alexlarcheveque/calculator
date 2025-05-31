@@ -21,10 +21,40 @@
       "static/chunks/main-app.js",
       "static/chunks/app/loan/page.js"
     ],
-    "/not-found": [
+    "/retirement/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/not-found.js"
+      "static/chunks/app/retirement/page.js"
+    ],
+    "/auto-loan/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/auto-loan/page.js"
+    ],
+    "/interest/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/interest/page.js"
+    ],
+    "/investment/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/investment/page.js"
+    ],
+    "/payment/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/payment/page.js"
+    ],
+    "/amortization/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/amortization/page.js"
+    ],
+    "/income-tax/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/income-tax/page.js"
     ]
   }
 }

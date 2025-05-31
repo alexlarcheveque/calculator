@@ -91,6 +91,22 @@ export default function IdealWeightPage() {
 
   return (
     <div>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          Ideal Weight Calculator (Healthy Weight Range & BMI Analysis)
+        </h1>
+        <p className="text-lg text-gray-600 max-w-4xl">
+          Calculate your ideal body weight using multiple medical formulas
+          including Robinson, Miller, Devine, Hamwi, and healthy BMI ranges.
+          Determine optimal weight targets for health, fitness goals, and
+          medical assessments based on height, age, and gender. Features
+          comprehensive weight ranges, visual charts, and expert recommendations
+          for achieving and maintaining healthy body weight through scientific
+          calculations.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

@@ -1,6 +1,7 @@
 {
-  "/not-found": "app/not-found.js",
-  "/refinance/page": "app/refinance/page.js",
-  "/loan/page": "app/loan/page.js",
-  "/mortgage/page": "app/mortgage/page.js"
+  "/interest/page": "app/interest/page.js",
+  "/investment/page": "app/investment/page.js",
+  "/payment/page": "app/payment/page.js",
+  "/amortization/page": "app/amortization/page.js",
+  "/income-tax/page": "app/income-tax/page.js"
 }

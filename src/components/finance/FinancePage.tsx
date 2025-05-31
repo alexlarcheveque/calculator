@@ -162,6 +162,23 @@ export default function FinancePage() {
 
   return (
     <div>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          Finance Calculator (Time Value of Money)
+        </h1>
+        <p className="text-lg text-gray-600 max-w-4xl">
+          Advanced Time Value of Money calculator for comprehensive financial
+          analysis. Calculate Present Value (PV), Future Value (FV), Periodic
+          Payment (PMT), Number of Periods (N), and Interest Rate (I/Y) using
+          professional TVM formulas. Features multiple calculation modes,
+          customizable compounding frequencies, and payment timing options.
+          Perfect for investment analysis, loan calculations, retirement
+          planning, and business valuation. Essential tool for finance students,
+          professionals, and anyone making time-sensitive financial decisions.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

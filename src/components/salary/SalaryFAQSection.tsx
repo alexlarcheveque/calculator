@@ -1,148 +1,303 @@
 "use client";
 
 import { useState } from "react";
+import FAQSection, { FAQItem } from "../ui/FAQSection";
 
-interface FAQItem {
-  question: string;
-  answer: string;
-}
-
-const faqData: FAQItem[] = [
+const salaryFAQItems: FAQItem[] = [
   {
+    id: "salary-vs-wage-difference",
     question: "What is the difference between salary and wage?",
-    answer:
-      "A salary is normally paid on a regular basis, and the amount normally does not fluctuate based on the quality or quantity of work performed. An employee's salary is commonly defined as an annual figure in an employment contract. A wage is best associated with employee compensation based on the number of hours worked multiplied by an hourly rate of pay. Wage-earners tend to be non-exempt, which means they are subject to overtime wage regulations.",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Salary:</strong> A fixed annual compensation paid regardless
+          of hours worked. Salaried employees typically receive the same
+          paycheck each period and are often exempt from overtime pay.
+        </p>
+        <p className="mb-2">
+          <strong>Wage:</strong> Hourly compensation based on actual hours
+          worked. Wage earners are typically non-exempt and entitled to overtime
+          pay for hours worked beyond 40 per week.
+        </p>
+        <p>
+          Salaried positions often include benefits and more job security, while
+          wage positions provide direct pay-for-time-worked with overtime
+          opportunities.
+        </p>
+      </>
+    ),
   },
   {
-    question: "How are unadjusted and adjusted salaries calculated?",
-    answer:
-      "Using a $30 hourly rate, an average of eight hours worked each day, and 260 working days a year (52 weeks multiplied by 5 working days a week), the annual unadjusted salary can be calculated as: $30 × 8 × (260) = $62,400. The adjusted annual salary accounts for holidays and vacation days: $30 × 8 × (260 - 25) = $56,400, using 10 holidays and 15 paid vacation days a year.",
+    id: "how-calculate-annual-salary",
+    question: "How do I calculate my annual salary from hourly wage?",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Basic Formula:</strong> Hourly Rate × Hours per Week × 52
+          weeks
+        </p>
+        <p className="mb-2">
+          <strong>Example:</strong> $25/hour × 40 hours/week × 52 weeks =
+          $52,000 annually
+        </p>
+        <p className="mb-2">
+          <strong>Adjusted Calculation:</strong> Account for unpaid vacation and
+          holidays:
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>Calculate total working days: 260 days (52 weeks × 5 days)</li>
+          <li>Subtract vacation/holidays: 260 - 25 = 235 working days</li>
+          <li>Adjusted salary: $25 × 8 hours × 235 days = $47,000</li>
+        </ul>
+      </>
+    ),
   },
   {
-    question: "What are the different pay frequencies?",
-    answer:
-      "The most common pay period frequencies are: Daily (pays every day), Weekly (pays once each week), Bi-Weekly (pays every two weeks, 26 times a year), Semi-Monthly (pays twice each month, usually on the 15th and last day), Monthly (pays once per month), and Quarterly (pays every three months).",
+    id: "pay-frequency-explained",
+    question:
+      "What are the different pay frequencies and how do they affect my budget?",
+    answer: (
+      <>
+        <p className="mb-2">Common pay frequencies include:</p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>
+            <strong>Weekly:</strong> 52 paychecks per year, easier budgeting
+          </li>
+          <li>
+            <strong>Bi-weekly:</strong> 26 paychecks per year, most common
+          </li>
+          <li>
+            <strong>Semi-monthly:</strong> 24 paychecks per year, fixed dates
+          </li>
+          <li>
+            <strong>Monthly:</strong> 12 paychecks per year, largest amounts
+          </li>
+        </ul>
+        <p>
+          Bi-weekly pay results in two "extra" paychecks per year (26 vs 24),
+          which can be helpful for savings goals or debt payments.
+        </p>
+      </>
+    ),
   },
   {
-    question: "What factors influence salary in the U.S.?",
-    answer:
-      "Several factors influence salary including: Age (peak income years are typically 40-65), Education (higher education generally leads to higher salaries), Experience (more experience typically means higher pay), Race and Ethnicity, Gender (there is a documented gender pay gap), Industry (different industries pay different wages), Location (cost of living and local market conditions), and other miscellaneous factors like company performance and hazard pay.",
+    id: "factors-affecting-salary",
+    question: "What factors most influence salary levels?",
+    answer: (
+      <>
+        <p className="mb-2">Key salary determinants include:</p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>
+            <strong>Education:</strong> Advanced degrees can increase earning
+            potential by 25-50%
+          </li>
+          <li>
+            <strong>Experience:</strong> Each year of experience typically adds
+            3-5% to salary
+          </li>
+          <li>
+            <strong>Location:</strong> High cost-of-living areas often pay
+            20-40% more
+          </li>
+          <li>
+            <strong>Industry:</strong> Tech, finance, and healthcare typically
+            offer higher salaries
+          </li>
+          <li>
+            <strong>Company size:</strong> Larger companies often pay more but
+            smaller companies may offer equity
+          </li>
+          <li>
+            <strong>Skills:</strong> In-demand technical and soft skills command
+            premium pay
+          </li>
+        </ul>
+      </>
+    ),
   },
   {
-    question: "How many federal holidays are there in the U.S.?",
-    answer:
-      "There are 11 federal holidays in the U.S.: New Year's Day, Martin Luther King Jr. Day, Washington's Birthday, Memorial Day, Juneteenth National Independence Day, Independence Day, Labor Day, Columbus Day, Veterans Day, Thanksgiving Day, and Christmas Day. However, companies typically allow time off for 6 to 11 holidays, and only federal government employees benefit from all federal holidays.",
+    id: "how-many-federal-holidays",
+    question:
+      "How many federal holidays should I include in salary calculations?",
+    answer: (
+      <>
+        <p className="mb-2">
+          The U.S. has 11 federal holidays, but most private employers observe
+          6-10 holidays:
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>New Year's Day, Memorial Day, Independence Day, Labor Day</li>
+          <li>Thanksgiving Day, Christmas Day</li>
+          <li>
+            Martin Luther King Jr. Day, Presidents Day, Columbus Day, Veterans
+            Day
+          </li>
+          <li>Juneteenth (newest federal holiday)</li>
+        </ul>
+        <p>
+          For salary calculations, use 8-10 holidays as a reasonable estimate
+          for most employers.
+        </p>
+      </>
+    ),
   },
   {
-    question: "What is PTO (Paid Time Off)?",
-    answer:
-      "PTO provides a pool of days that an employee can use for personal leave, sick leave, or vacation days without having to distinguish the reasons for taking time off. In the U.S., the Fair Labor Standards Act (FLSA) does not require employers to give their employees any vacation time off, paid or unpaid. The average American gets around 10 days of PTO a year, with the bottom 25% of wage earners only getting an average of four paid vacation days a year.",
+    id: "paid-time-off-calculation",
+    question: "How much paid time off (PTO) is typical?",
+    answer: (
+      <>
+        <p className="mb-2">
+          PTO varies significantly by employer and experience level:
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>
+            <strong>Entry level:</strong> 10-15 days per year
+          </li>
+          <li>
+            <strong>Mid-career:</strong> 15-20 days per year
+          </li>
+          <li>
+            <strong>Senior level:</strong> 20-25+ days per year
+          </li>
+          <li>
+            <strong>European companies:</strong> Often 25-30+ days
+          </li>
+        </ul>
+        <p>
+          The U.S. has no federal requirement for paid vacation, unlike most
+          developed countries.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "gross-vs-net-salary",
+    question: "What's the difference between gross and net salary?",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Gross Salary:</strong> Your total compensation before any
+          deductions.
+        </p>
+        <p className="mb-2">
+          <strong>Net Salary:</strong> Your take-home pay after deductions
+          including:
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>Federal and state income taxes (varies by bracket)</li>
+          <li>Social Security tax (6.2% up to $160,200 in 2023)</li>
+          <li>Medicare tax (1.45% on all income)</li>
+          <li>Health insurance premiums</li>
+          <li>Retirement contributions (401k, etc.)</li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    id: "salary-negotiation-timing",
+    question: "When should I negotiate my salary?",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Best times to negotiate:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>During job offer discussions (before accepting)</li>
+          <li>Annual performance reviews</li>
+          <li>After completing major projects or achievements</li>
+          <li>When taking on additional responsibilities</li>
+          <li>After obtaining new certifications or degrees</li>
+        </ul>
+        <p>
+          Research market rates beforehand and document your achievements to
+          support your request.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "salary-increase-strategies",
+    question: "How can I increase my salary over time?",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Proven strategies for salary growth:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>
+            <strong>Skill development:</strong> Learn in-demand technical skills
+          </li>
+          <li>
+            <strong>Performance excellence:</strong> Consistently exceed
+            expectations
+          </li>
+          <li>
+            <strong>Network building:</strong> Join professional associations
+          </li>
+          <li>
+            <strong>Education advancement:</strong> Pursue relevant
+            certifications or degrees
+          </li>
+          <li>
+            <strong>Job changes:</strong> Strategic moves can increase salary
+            10-20%
+          </li>
+          <li>
+            <strong>Leadership roles:</strong> Manage teams or projects
+          </li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    id: "freelance-vs-employee-salary",
+    question: "How does freelance income compare to employee salary?",
+    answer: (
+      <>
+        <p className="mb-2">
+          When comparing freelance rates to salary, consider:
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>
+            <strong>Self-employment taxes:</strong> Additional 7.65% for Social
+            Security/Medicare
+          </li>
+          <li>
+            <strong>No benefits:</strong> Health insurance, retirement, PTO are
+            your responsibility
+          </li>
+          <li>
+            <strong>Business expenses:</strong> Equipment, software, home office
+            costs
+          </li>
+          <li>
+            <strong>Income instability:</strong> Irregular work and payment
+            schedules
+          </li>
+          <li>
+            <strong>Higher hourly rates:</strong> Typically 25-50% higher to
+            compensate for above factors
+          </li>
+        </ul>
+      </>
+    ),
   },
 ];
 
 export default function SalaryFAQSection() {
-  const [openItems, setOpenItems] = useState<number[]>([]);
-
-  const toggleItem = (index: number) => {
-    setOpenItems((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-    );
-  };
-
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">
-        Frequently Asked Questions
-      </h2>
-
-      <div className="space-y-4">
-        {faqData.map((item, index) => (
-          <div key={index} className="border border-gray-200 rounded-lg">
-            <button
-              className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
-              onClick={() => toggleItem(index)}
-            >
-              <span className="font-medium text-gray-800">{item.question}</span>
-              <svg
-                className={`w-5 h-5 text-gray-500 transform transition-transform ${
-                  openItems.includes(index) ? "rotate-180" : ""
-                }`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            {openItems.includes(index) && (
-              <div className="px-6 pb-4">
-                <p className="text-gray-700 leading-relaxed">{item.answer}</p>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-8 p-6 bg-blue-50 rounded-lg">
-        <h3 className="text-lg font-semibold text-blue-800 mb-4">
-          How to Increase Your Salary
-        </h3>
-        <ul className="space-y-3 text-sm text-gray-700">
-          <li className="flex items-start">
-            <span className="font-semibold text-blue-600 mr-2">Education:</span>
-            <span>
-              Pursue higher education, certifications, or specialized training
-              relevant to your field.
-            </span>
-          </li>
-          <li className="flex items-start">
-            <span className="font-semibold text-blue-600 mr-2">
-              Experience:
-            </span>
-            <span>
-              Stay within your industry long-term to build expertise and
-              demonstrate commitment.
-            </span>
-          </li>
-          <li className="flex items-start">
-            <span className="font-semibold text-blue-600 mr-2">Network:</span>
-            <span>
-              Join professional organizations and trade associations to connect
-              with others in your field.
-            </span>
-          </li>
-          <li className="flex items-start">
-            <span className="font-semibold text-blue-600 mr-2">
-              Performance:
-            </span>
-            <span>
-              Excel in performance reviews and highlight your achievements to
-              justify salary increases.
-            </span>
-          </li>
-          <li className="flex items-start">
-            <span className="font-semibold text-blue-600 mr-2">Negotiate:</span>
-            <span>
-              Don't be afraid to negotiate your salary, especially during
-              performance reviews or when starting a new job.
-            </span>
-          </li>
-          <li className="flex items-start">
-            <span className="font-semibold text-blue-600 mr-2">
-              Change Jobs:
-            </span>
-            <span>
-              Sometimes changing jobs can result in a 10% or more increase in
-              salary.
-            </span>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <FAQSection
+      items={salaryFAQItems}
+      title="Frequently Asked Questions About Salary Calculations"
+      allowMultipleOpen={false}
+      includeSchema={true}
+      schemaId="salary-calculator-faq-schema"
+      relatedLinks={[
+        { href: "/income-tax", label: "Income Tax Calculator" },
+        { href: "/investment", label: "Investment Calculator" },
+        { href: "/retirement", label: "Retirement Calculator" },
+        { href: "/mortgage", label: "Mortgage Calculator" },
+      ]}
+    />
   );
 }

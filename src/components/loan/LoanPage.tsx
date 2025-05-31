@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import LoanForm from "@/components/loan/LoanForm";
 import LoanSummary from "@/components/loan/LoanSummary";
 import LoanCharts from "@/components/loan/LoanCharts";
-import AmortizationTable, {
-  AmortizationData,
-} from "@/components/loan/AmortizationTable";
-import LoanInfoSection from "@/components/loan/LoanInfoSection";
+import AmortizationTable from "@/components/ui/AmortizationTable";
+import GeneralLoanInformation from "./GeneralLoanInformation";
+import LoanTypes from "./LoanTypes";
+import LoanBasics from "./LoanBasics";
+import SecuredVsUnsecuredLoans from "./SecuredVsUnsecuredLoans";
+import LoanFAQSection from "./FAQSection";
 
 export type LoanType = "amortized" | "deferred" | "bond";
 
@@ -41,13 +43,23 @@ export interface AmortizedLoanInput {
   payBackFrequency: AmortizedPaybackFrequency;
 }
 
+// Define the type for individual entries in the amortization schedule
+export interface ScheduleEntry {
+  paymentNumber: number;
+  paymentAmount: number;
+  principalPaid: number;
+  interestPaid: number;
+  totalInterest: number;
+  remainingBalance: number;
+}
+
 export interface AmortizedLoanResult {
   paymentPerPeriod: number;
   totalPaymentsValue: number;
   numberOfPayments: number;
   totalInterest: number;
   principal: number;
-  amortizationSchedule: AmortizationData[];
+  amortizationSchedule: ScheduleEntry[]; // Use the defined type
 }
 
 export interface DeferredLoanInput {
@@ -85,7 +97,6 @@ export type LoanResult =
   | BondLoanResult;
 
 const LoanPage = () => {
-
   const [loanType, setLoanType] = useState<LoanType>("amortized");
   const [inputs, setInputs] = useState<Partial<LoanInput>>({
     loanAmount: 100000,
@@ -97,7 +108,6 @@ const LoanPage = () => {
     predeterminedDueAmount: 100000,
   });
   const [results, setResults] = useState<LoanResult | null>(null);
-  const [showAmortizationTable, setShowAmortizationTable] = useState(false);
 
   const handleInputChange = (field: keyof LoanInput, value: any) => {
     setInputs((prev) => ({ ...prev, [field]: value }));
@@ -134,7 +144,6 @@ const LoanPage = () => {
   };
 
   const calculateLoan = () => {
-    setShowAmortizationTable(false);
     const termYears =
       (inputs.loanTermYears || 0) + (inputs.loanTermMonths || 0) / 12;
     const annualInterestRateInput = (inputs.interestRate || 0) / 100;
@@ -216,7 +225,7 @@ const LoanPage = () => {
       const totalInterest =
         totalPaymentsValue > 0 ? totalPaymentsValue - loanAmount : 0;
 
-      const schedule: AmortizationData[] = [];
+      const schedule: ScheduleEntry[] = []; // Use the defined type
       if (loanAmount > 0 && numberOfPayments > 0) {
         let balance = loanAmount;
         let totalInterestPaidRunning = 0;
@@ -351,6 +360,21 @@ const LoanPage = () => {
 
   return (
     <div className="space-y-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          Loan Calculator
+        </h1>
+        <p className="text-lg text-gray-600 max-w-4xl">
+          Calculate loan payments, total interest costs, and amortization
+          schedules for amortized, deferred, and bond loans. Compare different
+          loan terms and interest rates to find the best financing option for
+          your needs. Understand how compound interest affects your payments and
+          see detailed payment breakdowns over time. Essential for personal
+          loans, business financing, and investment planning decisions.
+        </p>
+      </div>
+
       <div className="flex justify-center mb-6 border-b">
         {(["amortized", "deferred", "bond"] as LoanType[]).map((type) => (
           <button
@@ -380,38 +404,11 @@ const LoanPage = () => {
           {results && (
             <>
               <LoanSummary loanType={loanType} results={results} />
-              <LoanCharts loanType={loanType} results={results} />
-              {loanType === "amortized" &&
-                currentAmortizedResult?.amortizationSchedule &&
-                currentAmortizedResult.amortizationSchedule.length > 0 && (
-                  <div className="text-center mt-4">
-                    <button
-                      onClick={() =>
-                        setShowAmortizationTable(!showAmortizationTable)
-                      }
-                      className="text-blue-600 hover:text-blue-800 font-semibold py-2 px-4 rounded inline-flex items-center"
-                    >
-                      {showAmortizationTable ? "Hide" : "View"} Amortization
-                      Table
-                      <svg
-                        className={`ml-2 w-4 h-4 transition-transform duration-200 ease-in-out ${
-                          showAmortizationTable ? "rotate-180" : ""
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M19 9l-7 7-7-7"
-                        ></path>
-                      </svg>
-                    </button>
-                  </div>
-                )}
+              <LoanCharts
+                loanType={loanType}
+                inputs={currentLoanInput}
+                results={results}
+              />
             </>
           )}
           {!results && (
@@ -422,16 +419,26 @@ const LoanPage = () => {
         </div>
       </div>
 
-      {showAmortizationTable &&
-        loanType === "amortized" &&
+      {loanType === "amortized" &&
         currentAmortizedResult?.amortizationSchedule &&
         currentAmortizedResult.amortizationSchedule.length > 0 && (
-          <AmortizationTable
-            data={currentAmortizedResult.amortizationSchedule}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 mt-8">
+            <div className="md:col-start-2 md:col-span-2 space-y-4">
+              <AmortizationTable
+                data={currentAmortizedResult.amortizationSchedule}
+                formatCurrency={formatCurrency}
+              />
+            </div>
+          </div>
         )}
 
-      <LoanInfoSection />
+      <div className="space-y-8">
+        <LoanTypes />
+        <LoanBasics />
+        <SecuredVsUnsecuredLoans />
+      </div>
+
+      <LoanFAQSection />
     </div>
   );
 };

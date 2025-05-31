@@ -4,6 +4,10 @@ import { useState, useEffect } from "react";
 import InflationForm from "@/components/inflation/InflationForm";
 import InflationSummary from "@/components/inflation/InflationSummary";
 import InflationCharts from "@/components/inflation/InflationCharts";
+import InflationBasics from "@/components/inflation/InflationBasics";
+import EconomicImpacts from "@/components/inflation/EconomicImpacts";
+import ProtectionStrategies from "@/components/inflation/ProtectionStrategies";
+import InflationFAQSection from "@/components/inflation/FAQSection";
 import {
   calculateInflationWithCPI,
   calculateForwardInflation,
@@ -14,7 +18,6 @@ import {
   InflationResults,
   InflationCalculatorType,
 } from "@/types/inflation";
-import FAQSection from "@/components/inflation/FAQSection";
 
 export default function InflationPage() {
   const [formValues, setFormValues] = useState<InflationFormValues>({
@@ -91,6 +94,19 @@ export default function InflationPage() {
 
   return (
     <div>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          Inflation Calculator
+        </h1>
+        <p className="text-lg text-gray-600 max-w-4xl">
+          Calculate how inflation affects purchasing power over time using real CPI data or projected rates. 
+          Understand how much your money will be worth in the future, what past dollar amounts equal today, 
+          or plan for inflation in your financial goals. Essential for retirement planning, investment decisions, 
+          and understanding the real value of money across different time periods.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">
@@ -112,8 +128,15 @@ export default function InflationPage() {
         </div>
       </div>
 
+      {/* Info Cards Section */}
+      <div className="space-y-8 mb-16">
+        <InflationBasics />
+        <EconomicImpacts />
+        <ProtectionStrategies />
+      </div>
+
       {/* FAQ Section */}
-      <FAQSection />
+      <InflationFAQSection />
     </div>
   );
 }

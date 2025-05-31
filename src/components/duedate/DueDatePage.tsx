@@ -5,7 +5,7 @@ import DueDateForm from "@/components/duedate/DueDateForm";
 import DueDateSummary from "@/components/duedate/DueDateSummary";
 import PregnancyChart from "@/components/duedate/PregnancyChart";
 import MilestonesTable from "@/components/duedate/MilestonesTable";
-import DueDateFAQ from "@/components/duedate/DueDateFAQ";
+import FAQSection from "./FAQSection";
 import {
   calculateDueDate,
   getPregnancyMilestones,
@@ -99,6 +99,23 @@ export default function DueDatePage() {
 
   return (
     <div>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          Due Date Calculator (Pregnancy Due Date, LMP, Ultrasound & IVF Dating)
+        </h1>
+        <p className="text-lg text-gray-600 max-w-4xl">
+          Calculate your pregnancy due date with our comprehensive due date
+          calculator using multiple methods: last menstrual period (LMP),
+          conception date, ultrasound measurements, and IVF transfer dates.
+          Features accurate gestational age tracking, pregnancy milestones
+          timeline, trimester breakdown, and fetal development calendar.
+          Essential for pregnancy planning, prenatal care scheduling, and
+          understanding your baby's development journey from conception to
+          delivery.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">
@@ -118,7 +135,7 @@ export default function DueDatePage() {
       </div>
 
       {/* FAQ Section */}
-      <DueDateFAQ />
+      <FAQSection />
     </div>
   );
 }

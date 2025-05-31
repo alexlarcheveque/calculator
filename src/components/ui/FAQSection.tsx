@@ -44,8 +44,6 @@ export default function FAQSection({
   includeSchema = false,
   schemaId = "faq-schema",
   className = "",
-  disclaimer,
-  relatedLinks,
 }: FAQSectionProps) {
   const [openItems, setOpenItems] = useState<number[]>([]);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -127,33 +125,6 @@ export default function FAQSection({
           </div>
         ))}
       </div>
-
-      {disclaimer && (
-        <div className="mt-8 p-4 bg-blue-50 rounded-lg">{disclaimer}</div>
-      )}
-
-      {relatedLinks && relatedLinks.length > 0 && (
-        <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-          <h3 className="text-lg font-medium text-blue-800 mb-2">
-            Related Calculators
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {relatedLinks.map((link, index) => (
-              <span key={index} className="flex items-center">
-                <a
-                  href={link.href}
-                  className="text-blue-600 hover:text-blue-800 underline"
-                >
-                  {link.label}
-                </a>
-                {index < relatedLinks.length - 1 && (
-                  <span className="text-gray-400 ml-2">|</span>
-                )}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
