@@ -12,9 +12,10 @@ export default function LoanCalculatorRoute() {
     <div className="container mx-auto p-4">
       <header className="text-center mb-8">
         <h1 className="text-4xl font-bold text-blue-600">Loan Calculator</h1>
-        <p className="text-lg text-gray-700">
-          A versatile tool for various loan types including amortized, deferred
-          payment, and bonds.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate payments, interest, and amortization schedules for amortized
+          loans, deferred payment loans, and bonds. Versatile tool for all loan
+          types and payment scenarios.
         </p>
       </header>
       <LoanPage />

@@ -53,22 +53,6 @@ export default function BMIPage() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          BMI Calculator (Body Mass Index)
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Calculate your Body Mass Index (BMI) with our comprehensive calculator
-          supporting both metric and imperial units. Determine your BMI
-          category, understand health risk factors, and get personalized
-          insights based on age and gender. Features BMI Prime and Ponderal
-          Index calculations for more accurate body composition assessment.
-          Essential tool for health monitoring, fitness planning, and medical
-          evaluations.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

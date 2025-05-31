@@ -12,14 +12,10 @@ export default function TimeCalculatorRoute() {
     <div className="container mx-auto p-4">
       <header className="text-center mb-8">
         <h1 className="text-4xl font-bold text-blue-600">Time Calculator</h1>
-        <p className="text-lg text-gray-700 mb-4">
-          This is an online javascript time calculator. You can add or subtract
-          time values, calculate time from dates, and parse time expressions.
-        </p>
-        <p className="text-sm text-gray-600">
-          Add or subtract time values in days, hours, minutes, and seconds.
-          Calculate new dates and times, or use expressions for complex
-          calculations.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Add or subtract time values in days, hours, minutes, and seconds with
+          support for complex time expressions. Calculate new dates and times
+          with precision for scheduling and planning.
         </p>
       </header>
       <TimePage />

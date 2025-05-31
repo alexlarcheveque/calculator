@@ -14,15 +14,10 @@ export default function ConcreteCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Concrete Calculator
         </h1>
-        <p className="text-lg text-gray-700 mb-4">
-          The Concrete Calculator estimates the volume and weight of concrete
-          necessary to cover a given area. Purchasing slightly more concrete
-          than the estimated result can reduce the probability of having
-          insufficient concrete.
-        </p>
-        <p className="text-sm text-gray-600">
-          Calculate concrete requirements for slabs, footings, columns, curbs,
-          stairs, and more with support for multiple units and bag calculations.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate concrete volume and weight requirements for construction
+          projects including slabs, footings, columns, and stairs. Supports
+          multiple shapes, units, and bag calculations.
         </p>
       </header>
       <ConcretePage />

@@ -96,10 +96,10 @@ export default function RefinanceCalculatorRoute() {
       />
       <div className="container mx-auto p-4">
         <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-blue-600 mb-4">
+          <h1 className="text-4xl font-bold text-blue-600">
             Refinance Calculator
           </h1>
-          <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+          <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
             Our comprehensive calculator helps you compare your current loan
             with new refinancing options to evaluate potential savings, cash-out
             opportunities, and overall benefits.

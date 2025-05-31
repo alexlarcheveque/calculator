@@ -12,10 +12,10 @@ export default function SalaryCalculatorRoute() {
     <div className="container mx-auto p-4">
       <header className="text-center mb-8">
         <h1 className="text-4xl font-bold text-blue-600">Salary Calculator</h1>
-        <p className="text-lg text-gray-700">
-          Convert salary amounts to their corresponding values based on payment
-          frequency. Results include unadjusted figures and adjusted figures
-          that account for vacation days and holidays per year.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Convert salary amounts between hourly, daily, weekly, and annual pay
+          frequencies with adjustments for holidays and vacation days. Compare
+          different payment schedules and understand your true compensation.
         </p>
       </header>
       <SalaryPage />

@@ -134,11 +134,10 @@ export default function MortgageCalculatorRoute() {
           <h1 className="text-4xl font-bold text-blue-600 mb-4">
             Mortgage Calculator
           </h1>
-          <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-            Calculate your monthly mortgage payments, view detailed amortization
-            schedules, and explore different loan scenarios with our
-            comprehensive mortgage calculator. Includes property taxes,
-            insurance, and HOA fees for accurate estimates.
+          <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+            Calculate monthly mortgage payments, amortization schedules, and
+            total costs including property taxes and insurance. Get accurate
+            estimates for your home loan with detailed payment breakdowns.
           </p>
         </header>
         <MortgagePage />

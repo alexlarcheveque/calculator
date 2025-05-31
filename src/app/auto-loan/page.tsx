@@ -14,9 +14,10 @@ export default function AutoLoanCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Auto Loan Calculator
         </h1>
-        <p className="text-lg text-gray-700">
-          Estimate your monthly car payments and total loan cost with
-          adjustments for taxes, fees, and trade-ins.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate auto loan payments, total costs, and amortization schedules
+          with adjustments for taxes, fees, and trade-ins. Essential for car
+          buyers comparing financing options and loan terms.
         </p>
       </header>
       <AutoLoanPage />

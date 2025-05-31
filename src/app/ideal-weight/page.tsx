@@ -14,12 +14,10 @@ export default function IdealWeightCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Ideal Weight Calculator
         </h1>
-        <p className="text-lg text-gray-700 mt-4 max-w-3xl mx-auto">
-          The Ideal Weight Calculator computes ideal body weight (IBW) ranges
-          based on height, gender, and age. The idea of finding the IBW using a
-          formula has been sought after by many experts for a long time.
-          Currently, there persist several popular formulas, and our Ideal
-          Weight Calculator provides their results for side-to-side comparisons.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate your ideal body weight using popular formulas including
+          Robinson, Miller, Devine, and Hamwi. Compare results with healthy BMI
+          ranges for comprehensive weight assessment.
         </p>
       </header>
       <IdealWeightPage />

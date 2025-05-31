@@ -14,14 +14,10 @@ export default function ScientificCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Scientific Calculator
         </h1>
-        <p className="text-lg text-gray-700 mb-4">
-          This is an online javascript scientific calculator. You can click the
-          buttons or type to perform calculations as you would on a physical
-          calculator.
-        </p>
-        <p className="text-sm text-gray-600">
-          Features trigonometric functions, logarithms, exponentials, memory
-          operations, and full keyboard support.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Comprehensive online scientific calculator with trigonometric
+          functions, logarithms, exponentials, and memory operations. Features
+          full keyboard support for efficient calculations.
         </p>
       </header>
       <CalculatorPage />

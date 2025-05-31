@@ -14,10 +14,10 @@ export default function InflationCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Inflation Calculator
         </h1>
-        <p className="text-lg text-gray-700">
-          Calculate the equivalent value of the U.S. dollar in any month from
-          1925 to 2025. Calculations are based on the average Consumer Price
-          Index (CPI) data for all urban consumers in the U.S.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate the equivalent purchasing power of money over time using
+          U.S. CPI data or custom inflation rates. Track how inflation affects
+          dollar values from 1925 to 2025.
         </p>
       </header>
       <InflationPage />

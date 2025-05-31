@@ -14,14 +14,8 @@ export default function FractionCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Fraction Calculator
         </h1>
-        <p className="text-lg text-gray-700 mb-4">
-          Below are multiple fraction calculators capable of addition,
-          subtraction, multiplication, division, simplification, and conversion
-          between fractions and decimals.
-        </p>
-        <p className="text-sm text-gray-600">
-          Fields above the solid black line represent the numerator, while
-          fields below represent the denominator.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Perform fraction addition, subtraction, multiplication, division, simplification, and conversion between fractions and decimals. Multiple calculators for comprehensive fraction operations.
         </p>
       </header>
       <FractionPage />

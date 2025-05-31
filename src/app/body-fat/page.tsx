@@ -14,10 +14,10 @@ export default function BodyFatCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Body Fat Calculator
         </h1>
-        <p className="text-lg text-gray-700">
-          Estimate your body fat percentage using the U.S. Navy Method and BMI
-          method. Get detailed analysis of your body composition and health
-          recommendations.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate your body fat percentage using the U.S. Navy Method and BMI
+          method with detailed body composition analysis. Get ideal body fat
+          ranges and personalized health recommendations.
         </p>
       </header>
       <BodyFatPage />

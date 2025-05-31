@@ -52,23 +52,6 @@ export default function CompoundInterestPage() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Compound Interest Calculator
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Calculate compound interest growth with our comprehensive calculator.
-          Compare different compounding frequencies (daily, monthly, quarterly,
-          annual), analyze the power of exponential growth, and understand
-          effective annual rates (APY vs APR). Features the Rule of 72 for
-          doubling time estimates, continuous compounding calculations, and
-          real-world examples. Essential for savings planning, investment growth
-          projections, debt payoff strategies, and understanding the time value
-          of money for long-term financial success.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">
@@ -105,15 +88,10 @@ export default function CompoundInterestPage() {
 
           {!results && (
             <p className="text-center text-gray-500 lg:mt-20">
-              Enter valid values to see compound interest calculations.
+              Enter investment details to calculate compound interest.
             </p>
           )}
         </div>
-      </div>
-
-      {/* Compound Interest Growth Example */}
-      <div className="mb-16">
-        <CompoundInterestExample />
       </div>
 
       {/* Info Cards Section */}

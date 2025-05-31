@@ -14,13 +14,10 @@ export default function StandardDeviationCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Standard Deviation Calculator
         </h1>
-        <p className="text-lg text-gray-700 mb-4">
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
           Calculate standard deviation, variance, mean, sum, and margin of error
-          for your data set.
-        </p>
-        <p className="text-sm text-gray-600">
-          Please provide numbers separated by commas to calculate statistical
-          measures.
+          for your data set. Essential statistical tool for data analysis and
+          research applications.
         </p>
       </header>
       <StandardDeviationPage />

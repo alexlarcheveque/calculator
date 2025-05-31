@@ -12,11 +12,10 @@ export default function PaceCalculatorRoute() {
     <div className="container mx-auto p-4">
       <header className="text-center mb-8">
         <h1 className="text-4xl font-bold text-blue-600">Pace Calculator</h1>
-        <p className="text-lg text-gray-700">
-          Use the following calculator to estimate the pace for a variety of
-          activities, including running, walking, and biking. The calculator can
-          also be used to estimate the time taken or distance traveled with a
-          given pace and time or distance.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate pace, time, and distance for running, walking, and biking
+          activities. Features multipoint pace calculator, pace converter, and
+          finish time estimator with world record comparisons.
         </p>
       </header>
       <PacePage />

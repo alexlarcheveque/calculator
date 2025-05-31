@@ -14,9 +14,10 @@ export default function InterestRateCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Interest Rate Calculator
         </h1>
-        <p className="text-lg text-gray-700">
-          Determine real interest rates on loans with fixed terms and monthly
-          payments.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate the interest rate on loans with fixed terms and monthly
+          payments. Find real interest rates when only payment information is
+          available for accurate loan analysis.
         </p>
       </header>
       <InterestRatePage />

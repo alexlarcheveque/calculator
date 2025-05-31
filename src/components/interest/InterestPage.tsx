@@ -304,23 +304,6 @@ const InterestPage = () => {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Interest Calculator
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Advanced interest calculator for comprehensive financial planning.
-          Calculate compound interest with regular contributions, compare
-          different compounding frequencies, and analyze the impact of taxes and
-          inflation on your returns. Features multiple contribution options
-          (monthly, annual), contribution timing analysis (beginning vs end),
-          and detailed accumulation schedules. Essential for savings goals,
-          investment growth projections, retirement planning, and understanding
-          the true power of compound interest over time.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

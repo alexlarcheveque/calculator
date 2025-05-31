@@ -14,14 +14,10 @@ export default function IncomeTaxCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Income Tax Calculator
         </h1>
-        <p className="text-lg text-gray-700 mt-2">
-          Free online income tax calculator to estimate U.S federal tax refund
-          or owed amount for both salary earners and independent contractors.
-        </p>
-        <p className="text-sm text-gray-600 mt-1">
-          The Income Tax Calculator estimates the refund or potential owed
-          amount on a federal tax return. It is mainly intended for residents of
-          the U.S. and is based on the tax brackets of 2024 and 2025.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate U.S. federal tax refunds or owed amounts for 2024 and 2025
+          tax years. Supports both salary earners and independent contractors
+          with accurate tax brackets and deductions.
         </p>
       </header>
       <IncomeTaxPage />

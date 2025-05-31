@@ -60,22 +60,6 @@ export default function AutoLoanPage() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Auto Loan Calculator
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Calculate auto loan payments, total interest costs, and amortization
-          schedules for new and used car purchases. Compare financing options,
-          down payment scenarios, and loan terms to find the best auto financing
-          deal. Factor in trade-in value, taxes, fees, and cash incentives to
-          see your total monthly payment and loan costs. Essential for car
-          buyers, refinancing decisions, and comparing dealership vs. bank
-          financing options.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

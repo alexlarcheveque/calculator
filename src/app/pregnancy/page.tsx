@@ -14,9 +14,10 @@ export default function PregnancyCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Pregnancy Calculator
         </h1>
-        <p className="text-lg text-gray-700">
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
           Calculate your due date, track pregnancy progress, and view important
-          milestones based on various pregnancy dating methods.
+          milestones based on various pregnancy dating methods. Supports
+          multiple calculation methods for accurate pregnancy tracking.
         </p>
       </header>
       <PregnancyPage />
