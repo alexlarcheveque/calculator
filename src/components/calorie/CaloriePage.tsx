@@ -100,6 +100,22 @@ export default function CaloriePage() {
 
   return (
     <div>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          Calorie Calculator (Daily Calorie Needs)
+        </h1>
+        <p className="text-lg text-gray-600 max-w-4xl">
+          Calculate your daily calorie needs with our comprehensive calculator
+          using multiple BMR formulas (Mifflin-St Jeor, Harris-Benedict,
+          Katch-McArdle). Determine calories for weight loss, maintenance, or
+          muscle gain based on your age, gender, height, weight, and activity
+          level. Features macronutrient distribution, food energy conversion,
+          and personalized recommendations for healthy weight management and
+          fitness goals.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

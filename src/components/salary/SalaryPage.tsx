@@ -4,9 +4,12 @@ import { useState, useEffect } from "react";
 import SalaryForm from "@/components/salary/SalaryForm";
 import SalarySummary from "@/components/salary/SalarySummary";
 import SalaryCharts from "@/components/salary/SalaryCharts";
+import SalaryBasics from "@/components/salary/SalaryBasics";
+import SalaryFactors from "@/components/salary/SalaryFactors";
+import SalaryNegotiation from "@/components/salary/SalaryNegotiation";
+import SalaryFAQSection from "@/components/salary/SalaryFAQSection";
 import { calculateSalary } from "@/utils/salaryCalculations";
 import { SalaryFormValues, SalaryResults, PayFrequency } from "@/types/salary";
-import SalaryFAQSection from "@/components/salary/SalaryFAQSection";
 
 export default function SalaryPage() {
   const [formValues, setFormValues] = useState<SalaryFormValues>({
@@ -52,6 +55,20 @@ export default function SalaryPage() {
 
   return (
     <div>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          Salary Calculator
+        </h1>
+        <p className="text-lg text-gray-600 max-w-4xl">
+          Convert between hourly wages and annual salaries with precision.
+          Calculate adjusted pay accounting for holidays and vacation time.
+          Compare different pay frequencies and understand the impact of work
+          schedules on your total compensation. Perfect for salary negotiations,
+          job comparisons, and career planning.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">
@@ -66,7 +83,20 @@ export default function SalaryPage() {
               <SalaryCharts results={results} />
             </>
           )}
+
+          {!results && (
+            <p className="text-center text-gray-500 lg:mt-20">
+              Enter salary details to see calculations and comparisons.
+            </p>
+          )}
         </div>
+      </div>
+
+      {/* Info Cards Section */}
+      <div className="space-y-8 mb-16">
+        <SalaryBasics />
+        <SalaryFactors />
+        <SalaryNegotiation />
       </div>
 
       {/* FAQ Section */}

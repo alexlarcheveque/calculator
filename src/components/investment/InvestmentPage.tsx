@@ -5,6 +5,9 @@ import InvestmentForm from "@/components/investment/InvestmentForm";
 import InvestmentSummary from "@/components/investment/InvestmentSummary";
 import InvestmentCharts from "@/components/investment/InvestmentCharts";
 import AccumulationTable from "@/components/investment/AccumulationTable";
+import InvestmentBasics from "@/components/investment/InvestmentBasics";
+import CompoundInterest from "@/components/investment/CompoundInterest";
+import InvestmentStrategy from "@/components/investment/InvestmentStrategy";
 import FAQSection from "@/components/investment/FAQSection";
 import {
   calculateInvestment,
@@ -178,11 +181,14 @@ export default function InvestmentPage() {
           Investment Calculator
         </h1>
         <p className="text-lg text-gray-600 max-w-4xl">
-          The Investment Calculator can be used to calculate a specific
-          parameter for an investment plan. The tabs represent the desired
-          parameter to be found. For example, to calculate the return rate
-          needed to reach an investment goal with particular inputs, click the
-          'Return Rate' tab.
+          Comprehensive investment calculator for portfolio planning and wealth
+          building. Calculate future value, required returns, time horizons, and
+          contribution amounts with compound interest projections. Analyze
+          investment growth scenarios for stocks, bonds, retirement accounts,
+          and savings goals. Features multiple calculation modes including lump
+          sum investing, dollar-cost averaging, and regular contributions.
+          Essential for retirement planning, college savings, and long-term
+          financial goal achievement.
         </p>
       </div>
 
@@ -214,92 +220,15 @@ export default function InvestmentPage() {
         </div>
       </div>
 
+      {/* Info Cards Section */}
+      <div className="space-y-8 mb-16">
+        <InvestmentBasics />
+        <CompoundInterest />
+        <InvestmentStrategy />
+      </div>
+
       {/* FAQ Section */}
       <FAQSection />
-
-      {/* Educational Content */}
-      <div className="mt-16 bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">
-          Understanding Investment Calculations
-        </h2>
-
-        <div className="prose max-w-none text-gray-700">
-          <p className="mb-4">
-            Investing is the act of using money to make more money. The
-            Investment Calculator can help determine one of many different
-            variables concerning investments with a fixed rate of return.
-          </p>
-
-          <h3 className="text-xl font-semibold mb-3 text-gray-800">
-            Variables Involved
-          </h3>
-          <p className="mb-4">
-            For any typical financial investment, there are several crucial
-            elements that make up the investment:
-          </p>
-
-          <ul className="list-disc pl-6 mb-6 space-y-2">
-            <li>
-              <strong>Return rate</strong> – This is what matters most to many
-              investors. It appears as a percentage and is used to compare the
-              attractiveness of various types of financial investments.
-            </li>
-            <li>
-              <strong>Starting amount</strong> – Sometimes called the principal,
-              this is the amount present at the inception of the investment.
-            </li>
-            <li>
-              <strong>End amount</strong> – The desired amount at the end of the
-              investment period.
-            </li>
-            <li>
-              <strong>Investment length</strong> – The duration of the
-              investment. Generally, longer investments allow for more
-              compounding and potentially greater rewards.
-            </li>
-            <li>
-              <strong>Additional contribution</strong> – Regular contributions
-              during the life of an investment will result in greater
-              accumulated returns and a higher end value.
-            </li>
-          </ul>
-
-          <h3 className="text-xl font-semibold mb-3 text-gray-800">
-            The Power of Compound Interest
-          </h3>
-          <p className="mb-4">
-            Compound interest is often called the "eighth wonder of the world"
-            because of its powerful effect on investment growth. When you earn
-            interest on both your original investment and previously earned
-            interest, your money grows exponentially rather than linearly. The
-            frequency of compounding (how often interest is calculated and added
-            to your account) can significantly impact your returns over time.
-          </p>
-
-          <h3 className="text-xl font-semibold mb-3 text-gray-800">
-            Important Considerations
-          </h3>
-          <p className="mb-4">
-            While this calculator provides valuable estimates, remember that
-            actual investment returns can vary significantly due to market
-            volatility, economic conditions, and other factors. It's important
-            to:
-          </p>
-
-          <ul className="list-disc pl-6 mb-6 space-y-2">
-            <li>Diversify your investments to reduce risk</li>
-            <li>Consider the impact of inflation on your purchasing power</li>
-            <li>
-              Account for taxes, which can significantly affect your actual
-              returns
-            </li>
-            <li>Review and adjust your investment strategy regularly</li>
-            <li>
-              Consult with a qualified financial advisor for personalized advice
-            </li>
-          </ul>
-        </div>
-      </div>
     </div>
   );
 }

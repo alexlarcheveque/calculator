@@ -74,14 +74,16 @@ export function calculateRefinance(
   const currentTotalRemainingInterest =
     currentTotalRemainingPayments - currentLoanRemainingBalance;
 
-  // Calculate new loan amount (remaining balance + cash out + closing costs)
-  const pointsCost = (points / 100) * currentLoanRemainingBalance;
+  // Calculate new loan amount (remaining balance + cash out)
+  // Points are calculated on the base loan amount, but closing costs are paid separately
+  const baseLoanAmount = currentLoanRemainingBalance + cashOutAmount;
+  const pointsCost = (points / 100) * baseLoanAmount;
   const totalClosingCosts = pointsCost + costsAndFees;
-  const newLoanAmount =
-    currentLoanRemainingBalance + cashOutAmount + totalClosingCosts;
+  const newLoanAmount = baseLoanAmount; // Closing costs paid separately, not rolled into loan
   const netCashOut = cashOutAmount - totalClosingCosts;
 
   // Calculate new loan monthly payment
+  // Payment is calculated on the loan amount (base amount, since closing costs are paid separately)
   const newMonthlyInterestRate = newInterestRate / 100 / 12;
   const newTotalPayments = newLoanTerm * 12;
 
@@ -97,7 +99,7 @@ export function calculateRefinance(
     newMonthlyPayment = newLoanAmount / newTotalPayments;
   }
 
-  // Calculate APR for new loan
+  // Calculate APR for new loan (considers upfront costs but loan amount doesn't include them)
   const newLoanAPR = calculateAPR(
     newLoanAmount,
     newMonthlyPayment,
@@ -120,9 +122,7 @@ export function calculateRefinance(
   let breakEvenMonths = 0;
   if (monthlyPaymentDifference < 0) {
     // Only calculate break-even if new payment is lower
-    breakEvenMonths = Math.ceil(
-      totalClosingCosts / Math.abs(monthlyPaymentDifference)
-    );
+    breakEvenMonths = totalClosingCosts / Math.abs(monthlyPaymentDifference);
   }
 
   // Calculate time analysis
@@ -161,11 +161,13 @@ export function calculateRefinance(
     pointsCost,
     totalClosingCosts,
     netCashOut,
+    cashOutAmount,
 
     monthlyPaymentDifference,
     totalInterestSavings,
     totalCostSavings,
     breakEvenMonths,
+    breakEvenMonthsFormatted: `${breakEvenMonths.toFixed(1)} months`,
 
     timeToPayOffCurrent,
     timeToPayOffNew,

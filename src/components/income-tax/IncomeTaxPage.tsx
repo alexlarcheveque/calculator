@@ -4,7 +4,10 @@ import { useState, useEffect } from "react";
 import IncomeTaxForm from "@/components/income-tax/IncomeTaxForm";
 import IncomeTaxSummary from "@/components/income-tax/IncomeTaxSummary";
 import IncomeTaxCharts from "@/components/income-tax/IncomeTaxCharts";
-import FAQSection from "@/components/income-tax/FAQSection";
+import TaxBasics from "@/components/income-tax/TaxBasics";
+import DeductionsCredits from "@/components/income-tax/DeductionsCredits";
+import TaxPlanning from "@/components/income-tax/TaxPlanning";
+import IncomeTaxFAQSection from "@/components/income-tax/FAQSection";
 import {
   calculateIncomeTax,
   calculateTaxBreakdown,
@@ -99,6 +102,20 @@ export default function IncomeTaxPage() {
 
   return (
     <div>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          Income Tax Calculator
+        </h1>
+        <p className="text-lg text-gray-600 max-w-4xl">
+          Calculate your federal income tax liability with precision. Estimate
+          taxes owed or refund expected based on your income, filing status,
+          deductions, and credits. Compare standard vs. itemized deductions,
+          understand tax brackets, and plan your tax strategy. Updated for 2024
+          tax year with current rates and thresholds.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">
@@ -113,11 +130,25 @@ export default function IncomeTaxPage() {
               <IncomeTaxCharts results={results} breakdown={breakdown} />
             </>
           )}
+
+          {!results && (
+            <p className="text-center text-gray-500 lg:mt-20">
+              Enter your income and tax information to calculate your federal
+              tax liability.
+            </p>
+          )}
         </div>
       </div>
 
+      {/* Info Cards Section */}
+      <div className="space-y-8 mb-16">
+        <TaxBasics />
+        <DeductionsCredits />
+        <TaxPlanning />
+      </div>
+
       {/* FAQ Section */}
-      <FAQSection />
+      <IncomeTaxFAQSection />
     </div>
   );
 }

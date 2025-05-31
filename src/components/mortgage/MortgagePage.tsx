@@ -16,24 +16,33 @@ import {
   CalculatorType,
 } from "@/types/mortgage";
 import FAQSection from "@/components/mortgage/FAQSection";
+import MortgageBasics from "@/components/mortgage/MortgageBasics";
+import MortgageQualification from "@/components/mortgage/MortgageQualification";
+import MortgageRateTips from "@/components/mortgage/MortgageRateTips";
+import MortgageFAQSection from "@/components/mortgage/FAQSection";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export default function MortgagePage() {
-  const [formValues, setFormValues] = useState<MortgageFormValues>({
-    calculatorType: CalculatorType.FIXED_30,
-    homeValue: 400000,
-    downPayment: 80000,
-    loanTerm: 30,
-    interestRate: 5.75,
-    propertyTax: 3000,
-    homeInsurance: 1500,
-    hoa: 0,
-  });
+  const [formValues, setFormValues] = useLocalStorage<MortgageFormValues>(
+    "mortgageFormValues",
+    {
+      calculatorType: CalculatorType.FIXED_30,
+      homeValue: 400000,
+      downPayment: 80000,
+      loanTerm: 30,
+      interestRate: 5.75,
+      propertyTax: 3000,
+      homeInsurance: 1500,
+      hoa: 0,
+    }
+  );
 
   const [results, setResults] = useState<MortgageResults | null>(null);
   const [amortizationData, setAmortizationData] = useState<
     AmortizationDataPoint[]
   >([]);
 
+  // Calculate mortgage results whenever form values change
   useEffect(() => {
     const {
       homeValue,
@@ -71,18 +80,37 @@ export default function MortgagePage() {
   }, [formValues]);
 
   const handleInputChange = (name: string, value: number) => {
-    const newValues = { ...formValues, [name]: value };
+    setFormValues((prevValues) => {
+      const newValues = { ...prevValues, [name]: value };
 
-    // Ensure down payment isn't greater than home value
-    if (name === "downPayment" && value > formValues.homeValue) {
-      newValues.downPayment = formValues.homeValue;
-    }
+      // Ensure down payment isn't greater than home value
+      if (name === "downPayment" && value > prevValues.homeValue) {
+        newValues.downPayment = prevValues.homeValue;
+      }
 
-    setFormValues(newValues);
+      return newValues;
+    });
   };
+
+  console.log("amortization data", amortizationData);
 
   return (
     <div>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          Mortgage Calculator
+        </h1>
+        <p className="text-lg text-gray-600 max-w-4xl">
+          Calculate monthly mortgage payments, total interest costs, and
+          amortization schedules for any home loan. Compare 15-year vs 30-year
+          mortgages, determine affordability based on your income, and
+          understand how down payments and interest rates affect your monthly
+          housing costs. Essential for home buyers, refinancing decisions, and
+          mortgage planning with detailed payment breakdowns and charts.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">
@@ -104,8 +132,15 @@ export default function MortgagePage() {
         </div>
       </div>
 
+      {/* Info Sections */}
+      <div className="space-y-8">
+        <MortgageBasics />
+        <MortgageQualification />
+        <MortgageRateTips />
+      </div>
+
       {/* FAQ Section */}
-      <FAQSection />
+      <MortgageFAQSection />
     </div>
   );
 }

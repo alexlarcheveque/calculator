@@ -1,33 +1,179 @@
 import { MortgageFormValues } from "@/types/mortgage";
 import { formatCurrency } from "@/utils/mortgageCalculations";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface MortgageFormProps {
   values: MortgageFormValues;
   onChange: (name: string, value: number) => void;
 }
 
+// Utility functions for currency formatting
+const formatNumberWithCommas = (value: number): string => {
+  if (isNaN(value) || value === 0) return "";
+  return value.toLocaleString("en-US");
+};
+
+const parseFormattedNumber = (value: string): number => {
+  // Remove commas and parse as float
+  const cleanValue = value.replace(/,/g, "");
+  const parsed = parseFloat(cleanValue);
+  return isNaN(parsed) ? 0 : parsed;
+};
+
 export default function MortgageForm({ values, onChange }: MortgageFormProps) {
   const [downPaymentInputMode, setDownPaymentInputMode] = useState<
     "absolute" | "percentage"
   >("absolute");
 
+  // State to track formatted display values for currency inputs
+  const [formattedValues, setFormattedValues] = useState({
+    homeValue: formatNumberWithCommas(values.homeValue),
+    downPayment: formatNumberWithCommas(values.downPayment),
+    propertyTax: formatNumberWithCommas(values.propertyTax),
+    homeInsurance: formatNumberWithCommas(values.homeInsurance),
+    hoa: formatNumberWithCommas(values.hoa),
+  });
+
+  // State to track the percentage input separately to handle empty states
+  const [percentageInputValue, setPercentageInputValue] = useState<string>(
+    () => {
+      return values.homeValue > 0 && values.downPayment > 0
+        ? ((values.downPayment / values.homeValue) * 100).toFixed(2)
+        : "";
+    }
+  );
+
+  // Sync formatted values when props change (e.g., when switching calculators or resetting)
+  useEffect(() => {
+    setFormattedValues({
+      homeValue: formatNumberWithCommas(values.homeValue),
+      downPayment: formatNumberWithCommas(values.downPayment),
+      propertyTax: formatNumberWithCommas(values.propertyTax),
+      homeInsurance: formatNumberWithCommas(values.homeInsurance),
+      hoa: formatNumberWithCommas(values.hoa),
+    });
+
+    // Update percentage input value
+    setPercentageInputValue(
+      values.homeValue > 0 && values.downPayment > 0
+        ? ((values.downPayment / values.homeValue) * 100).toFixed(2)
+        : ""
+    );
+  }, [
+    values.homeValue,
+    values.downPayment,
+    values.propertyTax,
+    values.homeInsurance,
+    values.hoa,
+  ]);
+
+  const handleCurrencyInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+
+    // Only allow numbers, commas, and periods
+    const sanitizedValue = value.replace(/[^0-9,.]/g, "");
+
+    // Update the formatted display value
+    setFormattedValues((prev) => ({
+      ...prev,
+      [name]: sanitizedValue,
+    }));
+
+    // Parse and update the actual numeric value
+    const numericValue = parseFormattedNumber(sanitizedValue);
+    onChange(name, numericValue);
+  };
+
+  const handleCurrencyInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const numericValue = parseFormattedNumber(value);
+
+    // Format the value with commas when the input loses focus
+    setFormattedValues((prev) => ({
+      ...prev,
+      [name]: formatNumberWithCommas(numericValue),
+    }));
+  };
+
   const handleDownPaymentInputChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const { name, value } = e.target;
-    const numericValue = parseFloat(value);
 
     if (name === "downPaymentPercentageInput") {
-      if (values.homeValue > 0 && !isNaN(numericValue)) {
-        const absoluteDownPayment = (numericValue / 100) * values.homeValue;
+      // Update the percentage input state
+      setPercentageInputValue(value);
+
+      const numericValue = parseFloat(value);
+      if (values.homeValue > 0 && !isNaN(numericValue) && value !== "") {
+        // Cap percentage at 100%
+        const cappedPercentage = Math.min(numericValue, 100);
+        const absoluteDownPayment = (cappedPercentage / 100) * values.homeValue;
         onChange("downPayment", absoluteDownPayment);
-      } else if (isNaN(numericValue) || numericValue === 0) {
-        // if percentage is cleared or 0, set downPayment to 0
+        setFormattedValues((prev) => ({
+          ...prev,
+          downPayment: formatNumberWithCommas(absoluteDownPayment),
+        }));
+      } else if (value === "" || isNaN(numericValue) || numericValue === 0) {
         onChange("downPayment", 0);
+        setFormattedValues((prev) => ({
+          ...prev,
+          downPayment: "",
+        }));
       }
     } else if (name === "downPayment") {
-      onChange(name, numericValue);
+      // Only allow numbers, commas, and periods
+      const sanitizedValue = value.replace(/[^0-9,.]/g, "");
+
+      // Update the formatted display value
+      setFormattedValues((prev) => ({
+        ...prev,
+        downPayment: sanitizedValue,
+      }));
+
+      // Parse and update the actual numeric value
+      const numericValue = parseFormattedNumber(sanitizedValue);
+      // Cap down payment at home value
+      const cappedDownPayment =
+        values.homeValue > 0
+          ? Math.min(numericValue, values.homeValue)
+          : numericValue;
+      onChange(name, cappedDownPayment);
+
+      // Update percentage input when absolute value changes
+      if (values.homeValue > 0 && cappedDownPayment > 0) {
+        setPercentageInputValue(
+          ((cappedDownPayment / values.homeValue) * 100).toFixed(2)
+        );
+      } else {
+        setPercentageInputValue("");
+      }
+    }
+  };
+
+  const handleDownPaymentInputBlur = (
+    e: React.FocusEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    if (name === "downPayment") {
+      const numericValue = parseFormattedNumber(value);
+      // Cap down payment at home value
+      const cappedDownPayment =
+        values.homeValue > 0
+          ? Math.min(numericValue, values.homeValue)
+          : numericValue;
+
+      // Update the actual value if it was capped
+      if (cappedDownPayment !== numericValue) {
+        onChange("downPayment", cappedDownPayment);
+      }
+
+      setFormattedValues((prev) => ({
+        ...prev,
+        downPayment: formatNumberWithCommas(cappedDownPayment),
+      }));
     }
   };
 
@@ -40,13 +186,12 @@ export default function MortgageForm({ values, onChange }: MortgageFormProps) {
 
   const downPaymentPercentage =
     values.homeValue > 0 && values.downPayment > 0
-      ? ((values.downPayment / values.homeValue) * 100).toFixed(1)
-      : "0.0";
+      ? ((values.downPayment / values.homeValue) * 100).toFixed(2)
+      : "0.00";
 
-  const displayedDownPaymentPercentageInput =
-    values.homeValue > 0 && values.downPayment > 0
-      ? (values.downPayment / values.homeValue) * 100
-      : 0;
+  // Check if down payment exceeds home value for validation styling
+  const isDownPaymentExcessive =
+    values.homeValue > 0 && values.downPayment > values.homeValue;
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
@@ -68,15 +213,14 @@ export default function MortgageForm({ values, onChange }: MortgageFormProps) {
               <span className="text-gray-500">$</span>
             </div>
             <input
-              type="number"
+              type="text"
               id="homeValue"
               name="homeValue"
               className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.homeValue}
-              onChange={handleChange}
-              min="50000"
-              max="2000000"
-              step="1000"
+              value={formattedValues.homeValue}
+              onChange={handleCurrencyInputChange}
+              onBlur={handleCurrencyInputBlur}
+              placeholder="0"
             />
           </div>
         </div>
@@ -109,9 +253,6 @@ export default function MortgageForm({ values, onChange }: MortgageFormProps) {
                 checked={downPaymentInputMode === "percentage"}
                 onChange={() => {
                   setDownPaymentInputMode("percentage");
-                  // Optionally, if switching to percentage and home value exists,
-                  // you might want to pre-fill percentage based on current absolute downpayment
-                  // For now, it will just switch mode and user has to input percentage.
                 }}
                 className="form-radio h-4 w-4 text-blue-600"
               />
@@ -125,15 +266,18 @@ export default function MortgageForm({ values, onChange }: MortgageFormProps) {
                 <span className="text-gray-500">$</span>
               </div>
               <input
-                type="number"
+                type="text"
                 id="downPayment"
                 name="downPayment"
-                className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                value={values.downPayment}
+                className={`block w-full pl-6 pr-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                  isDownPaymentExcessive
+                    ? "border-red-300 focus:ring-red-500 focus:border-red-500"
+                    : "border-gray-300"
+                }`}
+                value={formattedValues.downPayment}
                 onChange={handleDownPaymentInputChange}
-                min="0"
-                max={values.homeValue}
-                step="1000"
+                onBlur={handleDownPaymentInputBlur}
+                placeholder="0"
               />
             </div>
           ) : (
@@ -142,17 +286,27 @@ export default function MortgageForm({ values, onChange }: MortgageFormProps) {
                 type="number"
                 id="downPaymentPercentageInput"
                 name="downPaymentPercentageInput"
-                className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                value={displayedDownPaymentPercentageInput}
+                className={`block w-full pl-3 pr-6 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                  isDownPaymentExcessive
+                    ? "border-red-300 focus:ring-red-500 focus:border-red-500"
+                    : "border-gray-300"
+                }`}
+                value={percentageInputValue}
                 onChange={handleDownPaymentInputChange}
                 min="0"
                 max="100"
-                step="0.1"
+                step="0.01"
+                placeholder="0"
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                 <span className="text-gray-500">%</span>
               </div>
             </div>
+          )}
+          {isDownPaymentExcessive && (
+            <p className="mt-1 text-xs text-red-600">
+              Down payment cannot exceed home value
+            </p>
           )}
           <p className="mt-1 text-xs text-gray-500">
             {downPaymentInputMode === "absolute"
@@ -224,15 +378,14 @@ export default function MortgageForm({ values, onChange }: MortgageFormProps) {
               <span className="text-gray-500">$</span>
             </div>
             <input
-              type="number"
+              type="text"
               id="propertyTax"
               name="propertyTax"
               className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.propertyTax}
-              onChange={handleChange}
-              min="0"
-              max="25000"
-              step="100"
+              value={formattedValues.propertyTax}
+              onChange={handleCurrencyInputChange}
+              onBlur={handleCurrencyInputBlur}
+              placeholder="0"
             />
           </div>
         </div>
@@ -250,15 +403,14 @@ export default function MortgageForm({ values, onChange }: MortgageFormProps) {
               <span className="text-gray-500">$</span>
             </div>
             <input
-              type="number"
+              type="text"
               id="homeInsurance"
               name="homeInsurance"
               className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.homeInsurance}
-              onChange={handleChange}
-              min="0"
-              max="10000"
-              step="100"
+              value={formattedValues.homeInsurance}
+              onChange={handleCurrencyInputChange}
+              onBlur={handleCurrencyInputBlur}
+              placeholder="0"
             />
           </div>
         </div>
@@ -276,27 +428,17 @@ export default function MortgageForm({ values, onChange }: MortgageFormProps) {
               <span className="text-gray-500">$</span>
             </div>
             <input
-              type="number"
+              type="text"
               id="hoa"
               name="hoa"
               className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.hoa}
-              onChange={handleChange}
-              min="0"
-              max="1000"
-              step="10"
+              value={formattedValues.hoa}
+              onChange={handleCurrencyInputChange}
+              onBlur={handleCurrencyInputBlur}
+              placeholder="0"
             />
           </div>
         </div>
-      </div>
-
-      <div className="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-100">
-        <h3 className="text-sm font-medium text-gray-700 mb-2">
-          Total Loan Amount
-        </h3>
-        <p className="text-2xl font-bold text-gray-900">
-          {formatCurrency(values.homeValue - values.downPayment)}
-        </p>
       </div>
     </div>
   );

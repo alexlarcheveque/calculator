@@ -1,129 +1,316 @@
 "use client";
 
 import { useState } from "react";
+import FAQSection, { FAQItem } from "../ui/FAQSection";
 
-interface FAQItem {
-  question: string;
-  answer: string;
-}
-
-const faqData: FAQItem[] = [
+const salesTaxFAQItems: FAQItem[] = [
   {
-    question: "What is Sales Tax?",
-    answer:
-      "A sales tax is a consumption tax paid to a government on the sale of certain goods and services. Usually, the vendor collects the sales tax from the consumer as the consumer makes a purchase. In most countries, the sales tax is called value-added tax (VAT) or goods and services tax (GST), which is a different form of consumption tax.",
+    id: "what-is-sales-tax",
+    question: "What is sales tax and how does it work?",
+    answer: (
+      <>
+        <p className="mb-2">
+          Sales tax is a consumption tax imposed by state and local governments
+          on the sale of goods and services. It's collected by the seller at the
+          point of purchase and remitted to the government.
+        </p>
+        <p className="mb-2">
+          <strong>Key characteristics:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>Applied only at the final point of sale to consumers</li>
+          <li>Collected by businesses on behalf of government</li>
+          <li>Rates vary by state and local jurisdiction</li>
+          <li>Generally applies to tangible goods, some services</li>
+        </ul>
+      </>
+    ),
   },
   {
-    question: "How is Sales Tax calculated?",
-    answer:
-      "Sales tax is calculated by multiplying the purchase price by the sales tax rate. For example, if you buy an item for $100 and the sales tax rate is 6.5%, the sales tax would be $100 × 0.065 = $6.50, making your total $106.50.",
+    id: "how-calculate-sales-tax",
+    question: "How do I calculate sales tax on a purchase?",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Basic Formula:</strong> Sales Tax = Purchase Price × Sales Tax
+          Rate
+        </p>
+        <p className="mb-2">
+          <strong>Example calculations:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>$100 item at 6.5% rate = $100 × 0.065 = $6.50 tax</li>
+          <li>Total with tax = $100 + $6.50 = $106.50</li>
+        </ul>
+        <p className="mb-2">
+          <strong>To find pre-tax price:</strong> Pre-tax Price = Total Price ÷
+          (1 + Tax Rate)
+        </p>
+        <p className="text-sm">
+          Example: $106.50 total ÷ 1.065 = $100 pre-tax price
+        </p>
+      </>
+    ),
   },
   {
-    question: "Do all states have sales tax?",
-    answer:
-      "No, not all states have statewide sales tax. Five states do not impose statewide sales tax: Alaska, Delaware, Montana, New Hampshire, and Oregon. However, some local jurisdictions in these states may still impose sales taxes.",
+    id: "states-without-sales-tax",
+    question: "Which states don't have sales tax?",
+    answer: (
+      <>
+        <p className="mb-2">Five states have no statewide sales tax:</p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>
+            <strong>Alaska:</strong> No state sales tax, but local taxes up to
+            7.5%
+          </li>
+          <li>
+            <strong>Delaware:</strong> No state or local sales tax
+          </li>
+          <li>
+            <strong>Montana:</strong> No state sales tax, minimal local taxes
+          </li>
+          <li>
+            <strong>New Hampshire:</strong> No sales tax, but 9% tax on
+            meals/rooms
+          </li>
+          <li>
+            <strong>Oregon:</strong> No state or local sales tax
+          </li>
+        </ul>
+        <p>
+          Even in no-sales-tax states, you may still pay sales tax on online
+          purchases from out-of-state retailers.
+        </p>
+      </>
+    ),
   },
   {
+    id: "sales-tax-vs-vat",
     question: "What's the difference between sales tax and VAT?",
-    answer:
-      "Sales tax is only applied at the final point of sale to the end consumer, while VAT (Value-Added Tax) is applied at multiple stages of production and distribution. VAT is commonly used outside the U.S. in over 160 countries, while sales tax is primarily used in the United States.",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Sales Tax (US System):</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>Applied only at final point of sale</li>
+          <li>Hidden from consumer until purchase</li>
+          <li>Collected by retailer</li>
+          <li>Rates vary dramatically by location</li>
+        </ul>
+        <p className="mb-2">
+          <strong>VAT (Value-Added Tax - Used in 160+ countries):</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>Applied at each stage of production/distribution</li>
+          <li>Included in advertised prices</li>
+          <li>More uniform rates nationwide</li>
+          <li>Businesses can reclaim VAT on inputs</li>
+        </ul>
+      </>
+    ),
   },
   {
-    question: "Can I deduct sales tax on my federal income tax?",
-    answer:
-      "Yes, but only if you itemize deductions instead of taking the standard deduction. You can choose to deduct either state and local income taxes OR sales taxes, but not both. Most taxpayers find that deducting income taxes results in a larger deduction.",
+    id: "sales-tax-deduction-income-tax",
+    question: "Can I deduct sales tax on my federal income tax return?",
+    answer: (
+      <>
+        <p className="mb-2">
+          Yes, but only if you itemize deductions. You can choose to deduct
+          either:
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>
+            <strong>State and local income taxes, OR</strong>
+          </li>
+          <li>
+            <strong>State and local sales taxes</strong>
+          </li>
+        </ul>
+        <p className="mb-2">
+          <strong>When sales tax deduction makes sense:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>You live in a state with no income tax</li>
+          <li>You made large purchases (car, boat, home improvements)</li>
+          <li>You can document all sales tax paid throughout the year</li>
+        </ul>
+      </>
+    ),
   },
   {
-    question: "Why do sales tax rates vary so much?",
-    answer:
-      "Sales tax rates vary because they are set by state and local governments independently. States set their base rates, and local jurisdictions (cities, counties) can add their own sales taxes on top of the state rate. This is why you might see different rates even within the same state.",
+    id: "why-sales-tax-rates-vary",
+    question: "Why do sales tax rates vary so much between locations?",
+    answer: (
+      <>
+        <p className="mb-2">
+          Sales tax rates are set independently by different levels of
+          government:
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>
+            <strong>State governments:</strong> Set base sales tax rates
+            (0-7.25%)
+          </li>
+          <li>
+            <strong>Counties:</strong> Can add their own sales tax
+          </li>
+          <li>
+            <strong>Cities:</strong> May impose additional municipal sales tax
+          </li>
+          <li>
+            <strong>Special districts:</strong> Transportation, schools may add
+            taxes
+          </li>
+        </ul>
+        <p className="mb-2">
+          <strong>Highest combined rates (2024):</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>Tennessee: Up to 9.75%</li>
+          <li>Louisiana: Up to 11.45%</li>
+          <li>Arkansas: Up to 11.25%</li>
+        </ul>
+      </>
+    ),
   },
   {
-    question: "Are all purchases subject to sales tax?",
-    answer:
-      "No, sales tax exemptions vary by state. Common exemptions include prescription medications, certain food items, and sometimes clothing. Some states also have sales tax holidays where certain items are temporarily exempt from sales tax.",
+    id: "sales-tax-exemptions",
+    question: "What items are typically exempt from sales tax?",
+    answer: (
+      <>
+        <p className="mb-2">Common sales tax exemptions (varies by state):</p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>
+            <strong>Food:</strong> Groceries often exempt, restaurants usually
+            taxed
+          </li>
+          <li>
+            <strong>Prescription medications:</strong> Usually exempt
+          </li>
+          <li>
+            <strong>Medical devices:</strong> Often exempt with prescription
+          </li>
+          <li>
+            <strong>Clothing:</strong> Some states exempt basic clothing
+          </li>
+          <li>
+            <strong>Services:</strong> Many professional services exempt
+          </li>
+        </ul>
+        <p className="mb-2">
+          <strong>Sales tax holidays:</strong> Many states offer temporary
+          exemptions for:
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>Back-to-school items (clothing, supplies)</li>
+          <li>Energy-efficient appliances</li>
+          <li>Emergency preparedness supplies</li>
+        </ul>
+      </>
+    ),
   },
   {
-    question: "How do online purchases affect sales tax?",
-    answer:
-      "Online purchases are generally subject to sales tax based on where the item is delivered, not where it's purchased from. Many online retailers now collect sales tax at the time of purchase, but consumers may still owe 'use tax' on purchases where sales tax wasn't collected.",
+    id: "online-purchases-sales-tax",
+    question: "How does sales tax work for online purchases?",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Current rules (post-2018 Wayfair decision):</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>Sales tax based on delivery address, not seller location</li>
+          <li>Major retailers collect sales tax automatically</li>
+          <li>States can require collection from out-of-state sellers</li>
+          <li>Economic nexus thresholds vary by state</li>
+        </ul>
+        <p className="mb-2">
+          <strong>Use tax responsibility:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>If sales tax not collected, you may owe "use tax"</li>
+          <li>Report on state income tax return</li>
+          <li>Same rate as local sales tax</li>
+          <li>Many states have voluntary compliance programs</li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    id: "business-sales-tax-collection",
+    question: "How do businesses handle sales tax collection and remittance?",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Business responsibilities:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>Register for sales tax permit in each state where required</li>
+          <li>Collect appropriate tax rate based on delivery location</li>
+          <li>File regular returns (monthly, quarterly, or annually)</li>
+          <li>Remit collected taxes by due dates</li>
+        </ul>
+        <p className="mb-2">
+          <strong>Economic nexus thresholds (varies by state):</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>$100,000+ in sales, OR</li>
+          <li>200+ separate transactions</li>
+          <li>Some states use only sales threshold</li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    id: "sales-tax-planning-strategies",
+    question: "Are there strategies to minimize sales tax legally?",
+    answer: (
+      <>
+        <p className="mb-2">
+          <strong>Legal strategies to reduce sales tax:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>
+            <strong>Timing:</strong> Make large purchases during sales tax
+            holidays
+          </li>
+          <li>
+            <strong>Location:</strong> Buy in lower-tax jurisdictions (if
+            practical)
+          </li>
+          <li>
+            <strong>Business purchases:</strong> Obtain resale certificates for
+            inventory
+          </li>
+          <li>
+            <strong>Exemptions:</strong> Understand what qualifies in your state
+          </li>
+        </ul>
+        <p className="mb-2">
+          <strong>For businesses:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>Use proper exemption certificates</li>
+          <li>Consider business structure for purchases</li>
+          <li>Track exemptions and deductions carefully</li>
+        </ul>
+      </>
+    ),
   },
 ];
 
-export default function FAQSection() {
-  const [openItems, setOpenItems] = useState<number[]>([]);
-
-  const toggleItem = (index: number) => {
-    setOpenItems((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-    );
-  };
-
+export default function SalesTaxFAQSection() {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-6 text-gray-800">
-        Frequently Asked Questions
-      </h2>
-
-      <div className="space-y-4">
-        {faqData.map((item, index) => (
-          <div key={index} className="border border-gray-200 rounded-lg">
-            <button
-              className="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
-              onClick={() => toggleItem(index)}
-            >
-              <span className="font-medium text-gray-900">{item.question}</span>
-              <span className="ml-2 flex-shrink-0">
-                {openItems.includes(index) ? (
-                  <svg
-                    className="h-5 w-5 text-gray-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 15l7-7 7 7"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="h-5 w-5 text-gray-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                )}
-              </span>
-            </button>
-            {openItems.includes(index) && (
-              <div className="px-4 pb-3">
-                <p className="text-gray-700 leading-relaxed">{item.answer}</p>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <h3 className="text-lg font-medium text-blue-900 mb-2">
-          Need More Information?
-        </h3>
-        <p className="text-blue-800 text-sm">
-          Sales tax laws and rates change frequently. For the most current
-          information about sales tax in your area, consult your state's
-          department of revenue or a qualified tax professional.
-        </p>
-      </div>
-    </div>
+    <FAQSection
+      items={salesTaxFAQItems}
+      title="Frequently Asked Questions About Sales Tax"
+      allowMultipleOpen={false}
+      includeSchema={true}
+      schemaId="sales-tax-calculator-faq-schema"
+      relatedLinks={[
+        { href: "/income-tax", label: "Income Tax Calculator" },
+        { href: "/salary", label: "Salary Calculator" },
+      ]}
+    />
   );
 }

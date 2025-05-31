@@ -1,40 +1,60 @@
 {
   "pages": {
+    "/refinance/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/refinance/page.js"
+    ],
     "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/date/page": [
+    "/mortgage/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/date/page.js"
+      "static/chunks/app/mortgage/page.js"
     ],
-    "/time/page": [
+    "/loan/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/time/page.js"
+      "static/chunks/app/loan/page.js"
     ],
-    "/gpa/page": [
+    "/retirement/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/gpa/page.js"
+      "static/chunks/app/retirement/page.js"
     ],
-    "/grade/page": [
+    "/auto-loan/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/grade/page.js"
+      "static/chunks/app/auto-loan/page.js"
     ],
-    "/concrete/page": [
+    "/interest/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/concrete/page.js"
+      "static/chunks/app/interest/page.js"
     ],
-    "/page": [
+    "/investment/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/investment/page.js"
+    ],
+    "/payment/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/payment/page.js"
+    ],
+    "/amortization/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/amortization/page.js"
+    ],
+    "/income-tax/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/income-tax/page.js"
     ]
   }
 }

@@ -14,7 +14,7 @@ import {
 } from "@/utils/calculatorUtils";
 import CalculatorDisplay from "./CalculatorDisplay";
 import CalculatorKeypad from "./CalculatorKeypad";
-import CalculatorFAQ from "./CalculatorFAQ";
+import FAQSection from "./FAQSection";
 
 export default function CalculatorPage() {
   const [state, setState] = useState<CalculatorState>({
@@ -389,6 +389,23 @@ export default function CalculatorPage() {
 
   return (
     <div>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          Scientific Calculator (Advanced Math Functions, Memory & History)
+        </h1>
+        <p className="text-lg text-gray-600 max-w-4xl">
+          Professional scientific calculator with comprehensive mathematical
+          functions including trigonometry, logarithms, exponentials, powers,
+          roots, and factorial calculations. Features memory operations,
+          calculation history, degree/radian modes, and full keyboard support.
+          Perfect for students, engineers, scientists, and professionals
+          requiring precise mathematical computations. Supports order of
+          operations, parentheses grouping, and scientific notation for complex
+          calculations.
+        </p>
+      </div>
+
       <div className="flex justify-center mb-16">
         <div className="max-w-md">
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -421,7 +438,7 @@ export default function CalculatorPage() {
       </div>
 
       {/* FAQ Section */}
-      <CalculatorFAQ />
+      <FAQSection />
     </div>
   );
 }
