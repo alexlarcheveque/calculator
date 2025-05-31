@@ -14,9 +14,10 @@ export default function AmortizationCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Amortization Calculator
         </h1>
-        <p className="text-lg text-gray-700 mt-2">
-          Calculate monthly payments, amortization schedules, and see the impact
-          of extra payments on any loan.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate loan amortization schedules with monthly payments, interest
+          breakdown, and extra payment options. Supports mortgages, auto loans,
+          and personal loans with detailed payment analysis.
         </p>
       </header>
       <AmortizationPage />

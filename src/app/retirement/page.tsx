@@ -42,10 +42,11 @@ export default function RetirementCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Retirement Calculator
         </h1>
-        <p className="text-lg text-gray-700">
-          Free calculators that help with retirement planning with inflation,
-          social security, life expectancy, and many more factors being taken
-          into account.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Plan your retirement with comprehensive calculators that factor in
+          inflation, social security, life expectancy, and investment returns.
+          Calculate savings needed and withdrawal strategies for financial
+          security.
         </p>
       </header>
       <RetirementPage />

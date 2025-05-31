@@ -14,9 +14,10 @@ export default function CompoundInterestCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Compound Interest Calculator
         </h1>
-        <p className="text-lg text-gray-700">
-          Convert and compare interest rates of different compounding periods,
-          and explore the power of compound interest over time.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate and compare compound interest across different compounding
+          periods to maximize your investment growth. Explore the power of
+          compound interest over time for financial planning.
         </p>
       </header>
       <CompoundInterestPage />

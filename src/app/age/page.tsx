@@ -12,12 +12,10 @@ export default function AgeCalculatorRoute() {
     <div className="container mx-auto p-4">
       <header className="text-center mb-8">
         <h1 className="text-4xl font-bold text-blue-600">Age Calculator</h1>
-        <p className="text-lg text-gray-700 mb-4">
-          Calculate your exact age or the time interval between two dates.
-        </p>
-        <p className="text-sm text-gray-600">
-          The calculated age will be displayed in years, months, weeks, days,
-          hours, minutes, and seconds.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate your exact age or time intervals between dates in years,
+          months, weeks, days, hours, minutes, and seconds. Perfect for precise
+          age calculations and date planning.
         </p>
       </header>
       <AgePage />

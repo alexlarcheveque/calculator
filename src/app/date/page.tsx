@@ -12,13 +12,8 @@ export default function DateCalculatorRoute() {
     <div className="container mx-auto p-4">
       <header className="text-center mb-8">
         <h1 className="text-4xl font-bold text-blue-600">Date Calculator</h1>
-        <p className="text-lg text-gray-700 mb-4">
-          Calculate the difference between two dates or add/subtract time from a
-          date.
-        </p>
-        <p className="text-sm text-gray-600">
-          Find the number of years, months, weeks, and days between dates.
-          Supports business day calculations and holiday exclusions.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate the difference between two dates or add/subtract time from any date. Supports business day calculations and holiday exclusions for accurate planning.
         </p>
       </header>
       <DatePage />

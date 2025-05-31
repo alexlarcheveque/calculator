@@ -102,20 +102,6 @@ export default function IncomeTaxPage() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Income Tax Calculator
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Calculate your federal income tax liability with precision. Estimate
-          taxes owed or refund expected based on your income, filing status,
-          deductions, and credits. Compare standard vs. itemized deductions,
-          understand tax brackets, and plan your tax strategy. Updated for 2024
-          tax year with current rates and thresholds.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

@@ -14,13 +14,8 @@ export default function RandomNumberGeneratorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Random Number Generator
         </h1>
-        <p className="text-lg text-gray-700 mb-4">
-          Generate random integers and decimal numbers within user-defined
-          ranges with high precision.
-        </p>
-        <p className="text-sm text-gray-600">
-          Choose between simple integer generation or comprehensive decimal
-          number generation with advanced options.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Generate random integers and decimal numbers within user-defined ranges with high precision. Features both simple and comprehensive generation modes for various applications.
         </p>
       </header>
       <RandomPage />

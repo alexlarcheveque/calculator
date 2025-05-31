@@ -14,10 +14,10 @@ export default function SalesTaxCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Sales Tax Calculator
         </h1>
-        <p className="text-lg text-gray-700">
-          The Sales Tax Calculator can compute any one of the following, given
-          inputs for the remaining two: before-tax price, sales tax rate, and
-          final, or after-tax price.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate sales tax amounts, rates, and before/after-tax prices with
+          support for different state tax rates. Essential for budgeting,
+          business planning, and purchase calculations.
         </p>
       </header>
       <SalesTaxPage />

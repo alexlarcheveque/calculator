@@ -58,23 +58,6 @@ export default function ConceptionPage() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Conception Calculator (Fertile Window, Ovulation & Best Days to
-          Conceive)
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Calculate your fertile window and optimal conception dates with our
-          comprehensive conception calculator. Track ovulation timing, identify
-          your most fertile days, and plan for pregnancy with accurate cycle
-          predictions. Features multi-cycle fertility tracking, ovulation
-          calendar, and detailed conception probability analysis. Essential for
-          family planning, fertility awareness, and understanding your
-          reproductive cycle for natural conception timing.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

@@ -92,25 +92,8 @@ export default function MortgagePage() {
     });
   };
 
-  console.log("amortization data", amortizationData);
-
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Mortgage Calculator
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Calculate monthly mortgage payments, total interest costs, and
-          amortization schedules for any home loan. Compare 15-year vs 30-year
-          mortgages, determine affordability based on your income, and
-          understand how down payments and interest rates affect your monthly
-          housing costs. Essential for home buyers, refinancing decisions, and
-          mortgage planning with detailed payment breakdowns and charts.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

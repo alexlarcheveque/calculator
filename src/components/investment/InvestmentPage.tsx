@@ -175,23 +175,6 @@ export default function InvestmentPage() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Investment Calculator
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Comprehensive investment calculator for portfolio planning and wealth
-          building. Calculate future value, required returns, time horizons, and
-          contribution amounts with compound interest projections. Analyze
-          investment growth scenarios for stocks, bonds, retirement accounts,
-          and savings goals. Features multiple calculation modes including lump
-          sum investing, dollar-cost averaging, and regular contributions.
-          Essential for retirement planning, college savings, and long-term
-          financial goal achievement.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

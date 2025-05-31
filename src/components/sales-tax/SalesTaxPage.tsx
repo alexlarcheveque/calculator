@@ -46,21 +46,6 @@ export default function SalesTaxPage() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Sales Tax Calculator
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Calculate sales tax on purchases with precision using current rates
-          for any state or local jurisdiction. Determine total costs including
-          tax, find pre-tax prices, or calculate tax amounts. Perfect for
-          budgeting large purchases, business planning, or understanding your
-          local tax burden. Compare rates across different states and learn how
-          sales tax varies by location, exemptions, and business requirements.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">
@@ -74,6 +59,12 @@ export default function SalesTaxPage() {
               <SalesTaxSummary results={results} />
               <SalesTaxChart results={results} />
             </>
+          )}
+
+          {!results && (
+            <p className="text-center text-gray-500 lg:mt-20">
+              Enter purchase details to calculate sales tax.
+            </p>
           )}
         </div>
       </div>

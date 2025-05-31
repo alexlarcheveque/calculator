@@ -14,10 +14,10 @@ export default function ConceptionCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Conception Calculator
         </h1>
-        <p className="text-lg text-gray-700">
-          The Conception Calculator estimates a range of days during which a
-          woman is most likely to conceive, as well as a corresponding due date
-          based on a woman's average menstrual cycle.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Estimate possible and most likely conception dates with corresponding
+          due dates based on menstrual cycle patterns. Calculate fertility
+          windows and ovulation periods for family planning.
         </p>
       </header>
       <ConceptionPage />

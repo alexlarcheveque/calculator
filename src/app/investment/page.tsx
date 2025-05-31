@@ -14,9 +14,10 @@ export default function InvestmentCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Investment Calculator
         </h1>
-        <p className="text-lg text-gray-700">
-          A comprehensive tool for calculating investment returns, compound
-          interest, and planning your financial future.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate investment returns, compound interest, and accumulation
+          schedules to reach your financial goals. Determine required starting
+          amounts, return rates, or investment timelines for strategic planning.
         </p>
       </header>
       <InvestmentPage />

@@ -14,13 +14,10 @@ export default function TriangleCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Triangle Calculator
         </h1>
-        <p className="text-lg text-gray-700 mb-4">
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
           Calculate triangle properties including sides, angles, area,
-          perimeter, and more.
-        </p>
-        <p className="text-sm text-gray-600">
-          Please provide 3 values including at least one side to calculate all
-          triangle properties.
+          perimeter, height, and median with detailed diagrams. Provide any 3
+          values including at least one side for complete analysis.
         </p>
       </header>
       <TrianglePage />

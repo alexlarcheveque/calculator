@@ -360,21 +360,6 @@ const LoanPage = () => {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Loan Calculator
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Calculate loan payments, total interest costs, and amortization
-          schedules for amortized, deferred, and bond loans. Compare different
-          loan terms and interest rates to find the best financing option for
-          your needs. Understand how compound interest affects your payments and
-          see detailed payment breakdowns over time. Essential for personal
-          loans, business financing, and investment planning decisions.
-        </p>
-      </div>
-
       <div className="flex justify-center mb-6 border-b">
         {(["amortized", "deferred", "bond"] as LoanType[]).map((type) => (
           <button

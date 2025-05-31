@@ -44,22 +44,6 @@ export default function BMRPage() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          BMR Calculator (Basal Metabolic Rate & Daily Calorie Needs)
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Calculate your Basal Metabolic Rate (BMR) using multiple
-          scientifically validated formulas including Mifflin-St Jeor,
-          Harris-Benedict, and Katch-McArdle equations. Determine your daily
-          calorie needs based on activity level, age, gender, height, and
-          weight. Features comprehensive metabolic analysis, activity
-          multipliers, weight management recommendations, and personalized
-          insights for fitness and health optimization.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

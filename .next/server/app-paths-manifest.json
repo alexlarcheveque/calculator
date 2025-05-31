@@ -1,7 +1,0 @@
-{
-  "/interest/page": "app/interest/page.js",
-  "/investment/page": "app/investment/page.js",
-  "/payment/page": "app/payment/page.js",
-  "/amortization/page": "app/amortization/page.js",
-  "/income-tax/page": "app/income-tax/page.js"
-}

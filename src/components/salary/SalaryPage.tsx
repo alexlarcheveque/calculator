@@ -55,20 +55,6 @@ export default function SalaryPage() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Salary Calculator
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Convert between hourly wages and annual salaries with precision.
-          Calculate adjusted pay accounting for holidays and vacation time.
-          Compare different pay frequencies and understand the impact of work
-          schedules on your total compensation. Perfect for salary negotiations,
-          job comparisons, and career planning.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

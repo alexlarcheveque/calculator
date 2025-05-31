@@ -179,24 +179,6 @@ export default function RefinancePage() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Refinance Calculator
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Advanced mortgage refinance calculator with comprehensive cost-benefit
-          analysis. Calculate monthly payment savings, break-even periods, and
-          total interest reduction from refinancing. Compare current vs new loan
-          terms, analyze closing costs impact, and evaluate cash-out refinancing
-          options. Features detailed loan comparison charts, amortization
-          schedules, and refinance strategies. Perfect for homeowners
-          considering rate-and-term refinancing, cash-out refinancing, or loan
-          term changes to optimize their mortgage and save thousands in interest
-          costs.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

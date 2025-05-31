@@ -14,16 +14,10 @@ export default function SubnetCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           IP Subnet Calculator
         </h1>
-        <p className="text-lg text-gray-700 mb-4">
-          This calculator returns a variety of information regarding Internet
-          Protocol version 4 (IPv4) and IPv6 subnets including possible network
-          addresses, usable host ranges, subnet mask, and IP class, among
-          others.
-        </p>
-        <p className="text-sm text-gray-600">
-          Calculate subnet information for both IPv4 and IPv6 networks with
-          support for CIDR notation, network classes, and comprehensive network
-          analysis.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate subnet information for IPv4 and IPv6 networks including
+          network addresses, usable host ranges, subnet masks, and IP classes.
+          Supports CIDR notation and comprehensive network analysis.
         </p>
       </header>
       <SubnetPage />

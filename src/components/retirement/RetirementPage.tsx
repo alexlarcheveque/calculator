@@ -275,113 +275,36 @@ export default function RetirementPage() {
   };
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Retirement Calculator
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Plan your retirement with comprehensive calculators for savings needs,
-          withdrawal strategies, and timeline planning. Calculate how much to
-          save, determine optimal withdrawal amounts, and see how long your
-          money will last in retirement. Factor in Social Security, inflation,
-          investment returns, and multiple retirement accounts to create a
-          complete retirement plan. Essential for 401(k) planning, IRA
-          strategies, and long-term financial security.
-        </p>
-      </div>
-
-      {/* Tab Navigation */}
-      <div className="flex justify-center mb-6 border-b">
-        {(
-          [
-            "needs",
-            "savings",
-            "withdrawal",
-            "duration",
-          ] as RetirementCalculatorType[]
-        ).map((type) => (
-          <button
-            key={type}
-            onClick={() => setCalculatorType(type)}
-            className={`px-4 py-2 text-lg font-medium focus:outline-none whitespace-nowrap
-                        ${
-                          calculatorType === type
-                            ? "border-b-2 border-blue-600 text-blue-600"
-                            : "text-gray-500 hover:text-gray-700"
-                        }`}
-          >
-            {getTabTitle(type)}
-          </button>
-        ))}
-      </div>
-
-      {/* Tab Description */}
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          {getTabTitle(calculatorType)}
-        </h2>
-        <p className="text-gray-600">{getTabDescription(calculatorType)}</p>
-      </div>
-
-      {/* Calculator Content */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-1">
-          {calculatorType === "needs" && (
-            <RetirementForm
-              values={retirementFormValues}
-              onChange={handleRetirementInputChange}
-            />
-          )}
-          {calculatorType === "savings" && (
-            <SavingsForm
-              values={savingsFormValues}
-              onChange={handleSavingsInputChange}
-            />
-          )}
-          {calculatorType === "withdrawal" && (
-            <WithdrawalForm
-              values={withdrawalFormValues}
-              onChange={handleWithdrawalInputChange}
-            />
-          )}
-          {calculatorType === "duration" && (
-            <DurationForm
-              values={durationFormValues}
-              onChange={handleDurationInputChange}
-            />
-          )}
+    <div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
+        {/* Input form */}
+        <div className="lg:col-span-4">
+          <RetirementForm
+            values={retirementFormValues}
+            onChange={handleRetirementInputChange}
+          />
         </div>
 
-        <div className="md:col-span-2 space-y-6">
-          {calculatorType === "needs" && retirementResults && (
-            <RetirementSummary results={retirementResults} />
-          )}
-          {calculatorType === "savings" && savingsResults && (
-            <SavingsSummary results={savingsResults} />
-          )}
-          {calculatorType === "withdrawal" && withdrawalResults && (
-            <WithdrawalSummary results={withdrawalResults} />
-          )}
-          {calculatorType === "duration" && durationResults && (
-            <DurationSummary results={durationResults} />
+        {/* Results */}
+        <div className="lg:col-span-8 space-y-8">
+          {retirementResults && (
+            <>
+              <RetirementSummary results={retirementResults} />
+              <RetirementCharts results={retirementResults} />
+              <RetirementTable results={retirementResults} />
+            </>
           )}
 
-          {/* Show message when no results */}
-          {((calculatorType === "needs" && !retirementResults) ||
-            (calculatorType === "savings" && !savingsResults) ||
-            (calculatorType === "withdrawal" && !withdrawalResults) ||
-            (calculatorType === "duration" && !durationResults)) && (
-            <p className="text-center text-gray-500 md:mt-20">
-              Enter details to see the results update automatically.
+          {!retirementResults && (
+            <p className="text-center text-gray-500 lg:mt-20">
+              Enter retirement details to calculate savings plan.
             </p>
           )}
         </div>
       </div>
 
       {/* Info Cards Section */}
-      <div className="space-y-8">
+      <div className="space-y-8 mb-16">
         <RetirementBasics />
         <RetirementSavingsRules />
         <RetirementAccounts />

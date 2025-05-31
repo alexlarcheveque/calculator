@@ -14,10 +14,10 @@ export default function DueDateCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Pregnancy Due Date Calculator
         </h1>
-        <p className="text-lg text-gray-700">
-          Estimate your baby's due date and track important pregnancy milestones
-          based on your last menstrual period, ultrasound, conception date, or
-          IVF transfer.
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
+          Calculate your pregnancy due date based on last menstrual period,
+          ultrasound, conception date, or IVF transfer date. Track pregnancy
+          milestones and important dates throughout your journey.
         </p>
       </header>
       <DueDatePage />

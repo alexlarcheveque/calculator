@@ -119,24 +119,6 @@ export default function PaymentPage() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Payment Calculator
-        </h1>
-        <p className="text-lg text-gray-600 max-w-4xl">
-          Advanced loan payment calculator with dual calculation modes for
-          comprehensive financial planning. Calculate monthly payments for fixed
-          loan terms or determine payoff time with specific payment amounts.
-          Compare payment strategies, analyze extra payment benefits, and view
-          detailed amortization schedules. Perfect for mortgages, auto loans,
-          personal loans, and student loans. Features include payment breakdown
-          analysis, total interest calculations, and early payoff strategies to
-          help you save thousands in interest costs and achieve debt freedom
-          faster.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">

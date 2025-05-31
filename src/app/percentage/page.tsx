@@ -14,13 +14,10 @@ export default function PercentageCalculatorRoute() {
         <h1 className="text-4xl font-bold text-blue-600">
           Percentage Calculator
         </h1>
-        <p className="text-lg text-gray-700 mb-4">
+        <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
           Calculate percentages, percentage differences, percentage changes, and
-          solve common percentage problems.
-        </p>
-        <p className="text-sm text-gray-600">
-          Please provide any two values and click "Calculate" to get the third
-          value.
+          solve common percentage problems. Versatile tool for business,
+          education, and everyday calculations.
         </p>
       </header>
       <PercentagePage />
