@@ -141,7 +141,7 @@ const businessPlanningSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "info",
       title: "Maximizing Sales Tax Deductions",
       content: (
         <div>

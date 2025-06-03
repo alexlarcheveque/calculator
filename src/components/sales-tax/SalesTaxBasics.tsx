@@ -120,7 +120,7 @@ const salesTaxBasicsSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "info",
       title: "Understanding Combined Rates",
       content: (
         <div>

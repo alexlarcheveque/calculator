@@ -544,7 +544,7 @@ const disclaimer = (
   </>
 );
 
-export default function FAQSection() {
+export default function CalorieFAQSection() {
   return (
     <FAQSection
       items={faqData}

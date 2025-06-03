@@ -118,7 +118,7 @@ const taxBasicsSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "success",
       title: "Progressive Tax Example",
       content: (
         <div>

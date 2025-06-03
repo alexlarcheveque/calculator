@@ -19,27 +19,31 @@ export default function AutoLoanPaymentDistributionChart({
     );
   }
 
-  const principalPercent = results.loanPrincipalPercentage;
-  const interestPercent = results.loanInterestPercentage;
-
   const chartData: ChartDataPoint[] = [
     {
       label: "Principal",
-      value: results.totalLoanAmount * (principalPercent / 100),
-      color: "#2b7ddb", // blue
+      value: results.totalLoanAmount,
+      color: "#0ea5e9", // primary-500 blue
     },
     {
-      label: "Interest",
+      label: "Total Interest",
       value: results.totalLoanInterest,
-      color: "#8bbc21", // green
+      color: "#f59e0b", // amber-500 orange
     },
   ];
+
+  const totalCost = results.totalLoanAmount + results.totalLoanInterest;
 
   return (
     <PaymentDistributionChart
       data={chartData}
+      centerText={{
+        label: "Total Cost",
+        value: totalCost,
+        formatter: formatCurrency,
+      }}
       formatCurrency={formatCurrency}
-      totalForPercentage={results.totalLoanAmount}
+      totalForPercentage={totalCost}
     />
   );
 }

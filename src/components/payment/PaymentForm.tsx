@@ -75,6 +75,15 @@ export default function PaymentForm({ values, onChange }: PaymentFormProps) {
         </div>
       </div>
 
+      {/* Information Box */}
+      <div className="my-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <p className="text-sm text-blue-800">
+          {values.calculatorMode === PaymentCalculatorMode.FIXED_TERM
+            ? "Calculate the monthly payment amount for a fixed loan term."
+            : "Calculate the time required to pay off a loan with a fixed monthly payment."}
+        </p>
+      </div>
+
       <div className="space-y-4">
         {/* Loan Amount */}
         <div className="form-group">
@@ -109,20 +118,18 @@ export default function PaymentForm({ values, onChange }: PaymentFormProps) {
             >
               Loan Term (years)
             </label>
-            <select
+            <input
+              type="number"
               id="loanTermYears"
               name="loanTermYears"
+              min="1"
+              max="50"
+              step="0.5"
               value={values.loanTermYears}
               onChange={handleChange}
               className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="5">5 years</option>
-              <option value="10">10 years</option>
-              <option value="15">15 years</option>
-              <option value="20">20 years</option>
-              <option value="25">25 years</option>
-              <option value="30">30 years</option>
-            </select>
+              placeholder="30"
+            />
           </div>
         ) : (
           <div className="form-group">
@@ -175,15 +182,6 @@ export default function PaymentForm({ values, onChange }: PaymentFormProps) {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Information Box */}
-      <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <p className="text-sm text-blue-800">
-          {values.calculatorMode === PaymentCalculatorMode.FIXED_TERM
-            ? "Calculate the monthly payment amount for a fixed loan term."
-            : "Calculate the time required to pay off a loan with a fixed monthly payment."}
-        </p>
       </div>
     </div>
   );

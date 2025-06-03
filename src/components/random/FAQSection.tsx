@@ -826,7 +826,7 @@ const disclaimer = (
   </>
 );
 
-export default function FAQSection() {
+export default function RandomFAQSection() {
   return (
     <FAQSection
       items={faqData}

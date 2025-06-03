@@ -1,7 +1,7 @@
 "use client";
 
 import TriangleCalculator from "@/components/triangle/TriangleCalculator";
-import FAQSection from "./FAQSection";
+import TriangleFAQSection from "./FAQSection";
 
 export default function TrianglePage() {
   return (
@@ -12,7 +12,7 @@ export default function TrianglePage() {
       </div>
 
       {/* Educational Content */}
-      <FAQSection />
+      <TriangleFAQSection />
     </div>
   );
 }

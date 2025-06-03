@@ -4,36 +4,28 @@ import { useState, useEffect } from "react";
 import InterestForm from "./InterestForm";
 import InterestSummary from "./InterestSummary";
 import InterestCharts from "./InterestCharts";
-import AccumulationScheduleTable from "./AccumulationScheduleTable";
+import AmortizationTable from "../ui/AmortizationTable";
 import InterestBasicsCard from "./InterestBasicsCard";
-import TaxesInflationCard from "./TaxesInflationCard";
 import InterestStrategiesCard from "./InterestStrategiesCard";
 import InterestFAQSection from "./InterestFAQ";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { calculateInterestResults } from "@/utils/interestCalculations";
 
-export type CompoundFrequency =
-  | "annually"
-  | "semiannually"
-  | "quarterly"
-  | "monthly"
-  | "semimonthly"
-  | "biweekly"
-  | "weekly"
-  | "daily"
-  | "continuously";
+export type CompoundFrequency = "annually" | "monthly" | "daily";
+
+export type ContributionPaymentFrequency = "monthly" | "annually";
 
 export type ContributionTiming = "beginning" | "end";
 
 export interface InterestCalculatorInput {
   initialInvestment: number;
-  annualContribution: number;
-  monthlyContribution: number;
+  regularContributionAmount: number;
+  contributionPaymentFrequency: ContributionPaymentFrequency;
   contributionTiming: ContributionTiming;
   interestRate: number;
   compoundFrequency: CompoundFrequency;
   investmentLengthYears: number;
   investmentLengthMonths: number;
-  taxRate: number;
-  inflationRate: number;
 }
 
 export interface InterestCalculatorResult {
@@ -43,8 +35,8 @@ export interface InterestCalculatorResult {
   totalInterest: number;
   interestOfInitialInvestment: number;
   interestOfContributions: number;
-  buyingPowerAfterInflation: number;
-  accumulationSchedule: AccumulationData[];
+  monthlyAccumulationSchedule: AccumulationData[];
+  yearlyAccumulationSchedule: AccumulationData[];
 }
 
 export interface AccumulationData {
@@ -57,21 +49,24 @@ export interface AccumulationData {
 }
 
 const InterestPage = () => {
-  const [inputs, setInputs] = useState<Partial<InterestCalculatorInput>>({
+  const [inputs, setInputs, isInitialized] = useLocalStorage<
+    Partial<InterestCalculatorInput>
+  >("interestCalculatorInputs_v3", {
     initialInvestment: 20000,
-    annualContribution: 5000,
-    monthlyContribution: 0,
+    regularContributionAmount: 500,
+    contributionPaymentFrequency: "monthly",
     contributionTiming: "beginning",
     interestRate: 5,
     compoundFrequency: "annually",
     investmentLengthYears: 5,
     investmentLengthMonths: 0,
-    taxRate: 0,
-    inflationRate: 3,
   });
   const [results, setResults] = useState<InterestCalculatorResult | null>(null);
   const [showAccumulationSchedule, setShowAccumulationSchedule] =
     useState(false);
+  const [scheduleType, setScheduleType] = useState<"monthly" | "yearly">(
+    "yearly"
+  );
 
   const handleInputChange = (
     field: keyof InterestCalculatorInput,
@@ -81,252 +76,101 @@ const InterestPage = () => {
   };
 
   useEffect(() => {
-    // Automatically calculate when inputs change
-    const P = inputs.initialInvestment || 0;
-    const annualRate = (inputs.interestRate || 0) / 100;
-    const taxRate = (inputs.taxRate || 0) / 100;
-    const inflationRate = (inputs.inflationRate || 0) / 100;
-    const years =
-      (inputs.investmentLengthYears || 0) +
-      (inputs.investmentLengthMonths || 0) / 12;
-    const annualContribution = inputs.annualContribution || 0;
-    const monthlyContribution = inputs.monthlyContribution || 0;
-    const contributionAtBeginning = inputs.contributionTiming === "beginning";
-    const compoundFrequency = inputs.compoundFrequency || "annually";
+    if (!isInitialized) return;
 
-    if (P < 0 || annualRate < 0 || years <= 0) {
-      setResults(null);
-      return;
-    }
+    // Simple calculation call - all logic moved to utils/interestCalculations.ts
+    const calculationResults = calculateInterestResults(inputs);
+    setResults(calculationResults);
+    setShowAccumulationSchedule(calculationResults !== null);
+  }, [inputs, isInitialized]);
 
-    const compoundPeriodsPerYearMap: Record<CompoundFrequency, number> = {
-      annually: 1,
-      semiannually: 2,
-      quarterly: 4,
-      monthly: 12,
-      semimonthly: 24,
-      biweekly: 26,
-      weekly: 52,
-      daily: 365,
-      continuously: Infinity,
-    };
-    const N = compoundPeriodsPerYearMap[compoundFrequency];
+  if (!isInitialized) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your saved data...</p>
+        </div>
+      </div>
+    );
+  }
 
-    if (!N) {
-      setResults(null);
-      return;
-    }
+  // Get current schedule data based on selected type
+  const currentScheduleData = results
+    ? scheduleType === "monthly"
+      ? results.monthlyAccumulationSchedule
+      : results.yearlyAccumulationSchedule
+    : [];
 
-    // Calculate using proper compound interest formulas
-    let futureValuePrincipal = 0;
-    let futureValueAnnualContributions = 0;
-    let futureValueMonthlyContributions = 0;
-    let totalContributionsMade = 0;
-
-    // 1. Future Value of Principal
-    if (P > 0) {
-      if (compoundFrequency === "continuously") {
-        futureValuePrincipal = P * Math.exp(annualRate * years);
-      } else {
-        futureValuePrincipal = P * Math.pow(1 + annualRate / N, N * years);
-      }
-    }
-
-    // 2. Future Value of Annual Contributions
-    if (annualContribution > 0 && years >= 1) {
-      const numberOfYears = Math.floor(years);
-      totalContributionsMade += annualContribution * numberOfYears;
-
-      if (compoundFrequency === "continuously") {
-        // For continuous compounding with annual payments
-        let annualContributionFV = 0;
-        for (let year = 1; year <= numberOfYears; year++) {
-          const timeRemaining =
-            years - (contributionAtBeginning ? year - 1 : year);
-          if (timeRemaining > 0) {
-            annualContributionFV +=
-              annualContribution * Math.exp(annualRate * timeRemaining);
-          }
-        }
-        futureValueAnnualContributions = annualContributionFV;
-      } else {
-        // Standard annuity formula for annual contributions
-        const periodicRate = annualRate / N;
-        const totalPeriods = N * years;
-        const contributionGrowthFactor = contributionAtBeginning
-          ? 1 + periodicRate
-          : 1;
-
-        // Calculate effective annual rate from compound frequency
-        const effectiveAnnualRate = Math.pow(1 + periodicRate, N) - 1;
-
-        futureValueAnnualContributions =
-          ((annualContribution *
-            (Math.pow(1 + effectiveAnnualRate, numberOfYears) - 1)) /
-            effectiveAnnualRate) *
-          contributionGrowthFactor;
-      }
-    }
-
-    // 3. Future Value of Monthly Contributions
-    if (monthlyContribution > 0) {
-      const numberOfMonths = years * 12;
-      totalContributionsMade += monthlyContribution * numberOfMonths;
-
-      if (compoundFrequency === "continuously") {
-        // For continuous compounding with monthly payments
-        let monthlyContributionFV = 0;
-        for (let month = 1; month <= numberOfMonths; month++) {
-          const timeRemaining =
-            years - (contributionAtBeginning ? (month - 1) / 12 : month / 12);
-          if (timeRemaining > 0) {
-            monthlyContributionFV +=
-              monthlyContribution * Math.exp(annualRate * timeRemaining);
-          }
-        }
-        futureValueMonthlyContributions = monthlyContributionFV;
-      } else {
-        // Calculate effective monthly rate from compound frequency
-        const periodicRate = annualRate / N;
-        let effectiveMonthlyRate;
-
-        if (N === 12) {
-          // Monthly compounding
-          effectiveMonthlyRate = periodicRate;
-        } else {
-          // Convert to effective monthly rate
-          effectiveMonthlyRate = Math.pow(1 + periodicRate, N / 12) - 1;
-        }
-
-        const contributionGrowthFactor = contributionAtBeginning
-          ? 1 + effectiveMonthlyRate
-          : 1;
-
-        futureValueMonthlyContributions =
-          ((monthlyContribution *
-            (Math.pow(1 + effectiveMonthlyRate, numberOfMonths) - 1)) /
-            effectiveMonthlyRate) *
-          contributionGrowthFactor;
-      }
-    }
-
-    // Total before taxes
-    const totalBeforeTax =
-      futureValuePrincipal +
-      futureValueAnnualContributions +
-      futureValueMonthlyContributions;
-
-    // Apply tax to interest only (not principal or contributions)
-    const totalPrincipalInvested = P + totalContributionsMade;
-    const totalInterestBeforeTax = totalBeforeTax - totalPrincipalInvested;
-    const totalInterestAfterTax = totalInterestBeforeTax * (1 - taxRate);
-    const currentBalance = totalPrincipalInvested + totalInterestAfterTax;
-
-    // Calculate interest breakdown (approximate)
-    const interestFromPrincipal = (futureValuePrincipal - P) * (1 - taxRate);
-    const interestFromContributions =
-      totalInterestAfterTax - interestFromPrincipal;
-
-    // Generate schedule for display (simplified yearly summary)
-    const schedule: AccumulationData[] = [];
-    const yearsToShow = Math.ceil(years);
-
-    for (let year = 1; year <= yearsToShow; year++) {
-      const yearFraction = Math.min(year, years);
-
-      // Calculate values for this year
-      let yearPrincipalFV = 0;
-      let yearContributionsFV = 0;
-      let yearContributions = 0;
-
-      if (P > 0) {
-        if (compoundFrequency === "continuously") {
-          yearPrincipalFV = P * Math.exp(annualRate * yearFraction);
-        } else {
-          yearPrincipalFV = P * Math.pow(1 + annualRate / N, N * yearFraction);
-        }
-      }
-
-      // Contributions up to this year
-      if (annualContribution > 0) {
-        yearContributions += Math.min(year, years) * annualContribution;
-      }
-      if (monthlyContribution > 0) {
-        yearContributions +=
-          Math.min(year * 12, years * 12) * monthlyContribution;
-      }
-
-      // Calculate FV of contributions made up to this year
-      if (yearContributions > 0) {
-        const contributionYears = yearFraction;
-        if (compoundFrequency === "continuously") {
-          // Simplified calculation for display
-          yearContributionsFV =
-            yearContributions * Math.exp((annualRate * contributionYears) / 2);
-        } else {
-          const periodicRate = annualRate / N;
-          const avgGrowthPeriods = (N * contributionYears) / 2; // Approximate average growth time
-          yearContributionsFV =
-            yearContributions * Math.pow(1 + periodicRate, avgGrowthPeriods);
-        }
-      }
-
-      const yearTotalBeforeTax = yearPrincipalFV + yearContributionsFV;
-      const yearInterestBeforeTax =
-        yearTotalBeforeTax - (P + yearContributions);
-      const yearInterestAfterTax = yearInterestBeforeTax * (1 - taxRate);
-      const yearEndingBalance = P + yearContributions + yearInterestAfterTax;
-
-      schedule.push({
-        period: year,
-        year: year,
-        deposit: P + yearContributions,
-        interest: yearInterestAfterTax,
-        endingBalance: yearEndingBalance,
-        isYearEnd: true,
-      });
-    }
-
-    const buyingPower = currentBalance / Math.pow(1 + inflationRate, years);
-
-    setResults({
-      endingBalance: currentBalance,
-      totalPrincipal: totalPrincipalInvested,
-      totalContributions: totalContributionsMade,
-      totalInterest: totalInterestAfterTax,
-      interestOfInitialInvestment: interestFromPrincipal,
-      interestOfContributions: interestFromContributions,
-      buyingPowerAfterInflation: buyingPower,
-      accumulationSchedule: schedule,
-    });
-    setShowAccumulationSchedule(true);
-  }, [inputs]);
+  const hasMonthlyData =
+    results?.monthlyAccumulationSchedule &&
+    results.monthlyAccumulationSchedule.length > 0;
+  const hasYearlyData =
+    results?.yearlyAccumulationSchedule &&
+    results.yearlyAccumulationSchedule.length > 0;
 
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
-        {/* Input form */}
         <div className="lg:col-span-4">
           <InterestForm inputs={inputs} onInputChange={handleInputChange} />
         </div>
 
-        {/* Results */}
         <div className="lg:col-span-8 space-y-8">
           {results && (
             <>
               <InterestSummary results={results} />
               <InterestCharts results={results} inputs={inputs} />
-              {showAccumulationSchedule &&
-                results.accumulationSchedule.length > 0 && (
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-4 text-center">
-                      Accumulation Schedule
-                    </h2>
-                    <AccumulationScheduleTable
-                      data={results.accumulationSchedule}
-                    />
-                  </div>
-                )}
+              {showAccumulationSchedule && currentScheduleData.length > 0 && (
+                <div>
+                  {/* Schedule Type Toggle */}
+                  {hasMonthlyData && hasYearlyData && (
+                    <div className="flex justify-end mb-4">
+                      <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
+                        <button
+                          onClick={() => setScheduleType("yearly")}
+                          className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                            scheduleType === "yearly"
+                              ? "bg-white text-gray-900 shadow-sm"
+                              : "text-gray-600 hover:text-gray-900"
+                          }`}
+                        >
+                          Yearly
+                        </button>
+                        <button
+                          onClick={() => setScheduleType("monthly")}
+                          className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                            scheduleType === "monthly"
+                              ? "bg-white text-gray-900 shadow-sm"
+                              : "text-gray-600 hover:text-gray-900"
+                          }`}
+                        >
+                          Monthly
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  <AmortizationTable
+                    data={currentScheduleData.map((item) => ({
+                      paymentNumber: item.period,
+                      year: item.year,
+                      principal: item.deposit,
+                      interest: item.interest,
+                      endingBalance: item.endingBalance,
+                      isYearEnd: item.isYearEnd,
+                    }))}
+                    formatCurrency={formatCurrency}
+                    title={
+                      scheduleType === "monthly"
+                        ? "Monthly Accumulation Schedule"
+                        : "Yearly Accumulation Schedule"
+                    }
+                    showAnnualToggle={false}
+                    emptyStateMessage="Investment data is not available."
+                  />
+                </div>
+              )}
             </>
           )}
 
@@ -339,14 +183,11 @@ const InterestPage = () => {
         </div>
       </div>
 
-      {/* Info Cards Section */}
       <div className="space-y-8 mb-16">
         <InterestBasicsCard />
-        <TaxesInflationCard />
         <InterestStrategiesCard />
       </div>
 
-      {/* FAQ Section */}
       <InterestFAQSection />
     </div>
   );
@@ -354,7 +195,6 @@ const InterestPage = () => {
 
 export default InterestPage;
 
-// Helper function (can be moved to a utils file later)
 export const formatCurrency = (value: number | undefined) => {
   if (value === undefined || isNaN(value)) {
     return "$0.00";

@@ -14,12 +14,12 @@ export interface ListItem {
 export interface CalloutBox {
   type: "info" | "warning" | "success" | "error";
   title?: string;
-  content: string;
+  content: React.ReactNode;
 }
 
 export interface ContentSection {
   type: "text" | "subheader" | "grid" | "list" | "callout";
-  content?: string;
+  content?: string | React.ReactNode;
   heading?: string;
   headingLevel?: "h3" | "h4";
   gridItems?: GridItem[];
@@ -57,7 +57,7 @@ export default function InfoCard({
         {sections.map((section, index) => (
           <div key={index} className="mb-6 last:mb-0">
             {section.type === "text" && (
-              <p className="mb-4 text-gray-700">{section.content}</p>
+              <div className="mb-4 text-gray-700">{section.content}</div>
             )}
 
             {section.type === "subheader" && (
@@ -72,7 +72,7 @@ export default function InfoCard({
                   </h3>
                 )}
                 {section.content && (
-                  <p className="mb-4 text-gray-700">{section.content}</p>
+                  <div className="mb-4 text-gray-700">{section.content}</div>
                 )}
               </>
             )}
@@ -120,12 +120,12 @@ export default function InfoCard({
                   section.callout.type
                 )}`}
               >
-                <p className="text-sm">
+                <div className="text-sm whitespace-pre-line">
                   {section.callout.title && (
                     <strong>{section.callout.title}: </strong>
                   )}
                   {section.callout.content}
-                </p>
+                </div>
               </div>
             )}
           </div>

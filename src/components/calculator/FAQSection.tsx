@@ -602,7 +602,7 @@ const disclaimer = (
   </>
 );
 
-export default function FAQSection() {
+export default function CalculatorFAQSection() {
   return (
     <FAQSection
       items={faqData}

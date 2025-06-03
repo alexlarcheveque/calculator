@@ -70,7 +70,7 @@ const paymentBasicsSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "info",
       title: "Early Payment Advantage",
       content:
         "Since early payments have more interest and less principal, making extra payments early in the loan term has the greatest impact on reducing total interest costs. Even small extra amounts can save thousands over the loan life.",

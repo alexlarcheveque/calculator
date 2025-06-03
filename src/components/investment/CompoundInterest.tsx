@@ -75,7 +75,7 @@ const compoundInterestSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "info",
       title: "Real-World Example",
       content:
         "A 25-year-old investing $200/month at 7% return will have about $1.37 million at age 65. If they wait until age 35 to start, they'll only have about $612,000 - less than half, despite only investing 10 years longer.",

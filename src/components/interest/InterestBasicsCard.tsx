@@ -33,35 +33,67 @@ const interestBasicsSections: ContentSection[] = [
     headingLevel: "h4",
   },
   {
-    type: "callout",
-    callout: {
-      type: "info",
-      title: "The Power of Compounding",
-      content: (
-        <div>
-          <p className="mb-2">
-            $100 invested at 10% annual interest for 2 years:
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="font-semibold mb-1">Simple Interest:</p>
-              <p>Year 1: $100 + $10 = $110</p>
-              <p>Year 2: $110 + $10 = $120</p>
-              <p className="font-medium">Total: $120</p>
+    type: "text",
+    content: (
+      <div className="bg-gray-50 p-6 rounded-lg border">
+        <h4 className="font-semibold text-lg mb-4 text-gray-800">
+          Example: $1,000 invested at 8% annual interest for 10 years
+        </h4>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white p-4 rounded-md border border-gray-200">
+            <h5 className="font-semibold text-md mb-3 text-red-700">
+              Simple Interest
+            </h5>
+            <div className="space-y-1 text-sm">
+              <p>
+                Interest per year: $1,000 × 8% ={" "}
+                <span className="font-medium">$80</span>
+              </p>
+              <p>
+                Total interest: $80 × 10 years ={" "}
+                <span className="font-medium">$800</span>
+              </p>
+              <p>
+                Principal + Interest ={" "}
+                <span className="font-medium">$1,800</span>
+              </p>
             </div>
-            <div>
-              <p className="font-semibold mb-1">Compound Interest:</p>
-              <p>Year 1: $100 × 1.10 = $110</p>
-              <p>Year 2: $110 × 1.10 = $121</p>
-              <p className="font-medium">Total: $121</p>
+            <div className="mt-3 pt-2 border-t border-gray-200">
+              <p className="font-semibold text-red-700">Final Amount: $1,800</p>
             </div>
           </div>
-          <p className="mt-2 text-center font-medium">
-            Compound advantage: $1 extra
-          </p>
+
+          <div className="bg-white p-4 rounded-md border border-gray-200">
+            <h5 className="font-semibold text-md mb-3 text-green-700">
+              Compound Interest
+            </h5>
+            <div className="space-y-1 text-sm">
+              <p>Formula: $1,000 × (1.08)^10</p>
+              <p>
+                Growth factor: <span className="font-medium">2.159</span>
+              </p>
+              <p>
+                Final calculation: <span className="font-medium">$2,159</span>
+              </p>
+            </div>
+            <div className="mt-3 pt-2 border-t border-gray-200">
+              <p className="font-semibold text-green-700">
+                Final Amount: $2,159
+              </p>
+            </div>
+          </div>
         </div>
-      ),
-    },
+
+        <div className="mt-6 text-center">
+          <div className="inline-flex items-center px-4 py-2 bg-green-100 rounded-full">
+            <span className="text-green-800 font-semibold">
+              💰 Compound Advantage: $359 extra (20% more!)
+            </span>
+          </div>
+        </div>
+      </div>
+    ),
   },
   {
     type: "subheader",

@@ -96,7 +96,7 @@ const autoLoanCostFactorsSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "success",
       title: "Pro Tip",
       content:
         "Use our calculator to compare total costs with different down payments and loan terms. Sometimes a slightly higher monthly payment saves thousands in total interest.",

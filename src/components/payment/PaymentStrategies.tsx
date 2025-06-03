@@ -69,37 +69,33 @@ const paymentStrategiesSections: ContentSection[] = [
   },
   {
     type: "subheader",
-    heading: "When to Avoid Extra Payments",
-    headingLevel: "h4",
+    heading: "Important Factors to Consider",
+    headingLevel: "h3",
   },
   {
-    type: "callout",
-    callout: {
-      type: "warning",
-      title: "Consider These Factors",
-      content: (
-        <div>
-          <ul className="space-y-2 text-sm">
-            <li>
-              • <strong>Low interest rates:</strong> If your loan rate is below
-              4-5%, investing extra money may yield better returns
-            </li>
-            <li>
-              • <strong>Tax deductions:</strong> Mortgage interest deduction may
-              make keeping the loan beneficial
-            </li>
-            <li>
-              • <strong>Liquidity needs:</strong> Loan payments can't be undone
-              - keep adequate emergency funds
-            </li>
-            <li>
-              • <strong>Investment opportunities:</strong> Compare guaranteed
-              loan savings vs. potential investment returns
-            </li>
-          </ul>
-        </div>
-      ),
-    },
+    type: "list",
+    listItems: [
+      {
+        label: "Low Interest Rates",
+        description:
+          "If your loan rate is below 4-5%, investing extra money may yield better returns than paying down the loan early.",
+      },
+      {
+        label: "Tax Deductions",
+        description:
+          "Mortgage interest deduction may make keeping the loan beneficial from a tax perspective.",
+      },
+      {
+        label: "Liquidity Needs",
+        description:
+          "Loan payments can't be undone - make sure to keep adequate emergency funds before making extra payments.",
+      },
+      {
+        label: "Investment Opportunities",
+        description:
+          "Compare guaranteed loan savings vs. potential investment returns to make the best financial decision.",
+      },
+    ],
   },
 ];
 

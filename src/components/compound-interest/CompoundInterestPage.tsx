@@ -9,11 +9,8 @@ import CompoundInterestBasics from "@/components/compound-interest/CompoundInter
 import CompoundingFrequency from "@/components/compound-interest/CompoundingFrequency";
 import CompoundInterestFormulas from "@/components/compound-interest/CompoundInterestFormulas";
 import FAQSection from "@/components/compound-interest/FAQSection";
-import {
-  calculateCompoundInterest,
-  calculateEffectiveAnnualRate,
-  CompoundInterestResults,
-} from "@/utils/compoundInterestCalculations";
+import { CompoundInterestResults } from "@/types/compoundInterest";
+import { calculateCompoundInterestGrowth } from "@/utils/compoundInterestCalculations";
 
 interface FormValues {
   principal: number;
@@ -39,7 +36,12 @@ export default function CompoundInterestPage() {
       formValues.time > 0 &&
       formValues.compoundingFrequency > 0
     ) {
-      const calculatedResults = calculateCompoundInterest(formValues);
+      const calculatedResults = calculateCompoundInterestGrowth({
+        principal: formValues.principal,
+        interestRate: formValues.rate,
+        compoundingFrequency: formValues.compoundingFrequency,
+        timeYears: formValues.time,
+      });
       setResults(calculatedResults);
     } else {
       setResults(null);

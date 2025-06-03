@@ -75,7 +75,7 @@ const salaryNegotiationSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "info",
       title: "Effective Negotiation Tactics",
       content: (
         <div>
