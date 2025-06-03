@@ -590,7 +590,7 @@ const disclaimer = (
   </>
 );
 
-export default function FAQSection() {
+export default function ConceptionFAQSection() {
   return (
     <FAQSection
       items={faqData}

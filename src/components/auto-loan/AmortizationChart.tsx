@@ -1,4 +1,31 @@
+"use client";
+
 import { AutoLoanMonthlyAmortizationDataPoint } from "@/types/autoLoan";
+import { formatCurrency } from "@/utils/autoLoanCalculations";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+import { useMemo } from "react";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 interface AutoLoanAmortizationChartProps {
   data: AutoLoanMonthlyAmortizationDataPoint[];
@@ -17,131 +44,160 @@ export default function AutoLoanAmortizationChart({
     );
   }
 
-  // Basic SVG Placeholder - Replace with actual chart implementation
-  // This is a very simplified representation and not a functional chart
-  const svgHeight = 300;
-  const svgWidth = 500;
-  const padding = 40;
-  const chartHeight = svgHeight - 2 * padding;
-  const chartWidth = svgWidth - 2 * padding;
+  const chartData = useMemo(() => {
+    // Calculate cumulative values
+    let cumulativePrincipal = 0;
+    let cumulativeInterest = 0;
 
-  // Find max balance for scaling (simplified)
-  const maxBalance = Math.max(...data.map((d) => d.endingBalance), 0);
+    const dataWithCumulatives = data.map((point) => {
+      cumulativePrincipal += point.principal;
+      cumulativeInterest += point.interest;
+      return {
+        ...point,
+        cumulativePrincipal,
+        cumulativeInterest,
+      };
+    });
+
+    // Create labels for years instead of all months for cleaner display
+    const yearlyData = dataWithCumulatives.filter(
+      (_, index) =>
+        (index + 1) % 12 === 0 || index === dataWithCumulatives.length - 1
+    );
+    const labels = yearlyData.map((_, index) => {
+      if (
+        index === yearlyData.length - 1 &&
+        dataWithCumulatives.length % 12 !== 0
+      ) {
+        return `${Math.ceil(dataWithCumulatives.length / 12)}y`;
+      }
+      return `${index + 1}y`;
+    });
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: "Remaining Balance",
+          data: yearlyData.map((point) => point.endingBalance),
+          borderColor: "#0ea5e9",
+          backgroundColor: "rgba(14, 165, 233, 0.1)",
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+        },
+        {
+          label: "Principal Paid",
+          data: yearlyData.map((point) => point.cumulativePrincipal),
+          borderColor: "#10b981",
+          backgroundColor: "rgba(16, 185, 129, 0.1)",
+          fill: false,
+          tension: 0.4,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+        },
+        {
+          label: "Interest Paid",
+          data: yearlyData.map((point) => point.cumulativeInterest),
+          borderColor: "#f59e0b",
+          backgroundColor: "rgba(245, 158, 11, 0.1)",
+          fill: false,
+          tension: 0.4,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+        },
+      ],
+    };
+  }, [data]);
+
+  const options = useMemo(
+    () => ({
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "top" as const,
+          labels: {
+            padding: 20,
+            usePointStyle: true,
+            pointStyle: "circle",
+            font: {
+              size: 12,
+              family: "system-ui",
+            },
+          },
+        },
+        tooltip: {
+          mode: "index" as const,
+          intersect: false,
+          callbacks: {
+            label: function (context: any) {
+              const label = context.dataset.label || "";
+              const value = context.raw;
+              return `${label}: ${formatCurrency(value)}`;
+            },
+          },
+        },
+        title: {
+          display: true,
+          text: "Loan Balance & Payments Over Time",
+          font: {
+            size: 16,
+            weight: "bold" as const,
+          },
+          padding: {
+            bottom: 30,
+          },
+        },
+      },
+      scales: {
+        x: {
+          display: true,
+          title: {
+            display: true,
+            text: "Years",
+            font: {
+              size: 12,
+              weight: "bold" as const,
+            },
+          },
+          grid: {
+            display: false,
+          },
+        },
+        y: {
+          display: true,
+          title: {
+            display: true,
+            text: "Amount ($)",
+            font: {
+              size: 12,
+              weight: "bold" as const,
+            },
+          },
+          ticks: {
+            callback: function (value: any) {
+              return formatCurrency(value);
+            },
+          },
+          grid: {
+            color: "rgba(0, 0, 0, 0.1)",
+          },
+        },
+      },
+      interaction: {
+        mode: "nearest" as const,
+        axis: "x" as const,
+        intersect: false,
+      },
+    }),
+    []
+  );
 
   return (
-    <div className="flex flex-col items-center justify-center h-full">
-      <h3 className="text-lg font-semibold text-gray-700 mb-2">
-        Loan Balance Over Time
-      </h3>
-      <svg
-        width={svgWidth}
-        height={svgHeight}
-        className="border rounded-md bg-gray-50"
-      >
-        {/* Y Axis Placeholder */}
-        <line
-          x1={padding}
-          y1={padding}
-          x2={padding}
-          y2={svgHeight - padding}
-          stroke="#ccc"
-        />
-        <text
-          x={padding - 10}
-          y={padding}
-          dy=".3em"
-          textAnchor="end"
-          fontSize="10px"
-          fill="#666"
-        >
-          {maxBalance > 0 ? maxBalance.toLocaleString() : ""}
-        </text>
-        <text
-          x={padding - 10}
-          y={svgHeight - padding}
-          textAnchor="end"
-          fontSize="10px"
-          fill="#666"
-        >
-          0
-        </text>
-
-        {/* X Axis Placeholder */}
-        <line
-          x1={padding}
-          y1={svgHeight - padding}
-          x2={svgWidth - padding}
-          y2={svgHeight - padding}
-          stroke="#ccc"
-        />
-        <text
-          x={padding}
-          y={svgHeight - padding + 15}
-          textAnchor="start"
-          fontSize="10px"
-          fill="#666"
-        >
-          0
-        </text>
-        <text
-          x={svgWidth - padding}
-          y={svgHeight - padding + 15}
-          textAnchor="end"
-          fontSize="10px"
-          fill="#666"
-        >
-          {loanTermMonths}m
-        </text>
-
-        {/* Data Line Placeholder (Balance) */}
-        {maxBalance > 0 && data.length > 1 && (
-          <polyline
-            fill="none"
-            stroke="#2b7ddb"
-            strokeWidth="2"
-            points={data
-              .map(
-                (d, i) =>
-                  `${padding + (i / (data.length - 1)) * chartWidth},${
-                    svgHeight -
-                    padding -
-                    (d.endingBalance / maxBalance) * chartHeight
-                  }`
-              )
-              .join(" ")}
-          />
-        )}
-        {/* Legends Placeholder */}
-        <g transform={`translate(${padding + 20}, ${padding + 20})`}>
-          <rect x="0" y="0" width="10" height="10" fill="#2b7ddb" />
-          <text x="15" y="8" fontSize="10px" fill="#333">
-            Balance
-          </text>
-        </g>
-
-        <text
-          x={svgWidth / 2}
-          y={svgHeight - 5}
-          textAnchor="middle"
-          fontSize="12px"
-          fill="#666"
-        >
-          Month
-        </text>
-        <text
-          x={10}
-          y={svgHeight / 2}
-          transform={`rotate(-90 ${10},${svgHeight / 2})`}
-          textAnchor="middle"
-          fontSize="12px"
-          fill="#666"
-        >
-          Amount ($)
-        </text>
-      </svg>
-      <p className="text-xs text-gray-400 mt-1">
-        Simplified chart placeholder. Integrate a library for a full version.
-      </p>
+    <div className="w-full h-96 px-4 sm:px-0">
+      <Line data={chartData} options={options} />
     </div>
   );
 }

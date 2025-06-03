@@ -60,7 +60,69 @@ export default function AmortizationTable({
 
   // Create annual summary data by properly aggregating monthly data
   const annualData = (() => {
-    // If data already has year markers, use them
+    // Always use aggregation logic when paymentsPerYear is provided
+    // This ensures proper annual summaries for payment schedules
+    if (paymentsPerYear && paymentsPerYear > 1) {
+      const yearlyAggregates: { [year: number]: AmortizationDataPoint } = {};
+
+      data.forEach((item) => {
+        if (!item.paymentNumber) return;
+
+        const year = Math.ceil(item.paymentNumber / paymentsPerYear);
+
+        if (!yearlyAggregates[year]) {
+          yearlyAggregates[year] = {
+            year,
+            paymentNumber: year * paymentsPerYear, // Last payment number of the year
+            payment: 0,
+            principal: 0,
+            principalPayment: 0,
+            interest: 0,
+            interestPayment: 0,
+            remainingBalance: 0,
+            totalInterestPaid: 0,
+            totalPrincipalPaid: 0,
+            isYearEnd: true,
+          };
+        }
+
+        const yearData = yearlyAggregates[year];
+
+        // Sum up the payments for the year
+        yearData.payment = (yearData.payment || 0) + (item.payment || 0);
+
+        // Sum up principal payments for the year
+        const principal =
+          item.principal || item.principalPayment || item.principalPaid || 0;
+        yearData.principal = (yearData.principal || 0) + principal;
+        yearData.principalPayment = yearData.principal;
+
+        // Sum up interest payments for the year
+        const interest =
+          item.interest || item.interestPayment || item.interestPaid || 0;
+        yearData.interest = (yearData.interest || 0) + interest;
+        yearData.interestPayment = yearData.interest;
+
+        // Use the last payment's values for end-of-year balances
+        const isLastPaymentOfYear =
+          item.paymentNumber % paymentsPerYear === 0 ||
+          item.paymentNumber === data.length;
+
+        if (isLastPaymentOfYear) {
+          yearData.remainingBalance =
+            item.remainingBalance || item.endingBalance || 0;
+          yearData.totalInterestPaid =
+            item.totalInterestPaid || item.totalInterest || 0;
+          yearData.totalPrincipalPaid = item.totalPrincipalPaid || 0;
+        }
+      });
+
+      return Object.values(yearlyAggregates).sort(
+        (a, b) => (a.year || 0) - (b.year || 0)
+      );
+    }
+
+    // Fallback: If data already has year markers, use them
     const existingAnnualData = data.filter(
       (item) => item.isYearEnd || item.year
     );
@@ -68,43 +130,37 @@ export default function AmortizationTable({
       return existingAnnualData;
     }
 
-    // Otherwise, aggregate monthly data into annual summaries
+    // Otherwise, aggregate monthly data into annual summaries using auto-detection
     const yearlyAggregates: { [year: number]: AmortizationDataPoint } = {};
 
-    // Use provided paymentsPerYear or try to determine from data
-    let effectivePaymentsPerYear = paymentsPerYear || 12; // Default to monthly
+    // Try to detect the payment frequency by looking at reasonable boundaries
+    const maxPayments = data.length;
+    const commonFrequencies = [1, 2, 4, 12, 24, 26, 52, 365];
+    let bestFrequency = 12;
 
-    if (!paymentsPerYear && data.length > 0) {
-      // Fallback: try to detect the payment frequency by looking at reasonable boundaries
-      const maxPayments = data.length;
-      const commonFrequencies = [1, 2, 4, 12, 24, 26, 52, 365];
-      let bestFrequency = 12;
-
-      // For each frequency, see how well it divides our payment numbers
-      for (const freq of commonFrequencies) {
-        const expectedYears = Math.ceil(maxPayments / freq);
-        if (expectedYears >= 1 && expectedYears <= 50) {
-          // Reasonable loan term
-          // Check if this frequency creates reasonable year boundaries
-          const lastPaymentOfLastYear = expectedYears * freq;
-          if (lastPaymentOfLastYear >= maxPayments) {
-            bestFrequency = freq;
-            break;
-          }
+    // For each frequency, see how well it divides our payment numbers
+    for (const freq of commonFrequencies) {
+      const expectedYears = Math.ceil(maxPayments / freq);
+      if (expectedYears >= 1 && expectedYears <= 50) {
+        // Reasonable loan term
+        // Check if this frequency creates reasonable year boundaries
+        const lastPaymentOfLastYear = expectedYears * freq;
+        if (lastPaymentOfLastYear >= maxPayments) {
+          bestFrequency = freq;
+          break;
         }
       }
-      effectivePaymentsPerYear = bestFrequency;
     }
 
     data.forEach((item) => {
       if (!item.paymentNumber) return;
 
-      const year = Math.ceil(item.paymentNumber / effectivePaymentsPerYear);
+      const year = Math.ceil(item.paymentNumber / bestFrequency);
 
       if (!yearlyAggregates[year]) {
         yearlyAggregates[year] = {
           year,
-          paymentNumber: year * effectivePaymentsPerYear, // Last payment number of the year
+          paymentNumber: year * bestFrequency, // Last payment number of the year
           payment: 0,
           principal: 0,
           principalPayment: 0,
@@ -136,7 +192,7 @@ export default function AmortizationTable({
       // Use the last payment's values for end-of-year balances
       // Check if this is the last payment of the year or the final payment
       const isLastPaymentOfYear =
-        item.paymentNumber % effectivePaymentsPerYear === 0 ||
+        item.paymentNumber % bestFrequency === 0 ||
         item.paymentNumber === data.length;
 
       if (isLastPaymentOfYear) {

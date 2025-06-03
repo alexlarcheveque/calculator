@@ -91,7 +91,7 @@ export default function InvestmentPieChart({
   };
 
   return (
-    <div className="w-full px-4 sm:px-0">
+    <div className="w-full h-96 px-4 sm:px-0">
       <div className="relative w-full max-w-sm mx-auto">
         <Doughnut data={data} options={options} plugins={[centerTextPlugin]} />
       </div>

@@ -4,7 +4,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Interest Calculator | Calcy.net",
   description:
-    "Calculate compound interest, final balance, and accumulation schedule with various contribution options.",
+    "Calculate compound interest and projected investment growth. Features options for initial investment and regular contributions (monthly or annually).",
 };
 
 export default function InterestCalculatorRoute() {
@@ -15,9 +15,9 @@ export default function InterestCalculatorRoute() {
           Interest Calculator
         </h1>
         <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
-          Calculate compound interest, final balances, and accumulation
-          schedules with various contribution options. Advanced tool for
-          financial planning and investment growth analysis.
+          Calculate compound interest and projected investment growth. Features
+          options for initial investment and regular contributions (monthly or
+          annually).
         </p>
       </header>
       <InterestPage />

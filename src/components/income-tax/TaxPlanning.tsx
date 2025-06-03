@@ -75,7 +75,7 @@ const taxPlanningSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "success",
       title: "December Tax Planning Checklist",
       content: (
         <div>

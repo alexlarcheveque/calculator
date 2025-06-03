@@ -110,7 +110,6 @@ export default function InflationPage() {
             <>
               <InflationSummary results={results} />
               <InflationCharts results={results} />
-              <InflationTable results={results} />
             </>
           )}
 

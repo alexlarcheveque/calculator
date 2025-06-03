@@ -144,7 +144,7 @@ const economicImpactsSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "success",
       title: "How Businesses Respond to Inflation",
       content: (
         <div>

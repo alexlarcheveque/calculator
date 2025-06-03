@@ -1,7 +1,8 @@
 import {
   InterestCalculatorInput,
   CompoundFrequency,
-  ContributionTiming,
+  // ContributionTiming, // Removed
+  ContributionPaymentFrequency,
 } from "./InterestPage"; // Assuming types are exported from InterestPage.tsx
 
 interface InterestFormProps {
@@ -27,22 +28,24 @@ const parseFormattedNumber = (value: string): number | "" => {
 
 const compoundOptions: { value: CompoundFrequency; label: string }[] = [
   { value: "annually", label: "Annually (APY)" },
-  { value: "semiannually", label: "Semi-annually" },
-  { value: "quarterly", label: "Quarterly" },
   { value: "monthly", label: "Monthly (APR)" },
-  { value: "semimonthly", label: "Semi-monthly" },
-  { value: "biweekly", label: "Biweekly" },
-  { value: "weekly", label: "Weekly" },
   { value: "daily", label: "Daily" },
-  { value: "continuously", label: "Continuously" },
 ];
 
-const contributionTimingOptions: {
-  value: ContributionTiming;
+// const contributionTimingOptions: { // Removed
+//   value: ContributionTiming;
+//   label: string;
+// }[] = [
+//   { value: "beginning", label: "Beginning of Period" },
+//   { value: "end", label: "End of Period" },
+// ];
+
+const contributionPaymentFrequencyOptions: {
+  value: ContributionPaymentFrequency;
   label: string;
 }[] = [
-  { value: "beginning", label: "Beginning of Period" },
-  { value: "end", label: "End of Period" },
+  { value: "monthly", label: "Monthly" },
+  { value: "annually", label: "Annually" },
 ];
 
 export default function InterestForm({
@@ -53,21 +56,15 @@ export default function InterestForm({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
-    let processedValue: string | number = value;
+    let processedValue: string | number | ContributionPaymentFrequency = value;
 
     console.log("inputs", inputs);
 
-    if (
-      name === "initialInvestment" ||
-      name === "annualContribution" ||
-      name === "monthlyContribution"
-    ) {
+    if (name === "initialInvestment" || name === "regularContributionAmount") {
       processedValue = parseFormattedNumber(value);
     } else if (
       type === "number" ||
       name === "interestRate" ||
-      name === "taxRate" ||
-      name === "inflationRate" ||
       name === "investmentLengthYears" ||
       name === "investmentLengthMonths"
     ) {
@@ -108,13 +105,13 @@ export default function InterestForm({
           </div>
         </div>
 
-        {/* Annual Contribution */}
+        {/* Regular Contribution Amount */}
         <div className="form-group">
           <label
-            htmlFor="annualContribution"
+            htmlFor="regularContributionAmount"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Annual Contribution
+            Regular Contribution
           </label>
           <div className="relative rounded-md shadow-sm">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -122,105 +119,32 @@ export default function InterestForm({
             </div>
             <input
               type="text"
-              id="annualContribution"
-              name="annualContribution"
+              id="regularContributionAmount"
+              name="regularContributionAmount"
               className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={formatNumberWithCommas(inputs.annualContribution)}
+              value={formatNumberWithCommas(inputs.regularContributionAmount)}
               onChange={handleGenericChange}
-              placeholder="e.g., 5,000"
+              placeholder="e.g., 500"
             />
           </div>
         </div>
 
-        {/* Monthly Contribution */}
+        {/* Contribution Payment Frequency */}
         <div className="form-group">
           <label
-            htmlFor="monthlyContribution"
+            htmlFor="contributionPaymentFrequency"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Monthly Contribution
-          </label>
-          <div className="relative rounded-md shadow-sm">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span className="text-gray-500">$</span>
-            </div>
-            <input
-              type="text"
-              id="monthlyContribution"
-              name="monthlyContribution"
-              className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={formatNumberWithCommas(inputs.monthlyContribution)}
-              onChange={handleGenericChange}
-              placeholder="e.g., 0"
-            />
-          </div>
-        </div>
-
-        {/* Contribution Timing */}
-        <div className="form-group">
-          <label
-            htmlFor="contributionTiming"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Contribute At The
+            Contribution Frequency
           </label>
           <select
-            id="contributionTiming"
-            name="contributionTiming"
+            id="contributionPaymentFrequency"
+            name="contributionPaymentFrequency"
             className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            value={inputs.contributionTiming ?? "beginning"}
+            value={inputs.contributionPaymentFrequency ?? "monthly"}
             onChange={handleGenericChange}
           >
-            {contributionTimingOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Interest Rate */}
-        <div className="form-group">
-          <label
-            htmlFor="interestRate"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Interest Rate
-          </label>
-          <div className="relative rounded-md shadow-sm">
-            <input
-              type="number"
-              id="interestRate"
-              name="interestRate"
-              className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={inputs.interestRate ?? ""}
-              onChange={handleGenericChange}
-              min="0"
-              step="0.01"
-              placeholder="e.g., 5"
-            />
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-              <span className="text-gray-500">%</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Compound Frequency */}
-        <div className="form-group">
-          <label
-            htmlFor="compoundFrequency"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Compound Frequency
-          </label>
-          <select
-            id="compoundFrequency"
-            name="compoundFrequency"
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            value={inputs.compoundFrequency ?? "annually"}
-            onChange={handleGenericChange}
-          >
-            {compoundOptions.map((opt) => (
+            {contributionPaymentFrequencyOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
               </option>
@@ -277,26 +201,25 @@ export default function InterestForm({
           </div>
         </div>
 
-        {/* Tax Rate */}
+        {/* Interest Rate */}
         <div className="form-group">
           <label
-            htmlFor="taxRate"
+            htmlFor="interestRate"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Tax Rate (on interest)
+            Estimated Rate of Return
           </label>
           <div className="relative rounded-md shadow-sm">
             <input
               type="number"
-              id="taxRate"
-              name="taxRate"
+              id="interestRate"
+              name="interestRate"
               className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={inputs.taxRate ?? ""}
+              value={inputs.interestRate ?? ""}
               onChange={handleGenericChange}
               min="0"
-              max="100"
               step="0.01"
-              placeholder="e.g., 0 (if not taxable)"
+              placeholder="e.g., 5"
             />
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
               <span className="text-gray-500">%</span>
@@ -304,31 +227,27 @@ export default function InterestForm({
           </div>
         </div>
 
-        {/* Inflation Rate */}
+        {/* Compound Frequency */}
         <div className="form-group">
           <label
-            htmlFor="inflationRate"
+            htmlFor="compoundFrequency"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Inflation Rate (for buying power adjustment)
+            Compound Frequency
           </label>
-          <div className="relative rounded-md shadow-sm">
-            <input
-              type="number"
-              id="inflationRate"
-              name="inflationRate"
-              className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={inputs.inflationRate ?? ""}
-              onChange={handleGenericChange}
-              min="0"
-              max="100"
-              step="0.01"
-              placeholder="e.g., 3"
-            />
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-              <span className="text-gray-500">%</span>
-            </div>
-          </div>
+          <select
+            id="compoundFrequency"
+            name="compoundFrequency"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            value={inputs.compoundFrequency ?? "annually"}
+            onChange={handleGenericChange}
+          >
+            {compoundOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
     </div>

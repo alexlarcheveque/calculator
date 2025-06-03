@@ -45,7 +45,7 @@ export default function MortgageCharts({
         </button>
       </div>
 
-      <div className="h-64 sm:h-96">
+      <div className="w-full">
         {activeTab === "payment" ? (
           <PaymentDistributionChart results={results} />
         ) : (

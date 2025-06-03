@@ -101,7 +101,7 @@ const retirementSavingsRulesSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "info",
       title: "Start Where You Are",
       content:
         "These are guidelines, not rigid requirements. If you're behind, don't get discouraged - start saving what you can now and increase contributions when possible. Use our calculator to create a personalized plan.",

@@ -84,31 +84,65 @@ const loanTermsSections: ContentSection[] = [
     ],
   },
   {
-    type: "callout",
-    callout: {
-      type: "info",
-      title: "Real Impact Example",
-      content: (
-        <div>
-          <p className="mb-2">$200,000 mortgage at 6% interest:</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="font-semibold">15-Year Term:</p>
-              <p>Monthly Payment: $1,687</p>
-              <p>Total Interest: $103,788</p>
+    type: "subheader",
+    heading: "Real Impact Example",
+    headingLevel: "h4",
+  },
+  {
+    type: "text",
+    content: (
+      <div className="bg-gray-50 p-6 rounded-lg border">
+        <h4 className="font-semibold text-lg mb-4 text-gray-800">
+          $200,000 mortgage at 6% interest:
+        </h4>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white p-4 rounded-md border border-gray-200">
+            <h5 className="font-semibold text-md mb-3 text-green-700">
+              15-Year Term
+            </h5>
+            <div className="space-y-1 text-sm">
+              <p>
+                Monthly Payment: <span className="font-medium">$1,687</span>
+              </p>
+              <p>
+                Total Interest: <span className="font-medium">$103,788</span>
+              </p>
             </div>
-            <div>
-              <p className="font-semibold">30-Year Term:</p>
-              <p>Monthly Payment: $1,199</p>
-              <p>Total Interest: $231,676</p>
+            <div className="mt-3 pt-2 border-t border-gray-200">
+              <p className="font-semibold text-green-700">
+                Better Long-term Value
+              </p>
             </div>
           </div>
-          <p className="mt-2 font-medium text-center">
-            Savings with 15-year: $127,888 in interest
-          </p>
+
+          <div className="bg-white p-4 rounded-md border border-gray-200">
+            <h5 className="font-semibold text-md mb-3 text-red-700">
+              30-Year Term
+            </h5>
+            <div className="space-y-1 text-sm">
+              <p>
+                Monthly Payment: <span className="font-medium">$1,199</span>
+              </p>
+              <p>
+                Total Interest: <span className="font-medium">$231,676</span>
+              </p>
+            </div>
+            <div className="mt-3 pt-2 border-t border-gray-200">
+              <p className="font-semibold text-red-700">Higher Total Cost</p>
+            </div>
+          </div>
         </div>
-      ),
-    },
+
+        <div className="mt-6 text-center">
+          <div className="inline-flex items-center px-4 py-2 bg-green-100 rounded-full">
+            <span className="text-green-800 font-semibold">
+              💰 Savings with 15-year: $127,888 in interest
+            </span>
+          </div>
+        </div>
+      </div>
+    ),
   },
 ];
 

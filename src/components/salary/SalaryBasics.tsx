@@ -105,7 +105,7 @@ const salaryBasicsSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "info",
       title: "Adjusted vs. Unadjusted Calculations",
       content:
         "Unadjusted calculations assume you work every scheduled day. Adjusted calculations account for holidays, vacation, and sick days, providing a more realistic take-home estimate. Most employers offer 10-25 total PTO/holiday days per year.",

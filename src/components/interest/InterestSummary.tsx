@@ -29,7 +29,7 @@ export default function InterestSummary({ results }: InterestSummaryProps) {
         <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
           Final Results
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           {/* Main Ending Balance */}
           <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
             <div className="text-sm text-gray-600">Ending Balance</div>
@@ -41,8 +41,8 @@ export default function InterestSummary({ results }: InterestSummaryProps) {
             </div>
           </div>
 
-          {/* Buying Power After Inflation */}
-          <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+          {/* Buying Power After Inflation - REMOVED */}
+          {/* <div className="bg-green-50 p-4 rounded-lg border border-green-100">
             <div className="text-sm text-gray-600">
               Buying Power (After Inflation)
             </div>
@@ -52,7 +52,7 @@ export default function InterestSummary({ results }: InterestSummaryProps) {
             <div className="text-xs text-gray-500 mt-1">
               Value in today's purchasing power
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

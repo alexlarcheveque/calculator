@@ -1,6 +1,7 @@
 "use client";
 
-import FAQSection, { FAQItem } from "../ui/FAQSection";
+import FAQSection from "../ui/FAQSection";
+import { FAQItem } from "../ui/FAQSection";
 
 const faqData: FAQItem[] = [
   {
@@ -542,7 +543,7 @@ const disclaimer = (
   </>
 );
 
-export default function FAQSection() {
+export default function AgeFAQSection() {
   return (
     <FAQSection
       items={faqData}

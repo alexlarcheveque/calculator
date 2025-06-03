@@ -600,7 +600,7 @@ const disclaimer = (
   </>
 );
 
-export default function FAQSection() {
+export default function GradeFAQSection() {
   return (
     <FAQSection
       items={faqData}

@@ -34,6 +34,7 @@ export default function PaymentAmortizationTable({
       title="Amortization Schedule"
       showAnnualToggle={true}
       emptyStateMessage="Amortization data is not available."
+      paymentsPerYear={12}
     />
   );
 }

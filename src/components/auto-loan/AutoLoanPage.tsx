@@ -11,6 +11,7 @@ import AutoLoanCostFactors from "@/components/auto-loan/AutoLoanCostFactors";
 import FAQSection from "@/components/auto-loan/FAQSection";
 import { AutoLoanFormValues, AutoLoanResults } from "@/types/autoLoan";
 import { calculateAutoLoan } from "@/utils/autoLoanCalculations";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 const initialFormValues: AutoLoanFormValues = {
   autoPrice: 50000,
@@ -27,8 +28,11 @@ const initialFormValues: AutoLoanFormValues = {
 };
 
 export default function AutoLoanPage() {
-  const [formValues, setFormValues] =
-    useState<AutoLoanFormValues>(initialFormValues);
+  const [formValues, setFormValues, isInitialized] =
+    useLocalStorage<AutoLoanFormValues>(
+      "autoLoanFormValues",
+      initialFormValues
+    );
   const [results, setResults] = useState<AutoLoanResults | null>(null);
 
   const handleFormChange = useCallback(
@@ -38,10 +42,13 @@ export default function AutoLoanPage() {
         [name]: value,
       }));
     },
-    []
+    [setFormValues]
   );
 
   useEffect(() => {
+    // Only calculate after localStorage has initialized to avoid calculations with default values
+    if (!isInitialized) return;
+
     // Basic validation to ensure essential numbers are present and positive for calculation
     if (
       formValues.autoPrice > 0 &&
@@ -56,7 +63,19 @@ export default function AutoLoanPage() {
       // If inputs are not valid for a calculation (e.g. price is 0), clear results
       setResults(null);
     }
-  }, [formValues]);
+  }, [formValues, isInitialized]);
+
+  // Show loading state until localStorage has initialized
+  if (!isInitialized) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your saved data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

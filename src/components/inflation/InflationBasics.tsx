@@ -120,7 +120,7 @@ const inflationBasicsSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "success",
       title: "Basic Inflation Formulas",
       content: (
         <div>

@@ -130,7 +130,7 @@ const deductionsCreditsSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "success",
       title: "Tax Optimization Strategies",
       content: (
         <div>

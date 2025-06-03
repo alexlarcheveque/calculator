@@ -589,7 +589,7 @@ const disclaimer = (
   </>
 );
 
-export default function FAQSection() {
+export default function FractionFAQSection() {
   return (
     <FAQSection
       items={faqData}

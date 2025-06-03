@@ -130,5 +130,9 @@ export default function AmortizationChart({ data }: AmortizationChartProps) {
     },
   };
 
-  return <Line data={chartData} options={options} />;
+  return (
+    <div className="w-full h-96 px-4 sm:px-0">
+      <Line data={chartData} options={options} />
+    </div>
+  );
 }

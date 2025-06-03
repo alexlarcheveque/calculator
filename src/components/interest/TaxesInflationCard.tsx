@@ -98,7 +98,7 @@ const taxesInflationSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "info",
       title: "Maximizing After-Tax, After-Inflation Returns",
       content:
         "Focus on tax-advantaged accounts first, consider investments that historically outpace inflation, and remember that earning returns significantly above both taxes and inflation is key to building real wealth over time.",

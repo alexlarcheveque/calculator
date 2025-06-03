@@ -140,7 +140,7 @@ const stateLocalVariationsSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "info",
       title: "Cross-Border Shopping Considerations",
       content: (
         <div>

@@ -581,7 +581,7 @@ const disclaimer = (
   </>
 );
 
-export default function FAQSection() {
+export default function SubnetFAQSection() {
   return (
     <FAQSection
       items={faqData}

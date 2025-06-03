@@ -31,6 +31,8 @@ import {
   IncomeAfterRetirementUnit,
   FutureSavingsUnit,
 } from "@/types/retirement";
+import RetirementCharts from "./RetirementCharts";
+import RetirementTable from "./RetirementTable";
 
 export type RetirementCalculatorType =
   | "needs"

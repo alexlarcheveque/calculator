@@ -67,11 +67,17 @@ export default function AutoLoanSummary({ results }: AutoLoanSummaryProps) {
             <div className="text-xl font-bold text-gray-800">
               {formatCurrency(results.totalLoanPayments)}
             </div>
+            <div className="text-xs text-gray-500 mt-1">
+              All monthly payments combined
+            </div>
           </div>
           <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
             <div className="text-sm text-gray-600">Total Loan Interest</div>
             <div className={"text-xl font-bold text-gray-800"}>
               {formatCurrency(results.totalLoanInterest)}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              Interest paid over loan term
             </div>
           </div>
           <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">

@@ -60,38 +60,61 @@ export default function PaymentDistributionChart({
     return {
       id: "centerText",
       beforeDraw: (chart: any) => {
-        const { ctx, width, height } = chart;
-        ctx.restore();
+        const { ctx, chartArea } = chart;
+        if (!chartArea) return;
 
-        const centerX = width / 2;
-        const centerY = height / 2;
+        ctx.save();
+
+        // Calculate the actual center of the chart area (excluding legend)
+        const centerX = (chartArea.left + chartArea.right) / 2;
+        const centerY = (chartArea.top + chartArea.bottom) / 2;
 
         // Responsive font sizes
         const isMobile =
           typeof window !== "undefined" && window.innerWidth < 768;
-        const labelFontSize = isMobile ? 12 : 18;
-        const amountFontSize = isMobile ? 18 : 28;
-        const labelOffset = isMobile ? 40 : 30;
-        const amountOffset = isMobile ? 20 : 0;
+        const labelFontSize = isMobile ? 12 : 16;
+        const amountFontSize = isMobile ? 16 : 24;
 
-        // Draw label
-        ctx.font = `500 ${labelFontSize}px system-ui`;
-        ctx.fillStyle = "#4B5563"; // text-gray-600
-        ctx.textBaseline = "middle";
+        // Set up text properties for measurements
         ctx.textAlign = "center";
-        ctx.fillText(centerText.label, centerX, centerY - labelOffset);
+        ctx.textBaseline = "middle";
 
-        // Draw value
-        ctx.font = `600 ${amountFontSize}px system-ui`;
-        ctx.fillStyle = "#111827"; // text-gray-900
+        // Prepare the display value
         const displayValue =
           typeof centerText.value === "number"
             ? centerText.formatter
               ? centerText.formatter(centerText.value)
               : formatCurrency(centerText.value)
             : centerText.value;
-        ctx.fillText(displayValue, centerX, centerY - amountOffset);
-        ctx.save();
+
+        // Measure text dimensions
+        ctx.font = `500 ${labelFontSize}px system-ui`;
+        const labelMetrics = ctx.measureText(centerText.label);
+        const labelHeight = labelFontSize;
+
+        ctx.font = `600 ${amountFontSize}px system-ui`;
+        const valueMetrics = ctx.measureText(displayValue);
+        const valueHeight = amountFontSize;
+
+        // Calculate total text height and spacing
+        const spacing = isMobile ? 4 : 6;
+        const totalTextHeight = labelHeight + spacing + valueHeight;
+
+        // Position text to center both label and value as a group
+        const labelY = centerY - totalTextHeight / 2 + labelHeight / 2;
+        const valueY = centerY + totalTextHeight / 2 - valueHeight / 2;
+
+        // Draw label
+        ctx.font = `500 ${labelFontSize}px system-ui`;
+        ctx.fillStyle = "#4B5563"; // text-gray-600
+        ctx.fillText(centerText.label, centerX, labelY);
+
+        // Draw value
+        ctx.font = `600 ${amountFontSize}px system-ui`;
+        ctx.fillStyle = "#111827"; // text-gray-900
+        ctx.fillText(displayValue, centerX, valueY);
+
+        ctx.restore();
       },
     };
   }, [centerText, formatCurrency]);

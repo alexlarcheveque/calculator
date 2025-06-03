@@ -50,7 +50,7 @@ const faqData: FAQItem[] = [
   },
 ];
 
-export default function FAQSection() {
+export default function PaceFAQSection() {
   const [openItems, setOpenItems] = useState<number[]>([]);
 
   const toggleItem = (index: number) => {

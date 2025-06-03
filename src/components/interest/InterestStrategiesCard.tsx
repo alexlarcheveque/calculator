@@ -12,29 +12,28 @@ const interestStrategiesSections: ContentSection[] = [
     headingLevel: "h3",
   },
   {
-    type: "callout",
-    callout: {
-      type: "info",
-      title: "Quick Doubling Time Estimate",
-      content: (
-        <div>
-          <div className="bg-white p-3 rounded border text-center font-mono text-lg mb-3">
-            Years to Double ≈ 72 ÷ Interest Rate
-          </div>
-          <p className="mb-2">
-            <strong>Examples:</strong>
-          </p>
-          <ul className="space-y-1 text-sm">
-            <li>• 6% rate: 72 ÷ 6 = 12 years to double</li>
-            <li>• 8% rate: 72 ÷ 8 = 9 years to double</li>
-            <li>• 12% rate: 72 ÷ 12 = 6 years to double</li>
-          </ul>
-          <p className="mt-2 text-sm">
-            <strong>Note:</strong> Most accurate for rates between 6% and 10%
-          </p>
+    type: "text",
+    content: (
+      <div>
+        <p className="mb-4">
+          Quick mental calculation to estimate doubling time:
+        </p>
+        <div className="bg-gray-100 p-4 rounded font-mono text-lg text-center mb-4">
+          Years to Double ≈ 72 ÷ Interest Rate
         </div>
-      ),
-    },
+        <p className="mb-2">
+          <strong>Examples:</strong>
+        </p>
+        <ul className="space-y-1 mb-4">
+          <li>• 6% rate: 72 ÷ 6 = 12 years to double</li>
+          <li>• 8% rate: 72 ÷ 8 = 9 years to double</li>
+          <li>• 12% rate: 72 ÷ 12 = 6 years to double</li>
+        </ul>
+        <p className="text-sm text-gray-600">
+          <strong>Note:</strong> Most accurate for rates between 6% and 10%
+        </p>
+      </div>
+    ),
   },
   {
     type: "subheader",
@@ -45,11 +44,6 @@ const interestStrategiesSections: ContentSection[] = [
     type: "grid",
     gridCols: 2,
     gridItems: [
-      {
-        title: "Beginning vs. End Contributions",
-        description:
-          "Contributing at the beginning of each period is always better because your money starts earning interest immediately rather than waiting until the next period.",
-      },
       {
         title: "Regular vs. Lump Sum",
         description:
@@ -64,6 +58,11 @@ const interestStrategiesSections: ContentSection[] = [
         title: "Reinvestment Strategy",
         description:
           "Always reinvest dividends and interest earnings to maximize compound growth. Even small amounts compound significantly over decades.",
+      },
+      {
+        title: "Contribution Frequency",
+        description:
+          "This calculator automatically adds contributions at the beginning of each period for optimal growth. More frequent contributions can lead to higher returns due to earlier compounding.",
       },
     ],
   },
@@ -86,11 +85,6 @@ const interestStrategiesSections: ContentSection[] = [
           "Seek higher interest rates through high-yield savings accounts, CDs, or low-risk bond funds while maintaining appropriate safety levels",
       },
       {
-        label: "Use Tax-Advantaged Accounts",
-        description:
-          "Prioritize 401(k)s, IRAs, and HSAs to avoid taxes that erode compound growth. These accounts can double your effective returns",
-      },
-      {
         label: "Consider Compounding Frequency",
         description:
           "When comparing options with similar rates, choose higher compounding frequency (daily vs. annual) for modestly better returns",
@@ -100,7 +94,7 @@ const interestStrategiesSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "success",
       title: "Power of Consistent Contributions",
       content:
         "A $200 monthly contribution earning 7% annually for 30 years grows to over $610,000. The key is consistency and patience - small amounts can create substantial wealth through the magic of compound interest.",

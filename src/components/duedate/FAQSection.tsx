@@ -5,7 +5,8 @@ import FAQSection, { FAQItem } from "../ui/FAQSection";
 const faqData: FAQItem[] = [
   {
     id: "due-date-calculation-accuracy",
-    question: "How accurate are due date calculations and what should I expect?",
+    question:
+      "How accurate are due date calculations and what should I expect?",
     answer: (
       <>
         <p className="mb-2">
@@ -22,8 +23,8 @@ const faqData: FAQItem[] = [
             calculated date
           </li>
           <li>
-            <strong>Within 1 week:</strong> 25% of babies are born within 1
-            week of due date
+            <strong>Within 1 week:</strong> 25% of babies are born within 1 week
+            of due date
           </li>
           <li>
             <strong>Within 2 weeks:</strong> 85% of babies are born within 2
@@ -169,7 +170,7 @@ const faqData: FAQItem[] = [
         <ul className="list-disc list-inside space-y-1 text-sm">
           <li>Irregular menstrual cycles</li>
           <li>Uncertain LMP date</li>
-          <li>Discrepancy >7 days between LMP and ultrasound dating</li>
+          <li>Discrepancy &gt;7 days between LMP and ultrasound dating</li>
           <li>Conception occurred while breastfeeding or on birth control</li>
         </ul>
       </>
@@ -177,7 +178,8 @@ const faqData: FAQItem[] = [
   },
   {
     id: "pregnancy-term-definitions",
-    question: "What do 'full-term,' 'preterm,' and 'post-term' pregnancies mean?",
+    question:
+      "What do 'full-term,' 'preterm,' and 'post-term' pregnancies mean?",
     answer: (
       <>
         <p className="mb-2">
@@ -372,8 +374,8 @@ const faqData: FAQItem[] = [
         </p>
         <ul className="list-disc list-inside space-y-1 text-sm">
           <li>
-            <strong>Early ultrasound:</strong> Most reliable method,
-            preferably 6-13 weeks
+            <strong>Early ultrasound:</strong> Most reliable method, preferably
+            6-13 weeks
           </li>
           <li>
             <strong>Conception date:</strong> If known from fertility tracking
@@ -545,7 +547,8 @@ const faqData: FAQItem[] = [
   },
   {
     id: "multiple-dating-methods",
-    question: "Which due date calculation method should I trust if they differ?",
+    question:
+      "Which due date calculation method should I trust if they differ?",
     answer: (
       <>
         <p className="mb-2">
@@ -603,18 +606,10 @@ const faqData: FAQItem[] = [
           <strong>Clinical decision factors:</strong>
         </p>
         <ul className="list-disc list-inside space-y-1 text-sm">
-          <li>
-            Consistency with fetal growth patterns
-          </li>
-          <li>
-            Maternal cycle history and regularity
-          </li>
-          <li>
-            Quality and timing of ultrasound measurements
-          </li>
-          <li>
-            Other clinical indicators and symptoms
-          </li>
+          <li>Consistency with fetal growth patterns</li>
+          <li>Maternal cycle history and regularity</li>
+          <li>Quality and timing of ultrasound measurements</li>
+          <li>Other clinical indicators and symptoms</li>
         </ul>
       </>
     ),
@@ -626,7 +621,8 @@ const faqData: FAQItem[] = [
       <>
         <p className="mb-2">
           As you approach your due date, your body provides various signs that
-          labor may be starting soon, though timing can still vary significantly.
+          labor may be starting soon, though timing can still vary
+          significantly.
         </p>
         <p className="mb-2">
           <strong>Early labor signs (may occur days to weeks before):</strong>
@@ -675,18 +671,10 @@ const faqData: FAQItem[] = [
           <strong>When to contact your healthcare provider:</strong>
         </p>
         <ul className="list-disc list-inside space-y-1 text-sm">
-          <li>
-            Contractions 5 minutes apart for 1 hour (first baby)
-          </li>
-          <li>
-            Contractions 10 minutes apart (subsequent babies)
-          </li>
-          <li>
-            Water breaks (clear, yellow, green, or bloody fluid)
-          </li>
-          <li>
-            Decreased fetal movement or other concerning symptoms
-          </li>
+          <li>Contractions 5 minutes apart for 1 hour (first baby)</li>
+          <li>Contractions 10 minutes apart (subsequent babies)</li>
+          <li>Water breaks (clear, yellow, green, or bloody fluid)</li>
+          <li>Decreased fetal movement or other concerning symptoms</li>
         </ul>
       </>
     ),
@@ -708,7 +696,7 @@ const disclaimer = (
   </>
 );
 
-export default function FAQSection() {
+export default function DueDateFAQSection() {
   return (
     <FAQSection
       items={faqData}
@@ -725,4 +713,4 @@ export default function FAQSection() {
       ]}
     />
   );
-} 
+}

@@ -163,7 +163,7 @@ const protectionStrategiesSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "success",
       title: "Everyday Inflation Defense Strategies",
       content: (
         <div>

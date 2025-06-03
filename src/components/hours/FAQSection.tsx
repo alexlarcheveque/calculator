@@ -701,7 +701,7 @@ const disclaimer = (
   </>
 );
 
-export default function FAQSection() {
+export default function HoursFAQSection() {
   return (
     <FAQSection
       items={faqData}

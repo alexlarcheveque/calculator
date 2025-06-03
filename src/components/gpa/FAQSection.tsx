@@ -638,7 +638,7 @@ const disclaimer = (
   </>
 );
 
-export default function FAQSection() {
+export default function GPAFAQSection() {
   return (
     <FAQSection
       items={faqData}
