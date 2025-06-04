@@ -9,14 +9,18 @@ import CompoundInterestBasics from "@/components/compound-interest/CompoundInter
 import CompoundingFrequency from "@/components/compound-interest/CompoundingFrequency";
 import CompoundInterestFormulas from "@/components/compound-interest/CompoundInterestFormulas";
 import FAQSection from "@/components/compound-interest/FAQSection";
-import { CompoundInterestResults } from "@/types/compoundInterest";
+import {
+  CompoundInterestResults,
+  CompoundingFrequency as CompoundingFrequencyEnum,
+  CompoundInterestFormValues,
+} from "@/types/compoundInterest";
 import { calculateCompoundInterestGrowth } from "@/utils/compoundInterestCalculations";
 
 interface FormValues {
   principal: number;
   rate: number;
   time: number;
-  compoundingFrequency: number;
+  compoundingFrequency: CompoundingFrequencyEnum;
 }
 
 export default function CompoundInterestPage() {
@@ -24,7 +28,7 @@ export default function CompoundInterestPage() {
     principal: 5000,
     rate: 5,
     time: 10,
-    compoundingFrequency: 1,
+    compoundingFrequency: CompoundingFrequencyEnum.ANNUALLY,
   });
 
   const [results, setResults] = useState<CompoundInterestResults | null>(null);
@@ -33,8 +37,7 @@ export default function CompoundInterestPage() {
     if (
       formValues.principal > 0 &&
       formValues.rate >= 0 &&
-      formValues.time > 0 &&
-      formValues.compoundingFrequency > 0
+      formValues.time > 0
     ) {
       const calculatedResults = calculateCompoundInterestGrowth({
         principal: formValues.principal,
@@ -42,14 +45,37 @@ export default function CompoundInterestPage() {
         compoundingFrequency: formValues.compoundingFrequency,
         timeYears: formValues.time,
       });
-      setResults(calculatedResults);
+
+      // Convert the growth data points to CompoundInterestResults
+      const lastDataPoint = calculatedResults[calculatedResults.length - 1];
+      setResults({
+        inputRate: formValues.rate,
+        inputFrequency: formValues.compoundingFrequency,
+        outputRate: formValues.rate,
+        outputFrequency: formValues.compoundingFrequency,
+        effectiveAnnualRate:
+          ((lastDataPoint.totalValue / formValues.principal) **
+            (1 / formValues.time) -
+            1) *
+          100,
+      });
     } else {
       setResults(null);
     }
   }, [formValues]);
 
-  const handleInputChange = (field: keyof FormValues, value: number) => {
+  const handleInputChange = (
+    field: string,
+    value: number | CompoundingFrequencyEnum
+  ) => {
     setFormValues((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Convert FormValues to CompoundInterestFormValues
+  const compoundInterestFormValues: CompoundInterestFormValues = {
+    inputInterestRate: formValues.rate,
+    inputCompoundingFrequency: formValues.compoundingFrequency,
+    outputCompoundingFrequency: formValues.compoundingFrequency,
   };
 
   return (
@@ -58,7 +84,7 @@ export default function CompoundInterestPage() {
         {/* Input form */}
         <div className="lg:col-span-4">
           <CompoundInterestForm
-            values={formValues}
+            values={compoundInterestFormValues}
             onChange={handleInputChange}
           />
         </div>
@@ -69,8 +95,13 @@ export default function CompoundInterestPage() {
             <>
               <CompoundInterestSummary results={results} />
               <CompoundInterestChart
-                results={results}
-                formValues={formValues}
+                data={calculateCompoundInterestGrowth({
+                  principal: formValues.principal,
+                  interestRate: formValues.rate,
+                  compoundingFrequency: formValues.compoundingFrequency,
+                  timeYears: formValues.time,
+                })}
+                title="Compound Interest Growth"
               />
 
               {/* Effective Annual Rate display */}

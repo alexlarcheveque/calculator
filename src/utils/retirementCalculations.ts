@@ -34,65 +34,92 @@ export function calculateRetirement(
   const yearsToRetirement = retirementAge - currentAge;
   const yearsInRetirement = lifeExpectancy - retirementAge;
 
-  // Calculate income at retirement (inflation adjusted)
-  const incomeAtRetirement =
-    currentIncome * Math.pow(1 + incomeIncrease / 100, yearsToRetirement);
-
-  // Calculate income needed after retirement
+  // Calculate income needed after retirement (annual amount, in future dollars, at retirement)
   let incomeNeededAtRetirement: number;
   if (incomeAfterRetirementUnit === IncomeAfterRetirementUnit.PERCENTAGE) {
+    // If percentage, it's % of CURRENT income, then that amount is inflated to retirement
+    const targetAnnualIncomeInTodayDollars =
+      currentIncome * (incomeAfterRetirement / 100);
     incomeNeededAtRetirement =
-      (incomeAtRetirement * incomeAfterRetirement) / 100;
+      targetAnnualIncomeInTodayDollars *
+      Math.pow(1 + inflationRate / 100, yearsToRetirement);
   } else {
-    // Dollar amount in today's money, adjust for inflation
+    // DOLLAR unit
+    // Dollar amount is provided in today's money, adjust for inflation to retirement
     incomeNeededAtRetirement =
-      incomeAfterRetirement *
+      incomeAfterRetirement * // This is the annual dollar amount in today's money
       Math.pow(1 + inflationRate / 100, yearsToRetirement);
   }
 
-  // Subtract other income sources
-  const netIncomeNeeded =
-    (incomeNeededAtRetirement - otherIncomeAfterRetirement * 12) / 12;
+  // Adjust other income for inflation (params.otherIncomeAfterRetirement is monthly)
+  const otherIncomeAtRetirement =
+    otherIncomeAfterRetirement *
+    12 *
+    Math.pow(1 + inflationRate / 100, yearsToRetirement);
 
-  // Calculate total needed at retirement (present value of annuity)
-  const monthlyRate = averageInvestmentReturn / 100 / 12;
-  const totalPayments = yearsInRetirement * 12;
+  // Calculate net income needed (annually)
+  const netIncomeNeeded = incomeNeededAtRetirement - otherIncomeAtRetirement;
 
+  // Calculate total needed at retirement
+  const realRate =
+    (1 + averageInvestmentReturn / 100) / (1 + inflationRate / 100) - 1;
+  const monthlyRealRate = realRate / 12;
+  const totalMonths = yearsInRetirement * 12;
+
+  // Calculate the present value of inflation-adjusted withdrawals
   let totalNeededAtRetirement: number;
-  if (monthlyRate > 0) {
+  if (realRate > 0) {
+    // Use real rate of return for present value calculation
     totalNeededAtRetirement =
-      (netIncomeNeeded * (1 - Math.pow(1 + monthlyRate, -totalPayments))) /
-      monthlyRate;
+      ((netIncomeNeeded / 12) *
+        (1 - Math.pow(1 + monthlyRealRate, -totalMonths))) /
+      monthlyRealRate;
   } else {
-    totalNeededAtRetirement = netIncomeNeeded * totalPayments;
+    totalNeededAtRetirement = (netIncomeNeeded / 12) * totalMonths;
   }
+
+  // Add safety margins
+  const marketVolatilityBuffer = 1.15; // 15% buffer for market volatility
+  const unexpectedExpensesBuffer = 1.1; // 10% buffer for unexpected expenses
+  totalNeededAtRetirement *= marketVolatilityBuffer * unexpectedExpensesBuffer;
 
   // Calculate projected savings at retirement
   const monthlyReturnRate = averageInvestmentReturn / 100 / 12;
   const monthsToRetirement = yearsToRetirement * 12;
 
-  // Future value of current savings
+  // Future value of current savings with compound growth
   const futureValueCurrentSavings =
     currentRetirementSavings *
     Math.pow(1 + averageInvestmentReturn / 100, yearsToRetirement);
 
-  // Calculate monthly contribution amount
-  let monthlyContribution: number;
+  // Calculate future contributions with salary growth
+  let futureValueContributions = 0;
   if (futureSavingsUnit === FutureSavingsUnit.PERCENTAGE) {
-    monthlyContribution = (currentIncome * futureSavings) / 100 / 12;
-  } else {
-    monthlyContribution = futureSavings / 12;
-  }
+    // For percentage-based savings, calculate year by year
+    let annualSavings = (currentIncome * futureSavings) / 100;
 
-  // Future value of monthly contributions
-  let futureValueContributions: number;
-  if (monthlyReturnRate > 0) {
-    futureValueContributions =
-      (monthlyContribution *
-        (Math.pow(1 + monthlyReturnRate, monthsToRetirement) - 1)) /
-      monthlyReturnRate;
+    // Calculate contributions and growth for each year
+    for (let year = 0; year < yearsToRetirement; year++) {
+      // Calculate this year's contribution with salary growth
+      const thisYearContribution =
+        annualSavings * Math.pow(1 + incomeIncrease / 100, year);
+
+      // Calculate growth on this year's contribution
+      const yearsToGrow = yearsToRetirement - year;
+      const futureValueOfThisYear =
+        thisYearContribution *
+        Math.pow(1 + averageInvestmentReturn / 100, yearsToGrow);
+
+      futureValueContributions += futureValueOfThisYear;
+    }
   } else {
-    futureValueContributions = monthlyContribution * monthsToRetirement;
+    // For fixed dollar amount
+    const annualSavings = futureSavings;
+    futureValueContributions = futureValueOfAnnuity(
+      annualSavings,
+      averageInvestmentReturn / 100,
+      yearsToRetirement
+    );
   }
 
   const projectedSavingsAtRetirement =
@@ -114,10 +141,11 @@ export function calculateRetirement(
     }
   }
 
-  const totalContributionsByRetirement =
-    monthlyContribution * monthsToRetirement;
+  const totalContributionsByRetirement = futureValueContributions;
 
   return {
+    currentAge,
+    currentSavings: currentRetirementSavings,
     yearsToRetirement,
     yearsInRetirement,
     incomeNeededAtRetirement,

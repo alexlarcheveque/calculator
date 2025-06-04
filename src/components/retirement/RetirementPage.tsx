@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import RetirementForm from "@/components/retirement/RetirementForm";
 import RetirementSummary from "@/components/retirement/RetirementSummary";
 import SavingsForm from "@/components/retirement/SavingsForm";
@@ -32,7 +32,7 @@ import {
   FutureSavingsUnit,
 } from "@/types/retirement";
 import RetirementCharts from "./RetirementCharts";
-import RetirementTable from "./RetirementTable";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export type RetirementCalculatorType =
   | "needs"
@@ -40,72 +40,90 @@ export type RetirementCalculatorType =
   | "withdrawal"
   | "duration";
 
+const DEFAULT_RETIREMENT_VALUES: RetirementFormValues = {
+  currentAge: 35,
+  retirementAge: 67,
+  lifeExpectancy: 85,
+  currentIncome: 70000,
+  incomeIncrease: 3,
+  incomeAfterRetirement: 75,
+  incomeAfterRetirementUnit: IncomeAfterRetirementUnit.PERCENTAGE,
+  averageInvestmentReturn: 6,
+  inflationRate: 3,
+  otherIncomeAfterRetirement: 0,
+  currentRetirementSavings: 30000,
+  futureSavings: 10,
+  futureSavingsUnit: FutureSavingsUnit.PERCENTAGE,
+};
+
+const DEFAULT_SAVINGS_VALUES: SavingsFormValues = {
+  currentAge: 35,
+  retirementAge: 67,
+  amountNeededAtRetirement: 600000,
+  currentRetirementSavings: 30000,
+  averageInvestmentReturn: 6,
+};
+
+const DEFAULT_WITHDRAWAL_VALUES: WithdrawalFormValues = {
+  currentAge: 35,
+  retirementAge: 67,
+  lifeExpectancy: 85,
+  currentRetirementSavings: 30000,
+  annualContribution: 0,
+  monthlyContribution: 500,
+  averageInvestmentReturn: 6,
+  inflationRate: 3,
+};
+
+const DEFAULT_DURATION_VALUES: DurationFormValues = {
+  currentAmount: 600000,
+  monthlyWithdrawal: 5000,
+  averageInvestmentReturn: 6,
+};
+
 export default function RetirementPage() {
   const [calculatorType, setCalculatorType] =
-    useState<RetirementCalculatorType>("needs");
+    useLocalStorage<RetirementCalculatorType>("calculatorType", "needs");
 
   // Calculator 1: How much do you need to retire?
   const [retirementFormValues, setRetirementFormValues] =
-    useState<RetirementFormValues>({
-      currentAge: 35,
-      retirementAge: 67,
-      lifeExpectancy: 85,
-      currentIncome: 70000,
-      incomeIncrease: 3,
-      incomeAfterRetirement: 75,
-      incomeAfterRetirementUnit: IncomeAfterRetirementUnit.PERCENTAGE,
-      averageInvestmentReturn: 6,
-      inflationRate: 3,
-      otherIncomeAfterRetirement: 0,
-      currentRetirementSavings: 30000,
-      futureSavings: 10,
-      futureSavingsUnit: FutureSavingsUnit.PERCENTAGE,
-    });
+    useLocalStorage<RetirementFormValues>(
+      "retirementFormValues",
+      DEFAULT_RETIREMENT_VALUES
+    );
 
   const [retirementResults, setRetirementResults] =
-    useState<RetirementResults | null>(null);
+    useLocalStorage<RetirementResults | null>("retirementResults", null);
 
   // Calculator 2: How can you save for retirement?
-  const [savingsFormValues, setSavingsFormValues] = useState<SavingsFormValues>(
-    {
-      currentAge: 35,
-      retirementAge: 67,
-      amountNeededAtRetirement: 600000,
-      currentRetirementSavings: 30000,
-      averageInvestmentReturn: 6,
-    }
-  );
+  const [savingsFormValues, setSavingsFormValues] =
+    useLocalStorage<SavingsFormValues>(
+      "savingsFormValues",
+      DEFAULT_SAVINGS_VALUES
+    );
 
-  const [savingsResults, setSavingsResults] = useState<SavingsResults | null>(
-    null
-  );
+  const [savingsResults, setSavingsResults] =
+    useLocalStorage<SavingsResults | null>("savingsResults", null);
 
   // Calculator 3: How much can you withdraw after retirement?
   const [withdrawalFormValues, setWithdrawalFormValues] =
-    useState<WithdrawalFormValues>({
-      currentAge: 35,
-      retirementAge: 67,
-      lifeExpectancy: 85,
-      currentRetirementSavings: 30000,
-      annualContribution: 0,
-      monthlyContribution: 500,
-      averageInvestmentReturn: 6,
-      inflationRate: 3,
-    });
+    useLocalStorage<WithdrawalFormValues>(
+      "withdrawalFormValues",
+      DEFAULT_WITHDRAWAL_VALUES
+    );
 
   const [withdrawalResults, setWithdrawalResults] =
-    useState<WithdrawalResults | null>(null);
+    useLocalStorage<WithdrawalResults | null>("withdrawalResults", null);
 
   // Calculator 4: How long can your money last?
   const [durationFormValues, setDurationFormValues] =
-    useState<DurationFormValues>({
-      currentAmount: 600000,
-      monthlyWithdrawal: 5000,
-      averageInvestmentReturn: 6,
-    });
+    useLocalStorage<DurationFormValues>(
+      "durationFormValues",
+      DEFAULT_DURATION_VALUES
+    );
 
   const [durationResults, setDurationResults] =
-    useState<DurationResults | null>(null);
+    useLocalStorage<DurationResults | null>("durationResults", null);
 
   // Calculate retirement needs
   useEffect(() => {
@@ -293,7 +311,6 @@ export default function RetirementPage() {
             <>
               <RetirementSummary results={retirementResults} />
               <RetirementCharts results={retirementResults} />
-              <RetirementTable results={retirementResults} />
             </>
           )}
 

@@ -33,6 +33,8 @@ export interface RetirementFormValues {
 }
 
 export interface RetirementResults {
+  currentAge: number;
+  currentSavings: number;
   yearsToRetirement: number;
   yearsInRetirement: number;
   incomeNeededAtRetirement: number;
