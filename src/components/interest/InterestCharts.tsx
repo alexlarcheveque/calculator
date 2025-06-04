@@ -57,7 +57,7 @@ export default function InterestCharts({
           <BreakdownPieChart results={results} />
         ) : (
           <AccumulationLineChart
-            schedule={results.accumulationSchedule}
+            schedule={results.monthlyAccumulationSchedule}
             investmentLengthYears={inputs.investmentLengthYears || 0}
           />
         )}

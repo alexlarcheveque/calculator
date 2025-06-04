@@ -6,13 +6,12 @@ import {
   LinearScale,
   PointElement,
   LineElement,
-  BarElement,
   Title,
   Tooltip,
   Legend,
   Filler,
 } from "chart.js";
-import { Bar, Line } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import { RetirementResults } from "@/types/retirement";
 import { formatCurrency } from "@/utils/formatters";
 
@@ -21,7 +20,6 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
-  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -33,53 +31,147 @@ interface RetirementChartsProps {
 }
 
 export default function RetirementCharts({ results }: RetirementChartsProps) {
-  // Data for savings growth chart
-  const savingsData = {
-    labels: ["Current Savings", "Projected at Retirement", "Total Needed"],
+  // Calculate yearly data points for the trajectory
+  const currentAge = results.currentAge;
+  const retirementAge = currentAge + results.yearsToRetirement;
+  const maxAge = retirementAge + results.yearsInRetirement;
+  const years = Array.from(
+    { length: maxAge - currentAge + 1 },
+    (_, i) => currentAge + i
+  );
+
+  // Calculate savings trajectory
+  const yearlyContribution =
+    results.totalContributionsByRetirement / results.yearsToRetirement;
+  const returnRate = 0.07; // 7% average market return
+
+  const savingsData = years.map((age) => {
+    if (age >= retirementAge) {
+      // After retirement, calculate drawdown
+      const yearsInRetirement = age - retirementAge;
+      const withdrawalRate = 0.04; // 4% withdrawal rate
+      return Math.max(
+        0,
+        results.projectedSavingsAtRetirement *
+          Math.pow(1 - withdrawalRate, yearsInRetirement)
+      );
+    } else {
+      // During saving years
+      const yearsOfGrowth = age - currentAge;
+      return (
+        results.currentSavings * Math.pow(1 + returnRate, yearsOfGrowth) +
+        yearlyContribution *
+          ((Math.pow(1 + returnRate, yearsOfGrowth) - 1) / returnRate)
+      );
+    }
+  });
+
+  // Calculate needs trajectory - should have similar shape to savings
+  const needsData = years.map((age) => {
+    if (age >= retirementAge) {
+      // During retirement, both lines should decline similarly from their respective peaks
+      const yearsIntoRetirement = age - retirementAge;
+      const withdrawalRate = 0.04; // Same withdrawal rate as savings line
+      return Math.max(
+        0,
+        results.totalNeededAtRetirement *
+          Math.pow(1 - withdrawalRate, yearsIntoRetirement)
+      );
+    } else {
+      // Before retirement, calculate required savings trajectory
+      // This should reach totalNeededAtRetirement at retirement age
+      const yearsOfGrowth = age - currentAge;
+
+      // Scale the needed trajectory to reach the correct target
+      const targetRatio =
+        results.totalNeededAtRetirement / results.projectedSavingsAtRetirement;
+
+      // Use similar compound growth but scaled to reach the higher target
+      const scaledCurrentSavings = results.currentSavings * targetRatio;
+      const scaledYearlyContribution = yearlyContribution * targetRatio;
+
+      return (
+        scaledCurrentSavings * Math.pow(1 + returnRate, yearsOfGrowth) +
+        scaledYearlyContribution *
+          ((Math.pow(1 + returnRate, yearsOfGrowth) - 1) / returnRate)
+      );
+    }
+  });
+
+  // Create gradient for "What you'll have"
+  const createGradient = (
+    ctx: any,
+    chartArea: any,
+    colorStart: string,
+    colorEnd: string
+  ) => {
+    const gradient = ctx.createLinearGradient(
+      0,
+      chartArea.bottom,
+      0,
+      chartArea.top
+    );
+    gradient.addColorStop(0, colorStart);
+    gradient.addColorStop(1, colorEnd);
+    return gradient;
+  };
+
+  const chartData = {
+    labels: years.map((year) => year.toString()),
     datasets: [
       {
-        label: "Amount",
-        data: [
-          results.finalRetirementSavings -
-            results.totalContributionsByRetirement,
-          results.projectedSavingsAtRetirement,
-          results.totalNeededAtRetirement,
-        ],
-        backgroundColor: ["#3b82f6", "#10b981", "#f59e0b"],
-        borderColor: ["#2563eb", "#059669", "#d97706"],
-        borderWidth: 1,
+        label: "What you'll have",
+        data: savingsData,
+        borderColor: "#3b82f6", // blue-500
+        backgroundColor: (context: any) => {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+          if (!chartArea) return "rgba(59, 130, 246, 0.1)";
+          return createGradient(
+            ctx,
+            chartArea,
+            "rgba(59, 130, 246, 0.02)",
+            "rgba(59, 130, 246, 0.15)"
+          );
+        },
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: "#3b82f6",
+        pointBorderColor: "#ffffff",
+        pointBorderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 8,
+        pointHoverBackgroundColor: "#3b82f6",
+        pointHoverBorderColor: "#ffffff",
+        pointHoverBorderWidth: 3,
+        borderWidth: 3,
+      },
+      {
+        label: "What you'll need",
+        data: needsData,
+        borderColor: "#10b981", // emerald-500
+        backgroundColor: "transparent",
+        borderDash: [8, 4],
+        tension: 0.4,
+        pointBackgroundColor: "#10b981",
+        pointBorderColor: "#ffffff",
+        pointBorderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 8,
+        pointHoverBackgroundColor: "#10b981",
+        pointHoverBorderColor: "#ffffff",
+        pointHoverBorderWidth: 3,
+        borderWidth: 3,
       },
     ],
   };
 
-  // Data for retirement timeline
-  const timelineData = {
-    labels: ["Years to Retirement", "Years in Retirement"],
-    datasets: [
-      {
-        label: "Years",
-        data: [results.yearsToRetirement, results.yearsInRetirement],
-        backgroundColor: ["#8b5cf6", "#ec4899"],
-        borderColor: ["#7c3aed", "#db2777"],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const barOptions = {
+  const options = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        callbacks: {
-          label: function (context: any) {
-            return formatCurrency(context.raw);
-          },
-        },
-      },
+    interaction: {
+      mode: "index" as const,
+      intersect: false,
     },
     scales: {
       y: {
@@ -88,119 +180,134 @@ export default function RetirementCharts({ results }: RetirementChartsProps) {
           callback: function (value: any) {
             return formatCurrency(value);
           },
+          font: {
+            size: 12,
+            family: "'Inter', 'system-ui', sans-serif",
+          },
+          color: "#6b7280",
+          padding: 12,
+        },
+        grid: {
+          color: "rgba(156, 163, 175, 0.1)",
+          drawBorder: false,
+        },
+        border: {
+          display: false,
+        },
+      },
+      x: {
+        ticks: {
+          font: {
+            size: 12,
+            family: "'Inter', 'system-ui', sans-serif",
+          },
+          color: "#6b7280",
+          padding: 8,
+          maxTicksLimit: 12,
+        },
+        grid: {
+          display: false,
+        },
+        border: {
+          display: false,
         },
       },
     },
-  };
-
-  const timelineOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
+        position: "top" as const,
+        align: "center" as const,
+        labels: {
+          usePointStyle: true,
+          pointStyle: "circle",
+          padding: 24,
+          font: {
+            size: 14,
+            family: "'Inter', 'system-ui', sans-serif",
+            weight: "normal" as const,
+          },
+          color: "#374151",
+          boxWidth: 12,
+          boxHeight: 12,
+        },
       },
       tooltip: {
+        backgroundColor: "rgba(255, 255, 255, 0.98)",
+        titleColor: "#111827",
+        titleFont: {
+          size: 14,
+          family: "'Inter', 'system-ui', sans-serif",
+          weight: "bold" as const,
+        },
+        bodyColor: "#4b5563",
+        bodyFont: {
+          size: 13,
+          family: "'Inter', 'system-ui', sans-serif",
+        },
+        padding: 16,
+        borderColor: "rgba(0, 0, 0, 0.08)",
+        borderWidth: 1,
+        cornerRadius: 8,
+        displayColors: true,
+        boxWidth: 12,
+        boxHeight: 12,
+        boxPadding: 8,
+        caretPadding: 8,
         callbacks: {
+          title: function (context: any) {
+            const age = context[0].label;
+            return `Age ${age}${
+              parseInt(age) === retirementAge ? " (Retirement)" : ""
+            }`;
+          },
           label: function (context: any) {
-            return `${context.raw} years`;
+            let label = context.dataset.label || "";
+            if (label) {
+              label += ": ";
+            }
+            if (context.parsed.y !== null) {
+              label += formatCurrency(context.parsed.y);
+            }
+            return label;
+          },
+          afterBody: function (context: any) {
+            const age = parseInt(context[0].label);
+            if (age === retirementAge) {
+              const gap =
+                results.totalNeededAtRetirement -
+                results.projectedSavingsAtRetirement;
+              if (gap > 0) {
+                return [`Gap: ${formatCurrency(gap)}`];
+              } else if (gap < 0) {
+                return [`Surplus: ${formatCurrency(Math.abs(gap))}`];
+              }
+            }
+            return [];
           },
         },
       },
     },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          callback: function (value: any) {
-            return `${value} years`;
-          },
-        },
-      },
+    animation: {
+      duration: 1200,
+      easing: "easeInOutQuart" as const,
     },
   };
 
   return (
-    <div className="space-y-8">
-      {/* Savings Overview Chart */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800">
-          Retirement Savings Overview
+    <div className="bg-gradient-to-br from-white to-gray-50 p-8 rounded-xl shadow-lg border border-gray-100">
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+          Retirement Savings Trajectory
         </h3>
-        <div className="h-64">
-          <Bar data={savingsData} options={barOptions} />
-        </div>
-        <div className="mt-4 text-sm text-gray-600">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-            <div className="flex items-center">
-              <div className="w-3 h-3 bg-blue-500 rounded mr-2"></div>
-              <span>Current/Base Savings</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-3 h-3 bg-green-500 rounded mr-2"></div>
-              <span>Projected at Retirement</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-3 h-3 bg-yellow-500 rounded mr-2"></div>
-              <span>Total Needed</span>
-            </div>
-          </div>
-        </div>
+        <p className="text-sm text-gray-600">
+          Track your progress toward your retirement goal
+        </p>
       </div>
-
-      {/* Timeline Chart */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800">
-          Retirement Timeline
-        </h3>
-        <div className="h-64">
-          <Bar data={timelineData} options={timelineOptions} />
-        </div>
-        <div className="mt-4 text-sm text-gray-600">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <div className="flex items-center">
-              <div className="w-3 h-3 bg-purple-500 rounded mr-2"></div>
-              <span>Years Until Retirement</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-3 h-3 bg-pink-500 rounded mr-2"></div>
-              <span>Years in Retirement</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Shortfall/Surplus Indicator */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800">
-          Retirement Readiness
-        </h3>
-        <div className="text-center">
-          {results.shortfallOrSurplus >= 0 ? (
-            <div className="p-6 bg-green-50 rounded-lg border border-green-200">
-              <div className="text-2xl font-bold text-green-600 mb-2">
-                Surplus: {formatCurrency(Math.abs(results.shortfallOrSurplus))}
-              </div>
-              <p className="text-green-700">
-                You're on track for retirement! You'll have extra savings beyond
-                your needs.
-              </p>
-            </div>
-          ) : (
-            <div className="p-6 bg-red-50 rounded-lg border border-red-200">
-              <div className="text-2xl font-bold text-red-600 mb-2">
-                Shortfall:{" "}
-                {formatCurrency(Math.abs(results.shortfallOrSurplus))}
-              </div>
-              <p className="text-red-700 mb-2">
-                You need to save more to meet your retirement goals.
-              </p>
-              <p className="text-sm text-red-600">
-                Additional monthly savings needed:{" "}
-                {formatCurrency(results.monthlyAdditionalSavingsNeeded)}
-              </p>
-            </div>
-          )}
+      <div className="w-full h-96 px-4 sm:px-0 relative">
+        <Line data={chartData} options={options} />
+        {/* Add retirement age indicator */}
+        <div className="absolute top-4 right-4 text-xs text-gray-500 bg-white px-2 py-1 rounded-md border border-gray-200">
+          Retirement at {retirementAge}
         </div>
       </div>
     </div>

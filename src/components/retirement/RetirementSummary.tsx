@@ -11,112 +11,106 @@ export default function RetirementSummary({ results }: RetirementSummaryProps) {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-6 text-gray-800">
-        Retirement Analysis Summary
-      </h2>
-
-      {/* Key Results Section */}
-      <div className="mb-6">
-        <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
-          Key Results
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Shortfall or Surplus */}
-          <div
-            className={`p-4 rounded-lg border ${
-              isShortfall
-                ? "bg-red-50 border-red-200"
-                : "bg-green-50 border-green-200"
-            }`}
-          >
+      {/* Retirement Status Banner */}
+      <div
+        className={`mb-6 p-4 rounded-lg ${
+          isShortfall
+            ? "bg-red-50 border border-red-200"
+            : "bg-green-50 border border-green-200"
+        }`}
+      >
+        <h2
+          className={`text-xl font-semibold mb-2 ${
+            isShortfall ? "text-red-700" : "text-green-700"
+          }`}
+        >
+          {isShortfall
+            ? "Action Needed: Retirement Shortfall"
+            : "On Track: Retirement Plan"}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
             <div className="text-sm text-gray-600">
-              {isShortfall ? "Retirement Shortfall" : "Retirement Surplus"}
+              {isShortfall ? "Total Shortfall Amount" : "Retirement Surplus"}
             </div>
             <div
               className={`text-2xl font-bold ${
                 isShortfall ? "text-red-700" : "text-green-700"
               }`}
             >
-              {formatCurrency(absoluteAmount)}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              {isShortfall
-                ? "Additional savings needed"
-                : "Extra savings available"}
+              {formatCurrency(Math.round(absoluteAmount), false)}
             </div>
           </div>
+          {isShortfall && (
+            <div>
+              <div className="text-sm text-gray-600">
+                Additional Monthly Savings Needed
+              </div>
+              <div className="text-2xl font-bold text-red-700">
+                {formatCurrency(results.monthlyAdditionalSavingsNeeded, false)}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
 
-          {/* Income Needed */}
+      {/* Current Progress Section */}
+      <div className="mb-6">
+        <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
+          Your Progress
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
           <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-            <div className="text-sm text-gray-600">Annual Income Needed</div>
+            <div className="text-sm text-gray-600">Current Trajectory</div>
             <div className="text-2xl font-bold text-blue-700">
-              {formatCurrency(results.incomeNeededAtRetirement)}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">At retirement age</div>
-          </div>
-
-          {/* Total Needed */}
-          <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-            <div className="text-sm text-gray-600">Total Needed</div>
-            <div className="text-2xl font-bold text-purple-700">
-              {formatCurrency(results.totalNeededAtRetirement)}
+              {formatCurrency(results.projectedSavingsAtRetirement, false)}
             </div>
             <div className="text-xs text-gray-500 mt-1">
-              To support retirement income
+              Projected savings at retirement
+            </div>
+          </div>
+
+          <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+            <div className="text-sm text-gray-600">Target Goal</div>
+            <div className="text-2xl font-bold text-green-700">
+              {formatCurrency(results.totalNeededAtRetirement, false)}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              Total needed for retirement
             </div>
           </div>
         </div>
       </div>
 
-      {/* Savings Projection Section */}
+      {/* Retirement Income Section */}
       <div className="mb-6">
         <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
-          Savings Projection
+          Income Planning
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div className="text-sm text-gray-600">
-              Projected Savings at Retirement
-            </div>
+            <div className="text-sm text-gray-600">Annual Income Goal</div>
             <div className="text-2xl font-bold text-gray-800">
-              {formatCurrency(results.projectedSavingsAtRetirement)}
+              {formatCurrency(results.incomeNeededAtRetirement, false)}
             </div>
             <div className="text-xs text-gray-500 mt-1">
-              Based on current savings and future contributions
+              Desired yearly income in retirement
             </div>
           </div>
 
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div className="text-sm text-gray-600">Total Contributions</div>
+            <div className="text-sm text-gray-600">
+              Total Planned Contributions
+            </div>
             <div className="text-2xl font-bold text-gray-800">
-              {formatCurrency(results.totalContributionsByRetirement)}
+              {formatCurrency(results.totalContributionsByRetirement, false)}
             </div>
             <div className="text-xs text-gray-500 mt-1">
-              You will contribute over {results.yearsToRetirement} years
+              Your contributions over {results.yearsToRetirement} years
             </div>
           </div>
         </div>
       </div>
-
-      {/* Action Required Section */}
-      {isShortfall && (
-        <div className="mb-6">
-          <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
-            Action Required
-          </h3>
-          <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-            <div className="text-sm text-gray-600">
-              Additional Monthly Savings Needed
-            </div>
-            <div className="text-2xl font-bold text-red-700">
-              {formatCurrency(results.monthlyAdditionalSavingsNeeded)}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              To meet your retirement goal
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Timeline Section */}
       <div>
@@ -130,7 +124,7 @@ export default function RetirementSummary({ results }: RetirementSummaryProps) {
               {results.yearsToRetirement}
             </div>
             <div className="text-xs text-gray-500 mt-1">
-              Time to save and invest
+              Time left to save and invest
             </div>
           </div>
 

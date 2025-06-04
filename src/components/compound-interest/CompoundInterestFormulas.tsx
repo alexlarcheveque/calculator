@@ -140,7 +140,7 @@ const compoundInterestFormulasSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "info",
       title: "Practical Application",
       content:
         "While these formulas are mathematically precise, our calculator above handles all the complex computations for you. Use these formulas to understand the underlying principles and verify calculator results for your specific scenarios.",

@@ -90,7 +90,7 @@ const compoundingFrequencySections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "tip",
+      type: "info",
       title: "Real Impact Example",
       content: (
         <div>

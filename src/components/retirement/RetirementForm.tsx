@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   RetirementFormValues,
   IncomeAfterRetirementUnit,
@@ -12,10 +13,78 @@ interface RetirementFormProps {
   ) => void;
 }
 
+// Format number with commas for display
+const formatCurrency = (value: number): string => {
+  if (value === 0) return "";
+  // Convert to parts to handle commas and decimals separately
+  const [whole, decimal] = value.toString().split(".");
+
+  // Add commas to the whole number part
+  const withCommas = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  // If there are decimals, add them back, otherwise return just the whole number
+  return decimal ? `${withCommas}.${decimal}` : withCommas;
+};
+
+// Format percentage for display - maintain up to 3 decimal places
+const formatPercent = (value: number): string => {
+  if (value === 0) return "";
+  // Convert to string to preserve exact decimal places up to 3
+  const strValue = value.toString();
+
+  // If it's a whole number, return as is
+  if (Number.isInteger(value)) {
+    return strValue;
+  }
+
+  // If it has decimals, preserve up to 3 places without trailing zeros
+  const [whole, decimal] = strValue.split(".");
+  if (decimal) {
+    const trimmedDecimal = decimal.slice(0, 3).replace(/0+$/, "");
+    return trimmedDecimal ? `${whole}.${trimmedDecimal}` : whole;
+  }
+
+  return strValue;
+};
+
+// Format input value while typing
+const formatWhileTyping = (value: string): string => {
+  // Remove any non-numeric characters except decimal point
+  const cleaned = value.replace(/[^\d.]/g, "");
+
+  // Handle multiple decimal points - keep only the first one
+  const parts = cleaned.split(".");
+  const whole = parts[0];
+  const decimal = parts.length > 1 ? "." + parts[1] : "";
+
+  // Add commas to the whole number part
+  const withCommas = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  return withCommas + decimal;
+};
+
 export default function RetirementForm({
   values,
   onChange,
 }: RetirementFormProps) {
+  // Track which field is being edited
+  const [editingField, setEditingField] = useState<string | null>(null);
+  // Store the raw input value while editing
+  const [editValue, setEditValue] = useState<string>("");
+
+  const handleFocus = (name: string, value: number) => {
+    setEditingField(name);
+    setEditValue(formatCurrency(value));
+  };
+
+  const handleBlur = (name: string, value: string) => {
+    setEditingField(null);
+    const parsedValue = parseFloat(value.replace(/,/g, ""));
+    if (!isNaN(parsedValue)) {
+      onChange(name, parsedValue);
+    }
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -25,9 +94,22 @@ export default function RetirementForm({
       onChange(name, value as IncomeAfterRetirementUnit);
     } else if (name === "futureSavingsUnit") {
       onChange(name, value as FutureSavingsUnit);
-    } else {
-      onChange(name, parseFloat(value) || 0);
+    } else if (editingField === name) {
+      // Format the input value while typing
+      const formattedValue = formatWhileTyping(value);
+      setEditValue(formattedValue);
     }
+  };
+
+  const getInputValue = (
+    name: string,
+    value: number,
+    isPercentage: boolean = false
+  ): string => {
+    if (editingField === name) {
+      return editValue;
+    }
+    return isPercentage ? formatPercent(value) : formatCurrency(value);
   };
 
   return (
@@ -46,14 +128,14 @@ export default function RetirementForm({
             Your current age
           </label>
           <input
-            type="number"
+            type="text"
             id="currentAge"
             name="currentAge"
             className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            value={values.currentAge}
+            value={getInputValue("currentAge", values.currentAge)}
             onChange={handleChange}
-            min="18"
-            max="100"
+            onFocus={() => handleFocus("currentAge", values.currentAge)}
+            onBlur={(e) => handleBlur("currentAge", e.target.value)}
           />
         </div>
 
@@ -66,15 +148,19 @@ export default function RetirementForm({
             Your planned retirement age
           </label>
           <input
-            type="number"
+            type="text"
             id="retirementAge"
             name="retirementAge"
             className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            value={values.retirementAge}
+            value={getInputValue("retirementAge", values.retirementAge)}
             onChange={handleChange}
-            min="50"
-            max="85"
+            onFocus={() => handleFocus("retirementAge", values.retirementAge)}
+            onBlur={(e) => handleBlur("retirementAge", e.target.value)}
           />
+          <p className="mt-1 text-xs text-gray-500">
+            The average retirement age in the U.S. is 64 for men and 62 for
+            women.
+          </p>
         </div>
 
         {/* Life Expectancy */}
@@ -83,17 +169,17 @@ export default function RetirementForm({
             htmlFor="lifeExpectancy"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Your life expectancy
+            Your life expectancy age
           </label>
           <input
-            type="number"
+            type="text"
             id="lifeExpectancy"
             name="lifeExpectancy"
             className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            value={values.lifeExpectancy}
+            value={getInputValue("lifeExpectancy", values.lifeExpectancy)}
             onChange={handleChange}
-            min="65"
-            max="110"
+            onFocus={() => handleFocus("lifeExpectancy", values.lifeExpectancy)}
+            onBlur={(e) => handleBlur("lifeExpectancy", e.target.value)}
           />
           <p className="mt-1 text-xs text-gray-500">
             The average life expectancy in the U.S. is between 76 and 80 years.
@@ -106,24 +192,26 @@ export default function RetirementForm({
             htmlFor="currentIncome"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Your current pre-tax income
+            Your current pre-tax income (yearly)
           </label>
           <div className="relative rounded-md shadow-sm">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <span className="text-gray-500">$</span>
             </div>
             <input
-              type="number"
+              type="text"
               id="currentIncome"
               name="currentIncome"
               className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.currentIncome}
+              value={getInputValue("currentIncome", values.currentIncome)}
               onChange={handleChange}
-              min="0"
-              step="1000"
+              onFocus={() => handleFocus("currentIncome", values.currentIncome)}
+              onBlur={(e) => handleBlur("currentIncome", e.target.value)}
             />
           </div>
-          <span className="text-xs text-gray-500">/year</span>
+          <p className="mt-1 text-xs text-gray-500">
+            Include your total annual income before taxes and deductions.
+          </p>
         </div>
 
         {/* Section Title */}
@@ -139,25 +227,32 @@ export default function RetirementForm({
             htmlFor="incomeIncrease"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Your current income increase
+            Expected income increase (yearly)
           </label>
           <div className="relative rounded-md shadow-sm">
             <input
-              type="number"
+              type="text"
               id="incomeIncrease"
               name="incomeIncrease"
               className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.incomeIncrease}
+              value={getInputValue(
+                "incomeIncrease",
+                values.incomeIncrease,
+                true
+              )}
               onChange={handleChange}
-              min="0"
-              max="20"
-              step="0.1"
+              onFocus={() =>
+                handleFocus("incomeIncrease", values.incomeIncrease)
+              }
+              onBlur={(e) => handleBlur("incomeIncrease", e.target.value)}
             />
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
               <span className="text-gray-500">%</span>
             </div>
           </div>
-          <span className="text-xs text-gray-500">/year</span>
+          <p className="mt-1 text-xs text-gray-500">
+            The average annual wage growth has been 2.5% over the past 50 years.
+          </p>
         </div>
 
         {/* Income After Retirement */}
@@ -166,7 +261,7 @@ export default function RetirementForm({
             htmlFor="incomeAfterRetirement"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Income needed after retirement
+            Income needed after retirement (yearly)
           </label>
           <div className="flex space-x-2">
             <div className="flex-1 relative rounded-md shadow-sm">
@@ -177,7 +272,7 @@ export default function RetirementForm({
                 </div>
               )}
               <input
-                type="number"
+                type="text"
                 id="incomeAfterRetirement"
                 name="incomeAfterRetirement"
                 className={`block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 ${
@@ -186,14 +281,21 @@ export default function RetirementForm({
                     ? "pl-6"
                     : ""
                 }`}
-                value={values.incomeAfterRetirement}
-                onChange={handleChange}
-                min="0"
-                step={
+                value={getInputValue(
+                  "incomeAfterRetirement",
+                  values.incomeAfterRetirement,
                   values.incomeAfterRetirementUnit ===
-                  IncomeAfterRetirementUnit.PERCENTAGE
-                    ? "1"
-                    : "1000"
+                    IncomeAfterRetirementUnit.PERCENTAGE
+                )}
+                onChange={handleChange}
+                onFocus={() =>
+                  handleFocus(
+                    "incomeAfterRetirement",
+                    values.incomeAfterRetirement
+                  )
+                }
+                onBlur={(e) =>
+                  handleBlur("incomeAfterRetirement", e.target.value)
                 }
               />
               {values.incomeAfterRetirementUnit ===
@@ -216,8 +318,12 @@ export default function RetirementForm({
           <p className="mt-1 text-xs text-gray-500">
             {values.incomeAfterRetirementUnit ===
             IncomeAfterRetirementUnit.PERCENTAGE
-              ? "of current income"
-              : "/year (today's money)"}
+              ? `Percentage of current income ($${formatCurrency(
+                  (values.currentIncome * values.incomeAfterRetirement) / 100
+                )}/year)`
+              : `Based on current dollar value (${formatPercent(
+                  (values.incomeAfterRetirement / values.currentIncome) * 100
+                )}% of current income)`}
           </p>
         </div>
 
@@ -227,25 +333,38 @@ export default function RetirementForm({
             htmlFor="averageInvestmentReturn"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Average investment return
+            Expected investment return (yearly)
           </label>
           <div className="relative rounded-md shadow-sm">
             <input
-              type="number"
+              type="text"
               id="averageInvestmentReturn"
               name="averageInvestmentReturn"
               className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.averageInvestmentReturn}
+              value={getInputValue(
+                "averageInvestmentReturn",
+                values.averageInvestmentReturn,
+                true
+              )}
               onChange={handleChange}
-              min="0"
-              max="20"
-              step="0.1"
+              onFocus={() =>
+                handleFocus(
+                  "averageInvestmentReturn",
+                  values.averageInvestmentReturn
+                )
+              }
+              onBlur={(e) =>
+                handleBlur("averageInvestmentReturn", e.target.value)
+              }
             />
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
               <span className="text-gray-500">%</span>
             </div>
           </div>
-          <span className="text-xs text-gray-500">/year</span>
+          <p className="mt-1 text-xs text-gray-500">
+            A diversified portfolio historically returns 6-8% annually before
+            inflation.
+          </p>
         </div>
 
         {/* Inflation Rate */}
@@ -254,27 +373,25 @@ export default function RetirementForm({
             htmlFor="inflationRate"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Inflation rate
+            Expected inflation rate (yearly)
           </label>
           <div className="relative rounded-md shadow-sm">
             <input
-              type="number"
+              type="text"
               id="inflationRate"
               name="inflationRate"
               className="block w-full pl-3 pr-6 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.inflationRate}
+              value={getInputValue("inflationRate", values.inflationRate, true)}
               onChange={handleChange}
-              min="0"
-              max="10"
-              step="0.1"
+              onFocus={() => handleFocus("inflationRate", values.inflationRate)}
+              onBlur={(e) => handleBlur("inflationRate", e.target.value)}
             />
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
               <span className="text-gray-500">%</span>
             </div>
           </div>
-          <span className="text-xs text-gray-500">/year</span>
           <p className="mt-1 text-xs text-gray-500">
-            The average inflation rate is around 3.5% in the past 100 years.
+            The average inflation rate has been 3.9% over the past 50 years.
           </p>
         </div>
 
@@ -283,67 +400,15 @@ export default function RetirementForm({
           <h3 className="text-md font-medium text-gray-800 mb-4">Optional</h3>
         </div>
 
-        {/* Other Income After Retirement */}
-        <div className="form-group">
-          <label
-            htmlFor="otherIncomeAfterRetirement"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Other income after retirement
-          </label>
-          <div className="relative rounded-md shadow-sm">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span className="text-gray-500">$</span>
-            </div>
-            <input
-              type="number"
-              id="otherIncomeAfterRetirement"
-              name="otherIncomeAfterRetirement"
-              className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.otherIncomeAfterRetirement}
-              onChange={handleChange}
-              min="0"
-              step="100"
-            />
-          </div>
-          <span className="text-xs text-gray-500">/month</span>
-          <p className="mt-1 text-xs text-gray-500">
-            Social security, pension, etc.
-          </p>
-        </div>
-
-        {/* Current Retirement Savings */}
-        <div className="form-group">
-          <label
-            htmlFor="currentRetirementSavings"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Your current retirement savings
-          </label>
-          <div className="relative rounded-md shadow-sm">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span className="text-gray-500">$</span>
-            </div>
-            <input
-              type="number"
-              id="currentRetirementSavings"
-              name="currentRetirementSavings"
-              className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={values.currentRetirementSavings}
-              onChange={handleChange}
-              min="0"
-              step="1000"
-            />
-          </div>
-        </div>
-
         {/* Future Savings */}
         <div className="form-group">
           <label
             htmlFor="futureSavings"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Future retirement savings
+            {values.futureSavingsUnit === FutureSavingsUnit.PERCENTAGE
+              ? "Future retirement savings (% of yearly income)"
+              : "Future retirement savings (yearly)"}
           </label>
           <div className="flex space-x-2">
             <div className="flex-1 relative rounded-md shadow-sm">
@@ -353,7 +418,7 @@ export default function RetirementForm({
                 </div>
               )}
               <input
-                type="number"
+                type="text"
                 id="futureSavings"
                 name="futureSavings"
                 className={`block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 ${
@@ -361,14 +426,16 @@ export default function RetirementForm({
                     ? "pl-6"
                     : ""
                 }`}
-                value={values.futureSavings}
-                onChange={handleChange}
-                min="0"
-                step={
+                value={getInputValue(
+                  "futureSavings",
+                  values.futureSavings,
                   values.futureSavingsUnit === FutureSavingsUnit.PERCENTAGE
-                    ? "1"
-                    : "100"
+                )}
+                onChange={handleChange}
+                onFocus={() =>
+                  handleFocus("futureSavings", values.futureSavings)
                 }
+                onBlur={(e) => handleBlur("futureSavings", e.target.value)}
               />
               {values.futureSavingsUnit === FutureSavingsUnit.PERCENTAGE && (
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -387,9 +454,84 @@ export default function RetirementForm({
             </select>
           </div>
           <p className="mt-1 text-xs text-gray-500">
-            {values.futureSavingsUnit === FutureSavingsUnit.PERCENTAGE
-              ? "of income"
-              : "per year"}
+            Financial advisors typically recommend saving 15-20% of your income
+            for retirement.
+          </p>
+        </div>
+
+        {/* Current Retirement Savings */}
+        <div className="form-group">
+          <label
+            htmlFor="currentRetirementSavings"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Your current retirement savings
+          </label>
+          <div className="relative rounded-md shadow-sm">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span className="text-gray-500">$</span>
+            </div>
+            <input
+              type="text"
+              id="currentRetirementSavings"
+              name="currentRetirementSavings"
+              className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              value={getInputValue(
+                "currentRetirementSavings",
+                values.currentRetirementSavings
+              )}
+              onChange={handleChange}
+              onFocus={() =>
+                handleFocus(
+                  "currentRetirementSavings",
+                  values.currentRetirementSavings
+                )
+              }
+              onBlur={(e) =>
+                handleBlur("currentRetirementSavings", e.target.value)
+              }
+            />
+          </div>
+          <p className="mt-1 text-xs text-gray-500">
+            Include all retirement accounts (401(k), IRA, pension values, etc.).
+          </p>
+        </div>
+
+        {/* Other Income After Retirement */}
+        <div className="form-group">
+          <label
+            htmlFor="otherIncomeAfterRetirement"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Other retirement income (monthly)
+          </label>
+          <div className="relative rounded-md shadow-sm">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span className="text-gray-500">$</span>
+            </div>
+            <input
+              type="text"
+              id="otherIncomeAfterRetirement"
+              name="otherIncomeAfterRetirement"
+              className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              value={getInputValue(
+                "otherIncomeAfterRetirement",
+                values.otherIncomeAfterRetirement
+              )}
+              onChange={handleChange}
+              onFocus={() =>
+                handleFocus(
+                  "otherIncomeAfterRetirement",
+                  values.otherIncomeAfterRetirement
+                )
+              }
+              onBlur={(e) =>
+                handleBlur("otherIncomeAfterRetirement", e.target.value)
+              }
+            />
+          </div>
+          <p className="mt-1 text-xs text-gray-500">
+            Social security, pension, etc.
           </p>
         </div>
       </div>
