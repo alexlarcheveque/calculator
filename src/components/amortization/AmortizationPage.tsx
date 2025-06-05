@@ -4,8 +4,11 @@ import { useState, useEffect } from "react";
 import AmortizationForm from "@/components/amortization/AmortizationForm";
 import AmortizationSummary from "@/components/amortization/AmortizationSummary";
 import AmortizationCharts from "@/components/amortization/AmortizationCharts";
-import AmortizationTable from "@/components/amortization/AmortizationTable";
+import AmortizationTableWrapper from "@/components/amortization/AmortizationTableWrapper";
 import AmortizationFAQSection from "@/components/amortization/AmortizationFAQ";
+import AmortizationBasics from "@/components/amortization/AmortizationBasics";
+import AmortizationStrategies from "@/components/amortization/AmortizationStrategies";
+import AmortizationBenefits from "@/components/amortization/AmortizationBenefits";
 import {
   calculateAmortization,
   calculateAmortizationSchedule,
@@ -15,22 +18,26 @@ import {
   AmortizationResults,
   AmortizationScheduleItem,
 } from "@/types/amortization";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export default function AmortizationPage() {
-  const [formValues, setFormValues] = useState<AmortizationFormValues>({
-    loanAmount: 200000,
-    loanTermYears: 15,
-    loanTermMonths: 0,
-    interestRate: 6.0,
-    startDate: new Date(),
-    extraPayments: {
-      monthlyExtra: 0,
-      monthlyExtraStartDate: new Date(),
-      yearlyExtra: 0,
-      yearlyExtraStartDate: new Date(),
-      oneTimePayments: [],
-    },
-  });
+  const [formValues, setFormValues] = useLocalStorage<AmortizationFormValues>(
+    "amortizationFormValues",
+    {
+      loanAmount: 200000,
+      loanTermYears: 15,
+      loanTermMonths: 0,
+      interestRate: 6.0,
+      startDate: new Date(),
+      extraPayments: {
+        monthlyExtra: 0,
+        monthlyExtraStartDate: new Date(),
+        yearlyExtra: 0,
+        yearlyExtraStartDate: new Date(),
+        oneTimePayments: [],
+      },
+    }
+  );
 
   const [results, setResults] = useState<AmortizationResults | null>(null);
   const [scheduleData, setScheduleData] = useState<AmortizationScheduleItem[]>(
@@ -108,12 +115,16 @@ export default function AmortizationPage() {
         <div className="lg:col-span-8 space-y-8">
           {results && scheduleData.length > 0 && (
             <>
-              <AmortizationSummary results={results} />
+              <AmortizationSummary
+                results={results}
+                originalLoanTermYears={formValues.loanTermYears}
+                originalLoanTermMonths={formValues.loanTermMonths}
+              />
               <AmortizationCharts
                 results={results}
                 scheduleData={scheduleData}
               />
-              <AmortizationTable data={scheduleData} />
+              <AmortizationTableWrapper data={scheduleData} />
             </>
           )}
 
@@ -123,6 +134,13 @@ export default function AmortizationPage() {
             </p>
           )}
         </div>
+      </div>
+
+      {/* Info Sections */}
+      <div className="space-y-8 mb-8">
+        <AmortizationBasics />
+        <AmortizationStrategies />
+        <AmortizationBenefits />
       </div>
 
       {/* FAQ Section */}
