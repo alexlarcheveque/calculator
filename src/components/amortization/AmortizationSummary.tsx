@@ -7,11 +7,46 @@ import {
 
 interface AmortizationSummaryProps {
   results: AmortizationResults;
+  originalLoanTermYears: number;
+  originalLoanTermMonths: number;
 }
 
 export default function AmortizationSummary({
   results,
+  originalLoanTermYears,
+  originalLoanTermMonths,
 }: AmortizationSummaryProps) {
+  // Calculate original loan term in months
+  const originalTermMonths =
+    originalLoanTermYears * 12 + originalLoanTermMonths;
+
+  // Calculate time savings
+  const monthsSaved = originalTermMonths - results.totalPayments;
+  const yearsSaved = Math.floor(monthsSaved / 12);
+  const remainingMonthsSaved = monthsSaved % 12;
+
+  // Format time savings
+  const formatTimeSavings = () => {
+    if (monthsSaved <= 0) return null;
+
+    let savings = "";
+    if (yearsSaved > 0) {
+      savings += `${yearsSaved} year${yearsSaved !== 1 ? "s" : ""}`;
+    }
+    if (yearsSaved > 0 && remainingMonthsSaved > 0) {
+      savings += ", ";
+    }
+    if (remainingMonthsSaved > 0) {
+      savings += `${remainingMonthsSaved} month${
+        remainingMonthsSaved !== 1 ? "s" : ""
+      }`;
+    }
+
+    return savings;
+  };
+
+  const timeSavings = formatTimeSavings();
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <div className="text-center mb-6">
@@ -188,6 +223,33 @@ export default function AmortizationSummary({
         <table className="w-full border-collapse">
           <tbody>
             <tr className="border-b border-gray-200">
+              <td className="py-2 text-gray-700">Loan duration</td>
+              <td className="py-2 text-right font-semibold">
+                {(() => {
+                  const years = Math.floor(results.totalPayments / 12);
+                  const months = results.totalPayments % 12;
+
+                  let duration = "";
+                  if (years > 0) {
+                    duration += `${years} year${years !== 1 ? "s" : ""}`;
+                  }
+                  if (years > 0 && months > 0) {
+                    duration += ", ";
+                  }
+                  if (months > 0) {
+                    duration += `${months} month${months !== 1 ? "s" : ""}`;
+                  }
+
+                  return duration;
+                })()}
+                {timeSavings && (
+                  <div className="text-xs text-green-600 font-normal">
+                    🎉 {timeSavings} faster than original loan
+                  </div>
+                )}
+              </td>
+            </tr>
+            <tr className="border-b border-gray-200">
               <td className="py-2 text-gray-700">
                 Total of {results.totalPayments} monthly payments
               </td>
@@ -204,7 +266,7 @@ export default function AmortizationSummary({
             <tr className="border-b border-gray-200">
               <td className="py-2 text-gray-700">Payoff date</td>
               <td className="py-2 text-right font-semibold">
-                {formatDate(results.payoffDate)}
+                {formatDate(results.payoffDate)} {}
               </td>
             </tr>
           </tbody>

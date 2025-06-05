@@ -16,6 +16,59 @@ export default function AmortizationForm({
   const [showExtraPayments, setShowExtraPayments] = useState(false);
   const [showAdditionalOneTime, setShowAdditionalOneTime] = useState(false);
 
+  // Calculate loan end date for validation
+  const calculateLoanEndDate = (): Date => {
+    const startDate =
+      values.startDate instanceof Date
+        ? values.startDate
+        : new Date(values.startDate);
+    const totalMonths = values.loanTermYears * 12 + values.loanTermMonths;
+    const endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + totalMonths);
+    return endDate;
+  };
+
+  // Validation functions
+  const isDateWithinLoanTerm = (date: Date): boolean => {
+    const loanEndDate = calculateLoanEndDate();
+    const startDate =
+      values.startDate instanceof Date
+        ? values.startDate
+        : new Date(values.startDate);
+    const checkDate = date instanceof Date ? date : new Date(date);
+    return checkDate >= startDate && checkDate <= loanEndDate;
+  };
+
+  const getDateValidationError = (date: Date, fieldName: string): string => {
+    if (!date) return "";
+
+    const loanEndDate = calculateLoanEndDate();
+    const startDate =
+      values.startDate instanceof Date
+        ? values.startDate
+        : new Date(values.startDate);
+    const checkDate = date instanceof Date ? date : new Date(date);
+
+    // Check if the date is valid
+    if (isNaN(checkDate.getTime())) {
+      return `${fieldName} is not a valid date`;
+    }
+
+    if (checkDate < startDate) {
+      return `${fieldName} cannot be before loan start date (${formatDateForDisplay(
+        startDate
+      )})`;
+    }
+
+    if (checkDate > loanEndDate) {
+      return `${fieldName} cannot be after loan end date (${formatDateForDisplay(
+        loanEndDate
+      )})`;
+    }
+
+    return "";
+  };
+
   // Format number with commas for display
   const formatNumberWithCommas = (value: number): string => {
     if (value === 0) return "";
@@ -27,6 +80,34 @@ export default function AmortizationForm({
     const cleaned = value.replace(/,/g, "");
     const parsed = parseFloat(cleaned);
     return isNaN(parsed) ? 0 : parsed;
+  };
+
+  const formatDateForInput = (date: Date): string => {
+    if (!date) return "";
+
+    // Ensure we have a proper Date object
+    const dateObj = date instanceof Date ? date : new Date(date);
+
+    // Check if the date is valid
+    if (isNaN(dateObj.getTime())) return "";
+
+    return dateObj.toISOString().split("T")[0];
+  };
+
+  const formatDateForDisplay = (date: Date): string => {
+    if (!date) return "";
+
+    // Ensure we have a proper Date object
+    const dateObj = date instanceof Date ? date : new Date(date);
+
+    // Check if the date is valid
+    if (isNaN(dateObj.getTime())) return "";
+
+    return dateObj.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   };
 
   const handleChange = (
@@ -111,9 +192,26 @@ export default function AmortizationForm({
     });
   };
 
-  const formatDateForInput = (date: Date): string => {
-    return date.toISOString().split("T")[0];
-  };
+  // Get validation errors
+  const monthlyExtraError =
+    values.extraPayments.monthlyExtra > 0
+      ? getDateValidationError(
+          values.extraPayments.monthlyExtraStartDate,
+          "Monthly extra payment start date"
+        )
+      : "";
+
+  const yearlyExtraError =
+    values.extraPayments.yearlyExtra > 0
+      ? getDateValidationError(
+          values.extraPayments.yearlyExtraStartDate,
+          "Yearly extra payment date"
+        )
+      : "";
+
+  const loanEndDate = calculateLoanEndDate();
+  const hasValidLoanTerm =
+    values.loanTermYears > 0 || values.loanTermMonths > 0;
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
@@ -244,6 +342,14 @@ export default function AmortizationForm({
         {/* Extra Payments Section */}
         {showExtraPayments && (
           <div className="bg-gray-50 p-4 rounded-md space-y-4">
+            {!hasValidLoanTerm && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
+                <p className="text-sm text-yellow-800">
+                  ⚠️ Please set a valid loan term to configure extra payments.
+                </p>
+              </div>
+            )}
+
             {/* Monthly Extra Payment */}
             <div className="form-group">
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -268,16 +374,28 @@ export default function AmortizationForm({
                 <input
                   type="date"
                   name="monthlyExtraStartDate"
-                  className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  className={`block w-full py-2 px-3 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                    monthlyExtraError ? "border-red-300" : "border-gray-300"
+                  }`}
                   value={formatDateForInput(
                     values.extraPayments.monthlyExtraStartDate
                   )}
                   onChange={handleExtraPaymentChange}
+                  min={formatDateForInput(values.startDate)}
+                  max={
+                    hasValidLoanTerm
+                      ? formatDateForInput(loanEndDate)
+                      : undefined
+                  }
                 />
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                Start date for monthly extra payments
-              </p>
+              {monthlyExtraError ? (
+                <p className="text-xs text-red-600 mt-1">{monthlyExtraError}</p>
+              ) : (
+                <p className="text-xs text-gray-500 mt-1">
+                  Start date for monthly extra payments
+                </p>
+              )}
             </div>
 
             {/* Yearly Extra Payment */}
@@ -304,16 +422,28 @@ export default function AmortizationForm({
                 <input
                   type="date"
                   name="yearlyExtraStartDate"
-                  className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  className={`block w-full py-2 px-3 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                    yearlyExtraError ? "border-red-300" : "border-gray-300"
+                  }`}
                   value={formatDateForInput(
                     values.extraPayments.yearlyExtraStartDate
                   )}
                   onChange={handleExtraPaymentChange}
+                  min={formatDateForInput(values.startDate)}
+                  max={
+                    hasValidLoanTerm
+                      ? formatDateForInput(loanEndDate)
+                      : undefined
+                  }
                 />
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                Payment will be made annually on this date
-              </p>
+              {yearlyExtraError ? (
+                <p className="text-xs text-red-600 mt-1">{yearlyExtraError}</p>
+              ) : (
+                <p className="text-xs text-gray-500 mt-1">
+                  Payment will be made annually on this date
+                </p>
+              )}
             </div>
 
             {/* One-time Payments */}
@@ -322,48 +452,76 @@ export default function AmortizationForm({
                 One-time Extra Payments
               </label>
 
-              {values.extraPayments.oneTimePayments.map((payment, index) => (
-                <div key={index} className="grid grid-cols-3 gap-2 mb-2">
-                  <div className="relative rounded-md shadow-sm">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <span className="text-gray-500">$</span>
+              {values.extraPayments.oneTimePayments.map((payment, index) => {
+                const oneTimeError = getDateValidationError(
+                  payment.date,
+                  "One-time payment date"
+                );
+
+                return (
+                  <div key={index} className="space-y-2 mb-4">
+                    <div className="flex gap-2">
+                      <div className="flex-1 relative rounded-md shadow-sm">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <span className="text-gray-500">$</span>
+                        </div>
+                        <input
+                          type="text"
+                          className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                          value={formatNumberWithCommas(payment.amount)}
+                          onChange={(e) =>
+                            handleOneTimePaymentChange(
+                              index,
+                              "amount",
+                              e.target.value
+                            )
+                          }
+                          placeholder="5,000"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <input
+                          type="date"
+                          className={`block w-full py-2 px-3 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                            oneTimeError ? "border-red-300" : "border-gray-300"
+                          }`}
+                          value={formatDateForInput(payment.date)}
+                          onChange={(e) =>
+                            handleOneTimePaymentChange(
+                              index,
+                              "date",
+                              e.target.value
+                            )
+                          }
+                          min={formatDateForInput(values.startDate)}
+                          max={
+                            hasValidLoanTerm
+                              ? formatDateForInput(loanEndDate)
+                              : undefined
+                          }
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeOneTimePayment(index)}
+                        className="flex items-center justify-center w-10 h-10 text-lg text-red-600 hover:text-red-800 border border-red-300 rounded-md hover:bg-red-50 transition-colors"
+                        title="Remove payment"
+                      >
+                        ×
+                      </button>
                     </div>
-                    <input
-                      type="text"
-                      className="block w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                      value={formatNumberWithCommas(payment.amount)}
-                      onChange={(e) =>
-                        handleOneTimePaymentChange(
-                          index,
-                          "amount",
-                          e.target.value
-                        )
-                      }
-                      placeholder="5,000"
-                    />
+                    {oneTimeError && (
+                      <p className="text-xs text-red-600">{oneTimeError}</p>
+                    )}
                   </div>
-                  <input
-                    type="date"
-                    className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                    value={formatDateForInput(payment.date)}
-                    onChange={(e) =>
-                      handleOneTimePaymentChange(index, "date", e.target.value)
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeOneTimePayment(index)}
-                    className="px-3 py-2 text-sm text-red-600 hover:text-red-800 border border-red-300 rounded-md hover:bg-red-50"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
+                );
+              })}
 
               <button
                 type="button"
                 onClick={addOneTimePayment}
-                className="mt-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-800 border border-blue-300 rounded-md hover:bg-blue-50"
+                disabled={!hasValidLoanTerm}
+                className="mt-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-800 border border-blue-300 rounded-md hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 + Add One-time Payment
               </button>
