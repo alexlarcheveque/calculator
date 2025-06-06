@@ -1,10 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import InvestmentForm from "@/components/investment/InvestmentForm";
 import InvestmentSummary from "@/components/investment/InvestmentSummary";
 import InvestmentCharts from "@/components/investment/InvestmentCharts";
-import AccumulationTable from "@/components/investment/AccumulationTable";
+import AmortizationTable, {
+  AmortizationDataPoint,
+} from "@/components/ui/AmortizationTable";
 import InvestmentBasics from "@/components/investment/InvestmentBasics";
 import CompoundInterest from "@/components/investment/CompoundInterest";
 import InvestmentStrategy from "@/components/investment/InvestmentStrategy";
@@ -17,6 +20,7 @@ import {
   calculateRequiredReturnRate,
   calculateRequiredInvestmentLength,
   calculateRequiredContribution,
+  formatCurrency,
 } from "@/utils/investmentCalculations";
 import {
   InvestmentFormValues,
@@ -30,28 +34,34 @@ import {
 } from "@/types/investment";
 
 export default function InvestmentPage() {
-  const [formValues, setFormValues] = useState<InvestmentFormValues>({
-    calculatorType: CalculatorType.END_AMOUNT,
-    startingAmount: 20000,
-    targetAmount: 1000000,
-    additionalContribution: 1000,
-    returnRate: 6,
-    investmentLength: 10,
-    compoundFrequency: CompoundFrequency.ANNUALLY,
-    contributionTiming: ContributionTiming.END,
-    contributionFrequency: ContributionFrequency.MONTHLY,
-  });
-
-  const [results, setResults] = useState<InvestmentResults | null>(null);
-  const [accumulationData, setAccumulationData] = useState<
-    AccumulationDataPoint[]
-  >([]);
-  const [monthlyAccumulationData, setMonthlyAccumulationData] = useState<
-    MonthlyAccumulationDataPoint[]
-  >([]);
-  const [calculatedValue, setCalculatedValue] = useState<number | undefined>(
-    undefined
+  const [formValues, setFormValues] = useLocalStorage<InvestmentFormValues>(
+    "investment-calculator-values",
+    {
+      calculatorType: CalculatorType.END_AMOUNT,
+      startingAmount: 20000,
+      targetAmount: 1000000,
+      additionalContribution: 1000,
+      returnRate: 6,
+      investmentLength: 10,
+      compoundFrequency: CompoundFrequency.ANNUALLY,
+      contributionTiming: ContributionTiming.END,
+      contributionFrequency: ContributionFrequency.ANNUALLY,
+    }
   );
+
+  const [results, setResults] = useLocalStorage<InvestmentResults | null>(
+    "investment-calculator-results",
+    null
+  );
+  const [accumulationData, setAccumulationData] = useLocalStorage<
+    AccumulationDataPoint[]
+  >("investment-calculator-accumulation-data", []);
+  const [monthlyAccumulationData, setMonthlyAccumulationData] = useLocalStorage<
+    MonthlyAccumulationDataPoint[]
+  >("investment-calculator-monthly-data", []);
+  const [calculatedValue, setCalculatedValue] = useLocalStorage<
+    number | undefined
+  >("investment-calculator-calculated-value", undefined);
 
   useEffect(() => {
     const {
@@ -100,11 +110,29 @@ export default function InvestmentPage() {
           break;
 
         case CalculatorType.RETURN_RATE:
-          calculatedVal = calculateRequiredReturnRate(params);
-          investmentResults = calculateInvestment({
-            ...params,
-            returnRate: calculatedVal,
-          });
+          try {
+            calculatedVal = calculateRequiredReturnRate(params);
+            investmentResults = calculateInvestment({
+              ...params,
+              returnRate: calculatedVal,
+            });
+          } catch (error) {
+            console.error("Return Rate calculation failed:", error);
+            // Show error in results
+            setResults({
+              endBalance: 0,
+              startingAmount,
+              totalContributions: 0,
+              totalInterest: 0,
+            });
+            setCalculatedValue(undefined);
+            setAccumulationData([]);
+            setMonthlyAccumulationData([]);
+            const errorMessage =
+              error instanceof Error ? error.message : "Unknown error occurred";
+            alert(`Return Rate calculation failed: ${errorMessage}`);
+            return;
+          }
           break;
 
         case CalculatorType.INVESTMENT_LENGTH:
@@ -157,7 +185,7 @@ export default function InvestmentPage() {
       setMonthlyAccumulationData(monthlySchedule);
       setCalculatedValue(calculatedVal);
     } catch (error) {
-      console.error("Calculation error:", error);
+      console.error("❌ Calculation error:", error);
       // Set default values on error
       setResults(null);
       setAccumulationData([]);
@@ -173,8 +201,94 @@ export default function InvestmentPage() {
     }));
   };
 
+  const handleCalculatorTypeChange = (type: CalculatorType) => {
+    setFormValues((prev) => ({
+      ...prev,
+      calculatorType: type,
+    }));
+  };
+
+  const clearCache = () => {
+    // Clear all localStorage keys
+    localStorage.removeItem("investment-calculator-values");
+    localStorage.removeItem("investment-calculator-results");
+    localStorage.removeItem("investment-calculator-accumulation-data");
+    localStorage.removeItem("investment-calculator-monthly-data");
+    localStorage.removeItem("investment-calculator-calculated-value");
+
+    // Reset to default values
+    setFormValues({
+      calculatorType: CalculatorType.END_AMOUNT,
+      startingAmount: 20000,
+      targetAmount: 1000000,
+      additionalContribution: 1000,
+      returnRate: 6,
+      investmentLength: 10,
+      compoundFrequency: CompoundFrequency.ANNUALLY,
+      contributionTiming: ContributionTiming.END,
+      contributionFrequency: ContributionFrequency.ANNUALLY,
+    });
+
+    // Clear results
+    setResults(null);
+    setAccumulationData([]);
+    setMonthlyAccumulationData([]);
+    setCalculatedValue(undefined);
+
+    alert("Cache cleared! Calculator reset to defaults.");
+  };
+
+  // Transform investment accumulation data to AmortizationDataPoint format
+  const transformedAnnualData = useMemo((): AmortizationDataPoint[] => {
+    return accumulationData.map((item, index) => ({
+      paymentNumber: item.year,
+      year: item.year,
+      principal: item.deposit, // Map deposit to principal
+      interest: item.interest,
+      remainingBalance: item.endingBalance,
+      totalInterestPaid: item.totalInterest,
+      totalPrincipalPaid: item.totalContributions,
+      isYearEnd: true,
+    }));
+  }, [accumulationData]);
+
+  const transformedMonthlyData = useMemo((): AmortizationDataPoint[] => {
+    return monthlyAccumulationData.map((item, index) => ({
+      paymentNumber: index + 1,
+      month: item.month,
+      year: item.year,
+      principal: item.deposit, // Map deposit to principal
+      interest: item.interest,
+      remainingBalance: item.endingBalance,
+      isYearEnd: item.month === 12,
+    }));
+  }, [monthlyAccumulationData]);
+
+  // Combine both datasets for the table - prefer annual for annual toggle, monthly as fallback
+  const combinedData = useMemo((): AmortizationDataPoint[] => {
+    return [...transformedMonthlyData];
+  }, [transformedMonthlyData]);
+
   return (
-    <div>
+    <div className="space-y-8">
+      {/* Calculator Type Tabs */}
+      <div className="flex justify-center mb-6 border-b">
+        {Object.values(CalculatorType).map((type) => (
+          <button
+            key={type}
+            onClick={() => handleCalculatorTypeChange(type)}
+            className={`px-4 py-2 text-lg font-medium focus:outline-none whitespace-nowrap
+                        ${
+                          formValues.calculatorType === type
+                            ? "border-b-2 border-blue-600 text-blue-600"
+                            : "text-gray-500 hover:text-gray-700"
+                        }`}
+          >
+            {type}
+          </button>
+        ))}
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">
@@ -189,14 +303,19 @@ export default function InvestmentPage() {
                 results={results}
                 calculatorType={formValues.calculatorType}
                 calculatedValue={calculatedValue}
+                contributionFrequency={formValues.contributionFrequency}
               />
               <InvestmentCharts
                 results={results}
                 accumulationData={accumulationData}
               />
-              <AccumulationTable
-                annualData={accumulationData}
-                monthlyData={monthlyAccumulationData}
+              <AmortizationTable
+                data={combinedData}
+                formatCurrency={formatCurrency}
+                title="Investment Accumulation Schedule"
+                showAnnualToggle={true}
+                emptyStateMessage="No accumulation data available."
+                paymentsPerYear={12}
               />
             </>
           )}

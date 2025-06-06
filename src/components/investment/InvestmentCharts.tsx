@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo } from "react";
 import { InvestmentResults, AccumulationDataPoint } from "@/types/investment";
-import InvestmentPieChart from "./InvestmentPieChart";
+import PaymentDistributionChart, {
+  ChartDataPoint,
+} from "@/components/ui/PaymentDistributionChart";
+import TabbedContainer, { TabItem } from "@/components/ui/TabbedContainer";
 import AccumulationChart from "./AccumulationChart";
+import { formatCurrency } from "@/utils/investmentCalculations";
 
 interface InvestmentChartsProps {
   results: InvestmentResults;
@@ -14,48 +18,66 @@ export default function InvestmentCharts({
   results,
   accumulationData,
 }: InvestmentChartsProps) {
-  const [activeTab, setActiveTab] = useState<"composition" | "accumulation">(
-    "composition"
+  // Transform investment results into chart data format
+  const chartData: ChartDataPoint[] = useMemo(() => {
+    const data = [
+      {
+        label: "Starting Amount",
+        value: results.startingAmount,
+        color: "#0ea5e9", // blue-500
+      },
+      {
+        label: "Contributions",
+        value: results.totalContributions,
+        color: "#10b981", // emerald-500
+      },
+    ];
+
+    // Only include interest if it's positive
+    if (results.totalInterest > 0) {
+      data.push({
+        label: "Interest",
+        value: results.totalInterest,
+        color: "#8b5cf6", // violet-500
+      });
+    }
+
+    return data;
+  }, [results]);
+
+  const centerTextConfig = useMemo(
+    () => ({
+      label: "Final Balance",
+      value: results.endBalance,
+    }),
+    [results.endBalance]
   );
 
-  return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-6 text-gray-800">
-        Investment Breakdown
-      </h2>
-
-      <div className="flex border-b border-gray-200 mb-6">
-        <button
-          onClick={() => setActiveTab("composition")}
-          className={`py-2 px-4 font-medium text-sm mr-4 ${
-            activeTab === "composition"
-              ? "text-blue-600 border-b-2 border-blue-500"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-          aria-label="View investment composition chart"
-        >
-          Investment Composition
-        </button>
-        <button
-          onClick={() => setActiveTab("accumulation")}
-          className={`py-2 px-4 font-medium text-sm ${
-            activeTab === "accumulation"
-              ? "text-blue-600 border-b-2 border-blue-500"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-          aria-label="View accumulation over time chart"
-        >
-          Accumulation Over Time
-        </button>
-      </div>
-
-      <div className="h-96">
-        {activeTab === "composition" ? (
-          <InvestmentPieChart results={results} />
-        ) : (
-          <AccumulationChart data={accumulationData} />
-        )}
-      </div>
-    </div>
+  // Define tabs
+  const tabs: TabItem[] = useMemo(
+    () => [
+      {
+        id: "composition",
+        label: "Investment Composition",
+        ariaLabel: "View investment composition chart",
+        content: (
+          <PaymentDistributionChart
+            data={chartData}
+            centerText={centerTextConfig}
+            formatCurrency={formatCurrency}
+            emptyStateMessage="No investment data available to display."
+          />
+        ),
+      },
+      {
+        id: "accumulation",
+        label: "Accumulation Over Time",
+        ariaLabel: "View accumulation over time chart",
+        content: <AccumulationChart data={accumulationData} />,
+      },
+    ],
+    [chartData, centerTextConfig, accumulationData]
   );
+
+  return <TabbedContainer tabs={tabs} defaultActiveTab="composition" />;
 }

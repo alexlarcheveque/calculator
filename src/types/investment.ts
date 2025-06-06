@@ -7,15 +7,15 @@ export enum CalculatorType {
 }
 
 export enum CompoundFrequency {
-  ANNUALLY = "annually",
-  SEMIANNUALLY = "semiannually",
-  QUARTERLY = "quarterly",
-  MONTHLY = "monthly",
-  SEMIMONTHLY = "semimonthly",
-  BIWEEKLY = "biweekly",
-  WEEKLY = "weekly",
-  DAILY = "daily",
-  CONTINUOUSLY = "continuously",
+  ANNUALLY = "Annually",
+  SEMIANNUALLY = "Semiannually",
+  QUARTERLY = "Quarterly",
+  MONTHLY = "Monthly",
+  SEMIMONTHLY = "Semimonthly",
+  BIWEEKLY = "Biweekly",
+  WEEKLY = "Weekly",
+  DAILY = "Daily",
+  CONTINUOUSLY = "Continuously",
 }
 
 export enum ContributionTiming {

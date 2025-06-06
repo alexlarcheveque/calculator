@@ -90,24 +90,49 @@ function calculateCompoundInterest(
     return principalFV;
   }
 
-  // Calculate contribution frequency relative to compounding frequency
-  const contributionPeriodsPerYear = contributionFrequency;
-  const contributionPerCompoundingPeriod =
-    contribution * (compoundingFrequency / contributionPeriodsPerYear);
+  // Calculate effective periodic rate for contribution frequency
+  let effectivePeriodicRate: number;
+  let contributionPeriods: number;
 
-  // Future value of annuity
+  if (contributionFrequency === 12) {
+    // Monthly contributions
+    contributionPeriods = contributionFrequency * time; // 12 * years
+    // Calculate monthly effective rate based on actual compounding frequency
+    if (compoundingFrequency === Infinity) {
+      effectivePeriodicRate = Math.exp(rate / 12) - 1; // Continuous compounding
+    } else {
+      const periodicRate = rate / compoundingFrequency;
+      const effectiveAnnualRate =
+        Math.pow(1 + periodicRate, compoundingFrequency) - 1;
+      effectivePeriodicRate = Math.pow(1 + effectiveAnnualRate, 1 / 12) - 1;
+    }
+  } else {
+    // Annual contributions
+    contributionPeriods = contributionFrequency * time; // 1 * years
+    // Calculate effective annual rate based on compounding frequency
+    if (compoundingFrequency === Infinity) {
+      effectivePeriodicRate = Math.exp(rate) - 1; // Continuous compounding
+    } else {
+      const periodicRate = rate / compoundingFrequency;
+      effectivePeriodicRate =
+        Math.pow(1 + periodicRate, compoundingFrequency) - 1;
+    }
+  }
+
+  // Future value of annuity based on contribution frequency
   let annuityFV = 0;
-  if (periodicRate !== 0) {
+  if (effectivePeriodicRate !== 0) {
     annuityFV =
-      contributionPerCompoundingPeriod *
-      ((Math.pow(1 + periodicRate, totalPeriods) - 1) / periodicRate);
+      contribution *
+      ((Math.pow(1 + effectivePeriodicRate, contributionPeriods) - 1) /
+        effectivePeriodicRate);
 
     // Adjust for beginning vs end of period contributions
     if (contributionTiming === ContributionTiming.BEGINNING) {
-      annuityFV *= 1 + periodicRate;
+      annuityFV *= 1 + effectivePeriodicRate;
     }
   } else {
-    annuityFV = contributionPerCompoundingPeriod * totalPeriods;
+    annuityFV = contribution * contributionPeriods;
   }
 
   return principalFV + annuityFV;
@@ -126,6 +151,34 @@ export function calculateInvestment(
     contributionFrequency,
   } = params;
 
+  // For annual contributions with annual compounding and end timing, use simple logic like calculator.net
+  if (
+    compoundFrequency === CompoundFrequency.ANNUALLY &&
+    contributionFrequency === ContributionFrequency.ANNUALLY &&
+    contributionTiming === ContributionTiming.END
+  ) {
+    const rate = returnRate / 100;
+    let balance = startingAmount;
+
+    for (let year = 1; year <= investmentLength; year++) {
+      // Apply interest to current balance
+      balance = balance * (1 + rate);
+      // Add contribution at end of year
+      balance = balance + additionalContribution;
+    }
+
+    const totalContributions = additionalContribution * investmentLength;
+    const totalInterest = balance - startingAmount - totalContributions;
+
+    return {
+      endBalance: balance,
+      startingAmount,
+      totalContributions,
+      totalInterest,
+    };
+  }
+
+  // For all other cases, use the existing complex compound interest logic
   const annualRate = returnRate / 100;
   const compoundingPeriodsPerYear =
     getCompoundingPeriodsPerYear(compoundFrequency);
@@ -185,7 +238,15 @@ export function calculateRequiredStartingAmount(
     contributionTiming
   );
 
-  // Required starting amount = (target - contribution FV) / compound factor
+  // Handle continuous compounding separately
+  if (compoundingPeriodsPerYear === Infinity) {
+    // For continuous compounding: FV = PV * e^(rt)
+    // So PV = FV / e^(rt)
+    const compoundFactor = Math.exp(annualRate * investmentLength);
+    return Math.max(0, (targetAmount - contributionFV) / compoundFactor);
+  }
+
+  // For discrete compounding: FV = PV * (1 + r/n)^(nt)
   const periodicRate = annualRate / compoundingPeriodsPerYear;
   const totalPeriods = compoundingPeriodsPerYear * investmentLength;
   const compoundFactor = Math.pow(1 + periodicRate, totalPeriods);
@@ -193,118 +254,155 @@ export function calculateRequiredStartingAmount(
   return Math.max(0, (targetAmount - contributionFV) / compoundFactor);
 }
 
-// Calculate required return rate to reach target
+// Calculate required return rate to reach target - EXACT SOLUTIONS ONLY
 export function calculateRequiredReturnRate(
   params: InvestmentCalculationParams
 ): number {
+  return calculateReturnRateBisection(params);
+}
+
+// EXACT bisection solution for return rate
+function calculateReturnRateBisection(
+  params: InvestmentCalculationParams
+): number {
   const {
     startingAmount,
     targetAmount = 0,
     additionalContribution,
     investmentLength,
-    compoundFrequency,
-    contributionTiming,
-    contributionFrequency,
   } = params;
 
-  // Use binary search to find the required rate
-  let low = 0;
-  let high = 50; // 50% max rate
-  let tolerance = 0.0001;
+  // Check if target is achievable
+  if (
+    targetAmount <=
+    startingAmount + additionalContribution * investmentLength
+  ) {
+    throw new Error(
+      "Target amount is too low - can be achieved with 0% return rate"
+    );
+  }
 
-  for (let i = 0; i < 100; i++) {
-    const testRate = (low + high) / 2;
-    const testParams = { ...params, returnRate: testRate };
+  // Use pure bisection with many cuts
+  let lowRate = 0.001; // 0.1%
+  let highRate = 2.0; // 200%
+
+  const maxIterations = 200; // More cuts!
+  const tolerance = 1e-12; // Very tight tolerance
+
+  for (let i = 0; i < maxIterations; i++) {
+    const midRate = (lowRate + highRate) / 2;
+
+    const testParams = { ...params, returnRate: midRate * 100 };
     const result = calculateInvestment(testParams);
+    const error = result.endBalance - targetAmount;
 
-    if (Math.abs(result.endBalance - targetAmount) < tolerance) {
-      return testRate;
+    // Check for convergence
+    if (
+      Math.abs(error) < tolerance ||
+      Math.abs(highRate - lowRate) < tolerance
+    ) {
+      return midRate * 100;
     }
 
+    // Update bounds
     if (result.endBalance < targetAmount) {
-      low = testRate;
+      lowRate = midRate;
     } else {
-      high = testRate;
+      highRate = midRate;
     }
   }
 
-  return (low + high) / 2;
+  throw new Error("Cannot find exact solution: maximum iterations reached");
 }
 
-// Calculate required investment length to reach target
+// Calculate required investment length - EXACT SOLUTIONS ONLY
 export function calculateRequiredInvestmentLength(
   params: InvestmentCalculationParams
 ): number {
-  const {
-    startingAmount,
-    targetAmount = 0,
-    additionalContribution,
-    returnRate,
-    compoundFrequency,
-    contributionTiming,
-    contributionFrequency,
-  } = params;
+  return calculateLengthBisection(params);
+}
 
-  // Use binary search to find the required time
-  let low = 0.1;
-  let high = 100; // 100 years max
-  let tolerance = 0.01;
+// EXACT bisection for investment length
+function calculateLengthBisection(params: InvestmentCalculationParams): number {
+  const { targetAmount = 0 } = params;
 
-  for (let i = 0; i < 100; i++) {
-    const testTime = (low + high) / 2;
-    const testParams = { ...params, investmentLength: testTime };
+  // Use pure bisection with many cuts
+  let lowLength = 0.1; // 0.1 years (about 1 month)
+  let highLength = 100; // 100 years
+
+  const maxIterations = 200; // More cuts!
+  const tolerance = 1e-10; // Very tight tolerance
+
+  for (let i = 0; i < maxIterations; i++) {
+    const midLength = (lowLength + highLength) / 2;
+
+    const testParams = { ...params, investmentLength: midLength };
     const result = calculateInvestment(testParams);
+    const error = result.endBalance - targetAmount;
 
-    if (Math.abs(result.endBalance - targetAmount) < tolerance * targetAmount) {
-      return testTime;
+    // Check for convergence
+    if (
+      Math.abs(error) < tolerance ||
+      Math.abs(highLength - lowLength) < tolerance
+    ) {
+      return midLength;
     }
 
+    // Update bounds
     if (result.endBalance < targetAmount) {
-      low = testTime;
+      lowLength = midLength;
     } else {
-      high = testTime;
+      highLength = midLength;
     }
   }
 
-  return (low + high) / 2;
+  throw new Error("Cannot find exact solution: maximum iterations reached");
 }
 
-// Calculate required additional contribution to reach target
+// Calculate required additional contribution - EXACT SOLUTIONS ONLY
 export function calculateRequiredContribution(
   params: InvestmentCalculationParams
 ): number {
-  const {
-    startingAmount,
-    targetAmount = 0,
-    returnRate,
-    investmentLength,
-    compoundFrequency,
-    contributionTiming,
-    contributionFrequency,
-  } = params;
+  return calculateContributionBisection(params);
+}
 
-  // Use binary search to find the required contribution
-  let low = 0;
-  let high = 100000; // $100k max contribution
-  let tolerance = 0.01;
+// EXACT bisection for required contribution
+function calculateContributionBisection(
+  params: InvestmentCalculationParams
+): number {
+  const { targetAmount = 0 } = params;
 
-  for (let i = 0; i < 100; i++) {
-    const testContribution = (low + high) / 2;
-    const testParams = { ...params, additionalContribution: testContribution };
+  // Use pure bisection with many cuts
+  let lowContribution = 0; // $0
+  let highContribution = 100000; // $100,000 per period
+
+  const maxIterations = 200; // More cuts!
+  const tolerance = 1e-8; // Reasonable tolerance for money
+
+  for (let i = 0; i < maxIterations; i++) {
+    const midContribution = (lowContribution + highContribution) / 2;
+
+    const testParams = { ...params, additionalContribution: midContribution };
     const result = calculateInvestment(testParams);
+    const error = result.endBalance - targetAmount;
 
-    if (Math.abs(result.endBalance - targetAmount) < tolerance * targetAmount) {
-      return testContribution;
+    // Check for convergence
+    if (
+      Math.abs(error) < tolerance ||
+      Math.abs(highContribution - lowContribution) < tolerance
+    ) {
+      return Math.max(0, midContribution);
     }
 
+    // Update bounds
     if (result.endBalance < targetAmount) {
-      low = testContribution;
+      lowContribution = midContribution;
     } else {
-      high = testContribution;
+      highContribution = midContribution;
     }
   }
 
-  return (low + high) / 2;
+  throw new Error("Cannot find exact solution: maximum iterations reached");
 }
 
 export function calculateAccumulationSchedule(
