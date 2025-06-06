@@ -4,7 +4,7 @@ const protectionStrategiesSections: ContentSection[] = [
   {
     type: "text",
     content:
-      "Protecting against inflation requires a multi-faceted approach combining smart investment choices, strategic financial planning, and practical money management. The key is diversification across asset classes and strategies that can outpace or adjust with inflation over time.",
+      "Protecting against inflation requires diversification across asset classes and strategies that can outpace or adjust with inflation over time.",
   },
   {
     type: "subheader",
@@ -16,122 +16,30 @@ const protectionStrategiesSections: ContentSection[] = [
     gridCols: 2,
     gridItems: [
       {
-        title: "Stocks and Equity Investments",
+        title: "Stocks and Equities",
         description:
-          "Companies can raise prices with inflation and have historically provided returns above inflation over long periods. Focus on quality companies with pricing power and strong competitive moats.",
+          "Companies can raise prices with inflation. Focus on quality companies with pricing power.",
       },
       {
         title: "Real Estate",
         description:
-          "Property values and rental income typically rise with inflation. Consider direct ownership, REITs, or real estate crowdfunding platforms for exposure to this inflation hedge.",
+          "Property values and rental income typically rise with inflation. Consider REITs for easier access.",
       },
       {
         title: "Commodities",
         description:
-          "Gold, oil, agricultural products, and other commodities often appreciate during inflationary periods. Can be accessed through ETFs, futures, or commodity-focused mutual funds.",
+          "Gold, oil, and agricultural products often appreciate during inflation. Access through ETFs.",
       },
       {
-        title: "Treasury Inflation-Protected Securities (TIPS)",
+        title: "TIPS Bonds",
         description:
-          "Government bonds that adjust principal and interest payments based on CPI changes. Provide direct inflation protection but may have lower returns during low inflation periods.",
+          "Treasury Inflation-Protected Securities adjust payments with CPI changes for direct protection.",
       },
     ],
   },
   {
     type: "subheader",
-    heading: "Modern Investment Strategies",
-    headingLevel: "h3",
-  },
-  {
-    type: "list",
-    listItems: [
-      {
-        label: "I Bonds (Series I Savings Bonds)",
-        description:
-          "Government savings bonds that adjust for inflation with no risk of principal loss. Limited to $10,000 per person annually but offer excellent inflation protection for smaller amounts",
-      },
-      {
-        label: "Floating Rate Debt",
-        description:
-          "Bonds and loans with interest rates that adjust with market conditions. Bank loans, floating rate notes, and variable rate CDs can provide protection against rising rates",
-      },
-      {
-        label: "International Diversification",
-        description:
-          "Foreign stocks and bonds can provide exposure to different inflation environments. Some countries may experience lower inflation or currency appreciation",
-      },
-      {
-        label: "Inflation-Linked Corporate Bonds",
-        description:
-          "Some corporations issue bonds with inflation adjustments. These can offer higher yields than TIPS while still providing inflation protection",
-      },
-    ],
-  },
-  {
-    type: "subheader",
-    heading: "Sector-Specific Strategies",
-    headingLevel: "h4",
-  },
-  {
-    type: "callout",
-    callout: {
-      type: "info",
-      title: "Inflation-Resistant Investment Sectors",
-      content: (
-        <div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="font-semibold mb-2">
-                Historically outperform during inflation:
-              </p>
-              <ul className="space-y-1">
-                <li>
-                  • <strong>Energy:</strong> Oil, gas, renewable energy
-                  companies
-                </li>
-                <li>
-                  • <strong>Materials:</strong> Mining, chemicals, construction
-                  materials
-                </li>
-                <li>
-                  • <strong>Consumer staples:</strong> Food, beverages,
-                  household products
-                </li>
-                <li>
-                  • <strong>Utilities:</strong> Regulated companies that can
-                  pass through costs
-                </li>
-              </ul>
-            </div>
-            <div>
-              <p className="font-semibold mb-2">
-                May struggle during high inflation:
-              </p>
-              <ul className="space-y-1">
-                <li>
-                  • <strong>Growth technology:</strong> High-valuation companies
-                </li>
-                <li>
-                  • <strong>Long-term bonds:</strong> Fixed payments lose value
-                </li>
-                <li>
-                  • <strong>High-dividend stocks:</strong> If dividends don't
-                  adjust
-                </li>
-                <li>
-                  • <strong>Cash equivalents:</strong> Unless rates exceed
-                  inflation
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      ),
-    },
-  },
-  {
-    type: "subheader",
-    heading: "Financial Planning Approaches",
+    heading: "Financial Planning",
     headingLevel: "h3",
   },
   {
@@ -141,137 +49,67 @@ const protectionStrategiesSections: ContentSection[] = [
       {
         title: "Debt Management",
         description:
-          "Fixed-rate debt becomes cheaper to repay during inflation. Consider locking in low fixed rates on mortgages and other major loans while avoiding variable rate debt.",
+          "Lock in fixed-rate debt before rates rise. Avoid variable rate debt during inflation.",
       },
       {
-        title: "Emergency Fund Strategy",
+        title: "Emergency Funds",
         description:
-          "Keep emergency funds in high-yield savings or short-term CDs that can adjust with rates. Consider laddering CDs or using money market funds that benefit from rising rates.",
+          "Use high-yield savings or short-term CDs that adjust with rising rates.",
       },
       {
         title: "Income Planning",
         description:
-          "Pursue careers with inflation-adjustment potential. Develop skills that are in demand and can command higher wages as the economy grows.",
+          "Develop skills in demand that can command inflation-adjusted wages over time.",
       },
     ],
   },
   {
     type: "subheader",
-    heading: "Practical Protection Techniques",
-    headingLevel: "h4",
-  },
-  {
-    type: "callout",
-    callout: {
-      type: "success",
-      title: "Everyday Inflation Defense Strategies",
-      content: (
-        <div>
-          <p className="mb-2">
-            <strong>Smart shopping and lifestyle adjustments:</strong>
-          </p>
-          <ul className="space-y-2 text-sm mb-3">
-            <li>
-              • <strong>Bulk purchasing:</strong> Buy non-perishables in bulk
-              when prices are low
-            </li>
-            <li>
-              • <strong>Generic substitutes:</strong> Switch to store brands to
-              combat food inflation
-            </li>
-            <li>
-              • <strong>Energy efficiency:</strong> Invest in efficiency to
-              reduce utility cost impact
-            </li>
-            <li>
-              • <strong>Transportation alternatives:</strong> Consider public
-              transit, cycling, or remote work
-            </li>
-          </ul>
-          <p className="mb-2">
-            <strong>Timing strategies:</strong>
-          </p>
-          <ul className="space-y-1 text-sm">
-            <li>
-              • Lock in fixed-rate services (gym memberships, subscriptions)
-            </li>
-            <li>
-              • Prepay for services likely to increase (insurance, property
-              taxes)
-            </li>
-            <li>• Time major purchases before anticipated price increases</li>
-            <li>• Negotiate inflation escalators in contracts you receive</li>
-          </ul>
-        </div>
-      ),
-    },
-  },
-  {
-    type: "subheader",
-    heading: "Asset Allocation Guidelines",
+    heading: "Practical Tips",
     headingLevel: "h4",
   },
   {
     type: "list",
     listItems: [
       {
-        label: "Age-Based Allocation",
+        label: "Smart Shopping",
         description:
-          "Younger investors can emphasize growth stocks and real estate for long-term inflation protection. Older investors might focus more on TIPS, I Bonds, and inflation-adjusted income sources",
+          "Buy non-perishables in bulk, use store brands, and invest in energy efficiency.",
       },
       {
-        label: "Risk Tolerance Considerations",
+        label: "Transportation",
         description:
-          "Conservative investors should prioritize TIPS and I Bonds despite lower returns. Aggressive investors can emphasize stocks, REITs, and commodity exposure",
+          "Consider public transit, cycling, or remote work to reduce transportation costs.",
       },
       {
-        label: "Time Horizon Planning",
+        label: "Service Contracts",
         description:
-          "Short-term needs should stay in inflation-adjusted cash equivalents. Long-term goals can use more volatile but potentially higher-returning inflation hedges",
-      },
-      {
-        label: "Rebalancing Strategy",
-        description:
-          "Regularly review and rebalance based on inflation expectations. Increase inflation hedges when inflation is expected to rise, reduce when it's expected to fall",
+          "Lock in fixed-rate services and prepay for likely price increases when possible.",
       },
     ],
-  },
-  {
-    type: "subheader",
-    heading: "Common Mistakes to Avoid",
-    headingLevel: "h4",
   },
   {
     type: "callout",
     callout: {
       type: "warning",
-      title: "Inflation Protection Pitfalls",
+      title: "Common Mistakes",
       content: (
         <div>
           <ul className="space-y-2 text-sm">
             <li>
-              • <strong>Over-concentrating in one hedge:</strong> Diversify
-              across multiple inflation-protection strategies
+              • <strong>Over-concentrating:</strong> Diversify across multiple
+              strategies
             </li>
             <li>
-              • <strong>Timing the market:</strong> Maintain consistent
-              allocation rather than trying to predict inflation peaks
-            </li>
-            <li>
-              • <strong>Ignoring deflation risk:</strong> Some hedges perform
-              poorly if deflation occurs instead
+              • <strong>Market timing:</strong> Maintain consistent allocation
             </li>
             <li>
               • <strong>High fees:</strong> Avoid expensive actively-managed
-              funds that may not justify their costs
+              funds
             </li>
             <li>
               • <strong>Short-term focus:</strong> Inflation protection works
-              best over longer time periods
-            </li>
-            <li>
-              • <strong>All-or-nothing approach:</strong> Gradual implementation
-              often works better than dramatic shifts
+              best long-term
             </li>
           </ul>
         </div>
