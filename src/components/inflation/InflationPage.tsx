@@ -8,8 +8,8 @@ import InflationBasics from "@/components/inflation/InflationBasics";
 import EconomicImpacts from "@/components/inflation/EconomicImpacts";
 import ProtectionStrategies from "@/components/inflation/ProtectionStrategies";
 import InflationFAQSection from "@/components/inflation/FAQSection";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import {
-  calculateInflationWithCPI,
   calculateForwardInflation,
   calculateBackwardInflation,
 } from "@/utils/inflationCalculations";
@@ -20,76 +20,65 @@ import {
 } from "@/types/inflation";
 
 export default function InflationPage() {
-  const [formValues, setFormValues] = useState<InflationFormValues>({
-    calculatorType: InflationCalculatorType.CPI_DATA,
-    startingAmount: 100,
-    startMonth: 1,
-    startYear: 2015,
-    endMonth: 1,
-    endYear: 2025,
-    inflationRate: 3,
-    years: 10,
-  });
+  const [formValues, setFormValues, isFormLoaded] =
+    useLocalStorage<InflationFormValues>("inflationFormValues", {
+      calculatorType: InflationCalculatorType.FORWARD_RATE,
+      startingAmount: 100,
+      startMonth: 1,
+      startYear: 2015,
+      endMonth: 1,
+      endYear: 2025,
+      inflationRate: 3,
+      years: 10,
+    });
 
   const [results, setResults] = useState<InflationResults | null>(null);
 
   useEffect(() => {
-    const {
-      calculatorType,
-      startingAmount,
-      startMonth,
-      startYear,
-      endMonth,
-      endYear,
-      inflationRate,
-      years,
-    } = formValues;
-
-    if (startingAmount <= 0) {
+    // Only calculate when localStorage has loaded and we have valid input
+    if (!isFormLoaded || !formValues || formValues.startingAmount <= 0) {
       return;
     }
 
+    const { calculatorType, startingAmount, inflationRate, years } = formValues;
+
     let inflationResults: InflationResults;
 
-    switch (calculatorType) {
-      case InflationCalculatorType.CPI_DATA:
-        inflationResults = calculateInflationWithCPI({
-          startingAmount,
-          startMonth,
-          startYear,
-          endMonth,
-          endYear,
-        });
-        break;
-      case InflationCalculatorType.FORWARD_RATE:
-        if (inflationRate <= 0 || years <= 0) return;
-        inflationResults = calculateForwardInflation({
-          startingAmount,
-          inflationRate,
-          years,
-        });
-        break;
-      case InflationCalculatorType.BACKWARD_RATE:
-        if (inflationRate <= 0 || years <= 0) return;
-        inflationResults = calculateBackwardInflation({
-          startingAmount,
-          inflationRate,
-          years,
-        });
-        break;
-      default:
-        return;
-    }
+    try {
+      switch (calculatorType) {
+        case InflationCalculatorType.FORWARD_RATE:
+          if (inflationRate <= 0 || years <= 0) return;
+          inflationResults = calculateForwardInflation({
+            startingAmount,
+            inflationRate,
+            years,
+          });
+          break;
+        case InflationCalculatorType.BACKWARD_RATE:
+          if (inflationRate <= 0 || years <= 0) return;
+          inflationResults = calculateBackwardInflation({
+            startingAmount,
+            inflationRate,
+            years,
+          });
+          break;
+        default:
+          return;
+      }
 
-    setResults(inflationResults);
-  }, [formValues]);
+      setResults(inflationResults);
+    } catch (error) {
+      console.error("Error calculating inflation:", error);
+      setResults(null);
+    }
+  }, [formValues, isFormLoaded]);
 
   const handleInputChange = (name: string, value: number) => {
-    setFormValues({ ...formValues, [name]: value });
+    setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleCalculatorTypeChange = (type: InflationCalculatorType) => {
-    setFormValues({ ...formValues, calculatorType: type });
+    setFormValues((prev) => ({ ...prev, calculatorType: type }));
   };
 
   return (
@@ -106,28 +95,28 @@ export default function InflationPage() {
 
         {/* Results */}
         <div className="lg:col-span-8 space-y-8">
-          {results && (
+          {results && isFormLoaded && (
             <>
               <InflationSummary results={results} />
               <InflationCharts results={results} />
             </>
           )}
 
-          {!results && (
-            <p className="text-center text-gray-500 lg:mt-20">
-              Enter values to calculate inflation impact.
-            </p>
+          {(!results || !isFormLoaded) && (
+            <div className="text-center text-gray-500 lg:mt-20">
+              {!isFormLoaded
+                ? "Loading..."
+                : "Enter values to calculate inflation impact."}
+            </div>
           )}
         </div>
       </div>
 
-      {/* Info Cards Section */}
       <div className="space-y-8 mb-16">
         <InflationBasics />
         <EconomicImpacts />
         <ProtectionStrategies />
       </div>
-
       {/* FAQ Section */}
       <InflationFAQSection />
     </div>

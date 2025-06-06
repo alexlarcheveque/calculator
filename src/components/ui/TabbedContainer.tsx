@@ -31,7 +31,7 @@ export default function TabbedContainer({
   const activeTabContent = tabs.find((tab) => tab.id === activeTab)?.content;
 
   return (
-    <div className={`bg-white p-6 rounded-lg shadow-md ${className}`}>
+    <div className={`${className}`}>
       {title && (
         <h2 className="text-xl font-semibold mb-6 text-gray-800">{title}</h2>
       )}

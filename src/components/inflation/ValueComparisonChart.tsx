@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -43,20 +42,14 @@ export default function ValueComparisonChart({
     }
   };
 
-  const getChartColors = () => {
-    return {
-      backgroundColor: ["rgba(59, 130, 246, 0.8)", "rgba(16, 185, 129, 0.8)"],
-      borderColor: ["rgb(59, 130, 246)", "rgb(16, 185, 129)"],
-    };
-  };
-
   const data = {
     labels: getChartLabels(),
     datasets: [
       {
-        label: "Amount ($)",
+        label: "Amount",
         data: [results.originalAmount, results.adjustedAmount],
-        ...getChartColors(),
+        backgroundColor: ["rgba(59, 130, 246, 0.8)", "rgba(16, 185, 129, 0.8)"],
+        borderColor: ["rgb(59, 130, 246)", "rgb(16, 185, 129)"],
         borderWidth: 2,
       },
     ],
@@ -89,7 +82,7 @@ export default function ValueComparisonChart({
           },
         },
         grid: {
-          color: "rgba(0, 0, 0, 0.1)",
+          color: "rgba(0, 0, 0, 0.05)",
         },
       },
       x: {
@@ -101,7 +94,7 @@ export default function ValueComparisonChart({
   };
 
   return (
-    <div className="h-64">
+    <div className="h-96">
       <Bar data={data} options={options} />
     </div>
   );
