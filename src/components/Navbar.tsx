@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -83,6 +83,9 @@ export default function Navbar() {
     null
   );
 
+  const navbarRef = useRef<HTMLElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+
   const toggleCategory = (title: string) => {
     setOpenCategory(openCategory === title ? null : title);
   };
@@ -91,8 +94,39 @@ export default function Navbar() {
     setMobileOpenCategory(mobileOpenCategory === title ? null : title);
   };
 
+  // Click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      // Check if click is outside navbar for desktop dropdowns
+      if (navbarRef.current && !navbarRef.current.contains(target)) {
+        setOpenCategory(null);
+      }
+
+      // Check if click is outside mobile menu
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(target) &&
+        navbarRef.current &&
+        !navbarRef.current.contains(target)
+      ) {
+        setMobileMenuOpen(false);
+        setMobileOpenCategory(null);
+      }
+    };
+
+    // Add event listener
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <nav className="bg-white shadow-md">
+    <nav ref={navbarRef} className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
@@ -203,7 +237,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden">
+        <div ref={mobileMenuRef} className="md:hidden">
           <div className="pt-2 pb-3 space-y-1">
             {calculatorCategories.map((category) => (
               <div key={category.title} className="px-4">

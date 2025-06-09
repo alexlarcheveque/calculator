@@ -13,6 +13,13 @@ export default function FinanceSummary({
   results,
   calculationType,
 }: FinanceSummaryProps) {
+  // Check if the scenario is impossible (contains NaN values)
+  const isImpossibleScenario =
+    !isFinite(results.calculatedValue) ||
+    isNaN(results.calculatedValue) ||
+    !isFinite(results.sumOfPayments) ||
+    isNaN(results.sumOfPayments);
+
   const getCalculatedValueLabel = () => {
     switch (calculationType) {
       case CalculationType.FV:
@@ -31,6 +38,10 @@ export default function FinanceSummary({
   };
 
   const formatCalculatedValue = () => {
+    if (isImpossibleScenario) {
+      return "No Solution";
+    }
+
     switch (calculationType) {
       case CalculationType.FV:
       case CalculationType.PV:
@@ -46,6 +57,9 @@ export default function FinanceSummary({
   };
 
   const getValueColor = () => {
+    if (isImpossibleScenario) {
+      return "text-red-600";
+    }
     if (
       calculationType === CalculationType.N ||
       calculationType === CalculationType.IY
@@ -54,6 +68,64 @@ export default function FinanceSummary({
     }
     return results.calculatedValue >= 0 ? "text-green-600" : "text-red-600";
   };
+
+  if (isImpossibleScenario) {
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">Results</h2>
+        </div>
+
+        {/* Error Message */}
+        <div className="mb-6 p-4 bg-red-50 rounded-lg">
+          <div className="flex items-center mb-2">
+            <svg
+              className="w-5 h-5 text-red-600 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <h3 className="text-lg font-semibold text-red-800">
+              Impossible Financial Scenario
+            </h3>
+          </div>
+          <p className="text-red-700 mb-2">
+            This combination of values creates a mathematically impossible
+            financial scenario.
+          </p>
+          <div className="text-sm text-red-600">
+            <p className="mb-1">
+              <strong>Common causes:</strong>
+            </p>
+            <ul className="list-disc list-inside ml-4 space-y-1">
+              <li>Payments too small to cover interest charges</li>
+              <li>Interest rate too high relative to payment amounts</li>
+              <li>Conflicting cash flow directions</li>
+              <li>Unrealistic time periods or amounts</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="text-sm text-gray-600">
+          <p>
+            <strong>Suggestion:</strong> Try adjusting your inputs, such as:
+          </p>
+          <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
+            <li>Increasing the payment amount</li>
+            <li>Decreasing the interest rate</li>
+            <li>Adjusting the present or future value</li>
+          </ul>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">

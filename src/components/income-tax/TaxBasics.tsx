@@ -12,42 +12,61 @@ const taxBasicsSections: ContentSection[] = [
     headingLevel: "h3",
   },
   {
-    type: "callout",
-    callout: {
-      type: "info",
-      title: "2024 Federal Tax Brackets (Single Filers)",
-      content: (
-        <div>
-          <div className="space-y-2 text-sm">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="font-semibold">Tax Rate</p>
-                <p>10%</p>
-                <p>12%</p>
-                <p>22%</p>
-                <p>24%</p>
-                <p>32%</p>
-                <p>35%</p>
-                <p>37%</p>
-              </div>
-              <div>
-                <p className="font-semibold">Income Range</p>
-                <p>$0 - $11,600</p>
-                <p>$11,601 - $47,150</p>
-                <p>$47,151 - $100,525</p>
-                <p>$100,526 - $191,050</p>
-                <p>$191,051 - $243,725</p>
-                <p>$243,726 - $609,350</p>
-                <p>$609,351+</p>
-              </div>
-            </div>
-          </div>
-          <p className="mt-3 text-xs text-gray-600">
-            * Only income within each bracket is taxed at that rate
-          </p>
+    type: "text",
+    content: (
+      <div>
+        <h4 className="font-semibold mb-3">
+          2025 Federal Tax Brackets (Single Filers)
+        </h4>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">
+                  Tax Rate
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">
+                  Income Range
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b hover:bg-gray-50">
+                <td className="px-4 py-3 text-sm">10%</td>
+                <td className="px-4 py-3 text-sm">$0 - $11,925</td>
+              </tr>
+              <tr className="border-b hover:bg-gray-50">
+                <td className="px-4 py-3 text-sm">12%</td>
+                <td className="px-4 py-3 text-sm">$11,926 - $48,475</td>
+              </tr>
+              <tr className="border-b hover:bg-gray-50">
+                <td className="px-4 py-3 text-sm">22%</td>
+                <td className="px-4 py-3 text-sm">$48,476 - $103,350</td>
+              </tr>
+              <tr className="border-b hover:bg-gray-50">
+                <td className="px-4 py-3 text-sm">24%</td>
+                <td className="px-4 py-3 text-sm">$103,351 - $197,300</td>
+              </tr>
+              <tr className="border-b hover:bg-gray-50">
+                <td className="px-4 py-3 text-sm">32%</td>
+                <td className="px-4 py-3 text-sm">$197,301 - $250,525</td>
+              </tr>
+              <tr className="border-b hover:bg-gray-50">
+                <td className="px-4 py-3 text-sm">35%</td>
+                <td className="px-4 py-3 text-sm">$250,526 - $626,350</td>
+              </tr>
+              <tr className="hover:bg-gray-50">
+                <td className="px-4 py-3 text-sm">37%</td>
+                <td className="px-4 py-3 text-sm">$626,351+</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      ),
-    },
+        <p className="mt-3 text-xs text-gray-600">
+          * Only income within each bracket is taxed at that rate
+        </p>
+      </div>
+    ),
   },
   {
     type: "subheader",
@@ -61,12 +80,12 @@ const taxBasicsSections: ContentSection[] = [
       {
         title: "Single",
         description:
-          "Unmarried individuals with no dependents. Has the highest tax rates but lowest standard deduction ($14,600 for 2024).",
+          "Unmarried individuals with no dependents. Has the highest tax rates but lowest standard deduction ($15,000 for 2025).",
       },
       {
         title: "Married Filing Jointly",
         description:
-          "Married couples filing together. Generally provides the most favorable tax treatment with doubled brackets and standard deduction ($29,200 for 2024).",
+          "Married couples filing together. Generally provides the most favorable tax treatment with doubled brackets and standard deduction ($30,000 for 2025).",
       },
       {
         title: "Married Filing Separately",
@@ -76,7 +95,7 @@ const taxBasicsSections: ContentSection[] = [
       {
         title: "Head of Household",
         description:
-          "Unmarried with qualifying dependents. Provides more favorable tax brackets than single status and higher standard deduction ($21,900 for 2024).",
+          "Unmarried with qualifying dependents. Provides more favorable tax brackets than single status and higher standard deduction ($22,500 for 2025).",
       },
     ],
   },
@@ -118,23 +137,66 @@ const taxBasicsSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "success",
+      type: "info",
       title: "Progressive Tax Example",
       content: (
         <div>
-          <p className="mb-2">
-            <strong>Example:</strong> Single filer with $75,000 income:
+          <p className="mb-4 text-base font-medium">
+            Single filer with <span className="font-semibold">$75,000</span>{" "}
+            income:
           </p>
-          <ul className="space-y-1 text-sm">
-            <li>• First $11,600 taxed at 10% = $1,160</li>
-            <li>• Next $35,550 ($47,150 - $11,600) taxed at 12% = $4,266</li>
-            <li>
-              • Remaining $27,850 ($75,000 - $47,150) taxed at 22% = $6,127
-            </li>
-            <li className="font-medium border-t pt-1 mt-2">
-              Total tax: $11,553 (15.4% effective rate)
-            </li>
-          </ul>
+
+          <div className="space-y-3 mb-4">
+            <div className="flex justify-between items-center py-2 px-3 bg-white rounded border">
+              <div className="flex-1">
+                <span className="text-sm text-gray-600">
+                  First $11,925 taxed at{" "}
+                </span>
+                <span className="font-medium text-blue-600">10%</span>
+              </div>
+              <span className="font-semibold">$1,193</span>
+            </div>
+
+            <div className="flex justify-between items-center py-2 px-3 bg-white rounded border">
+              <div className="flex-1">
+                <span className="text-sm text-gray-600">Next $36,550 </span>
+                <span className="text-xs text-gray-500">
+                  ($48,475 − $11,925)
+                </span>
+                <span className="text-sm text-gray-600"> taxed at </span>
+                <span className="font-medium text-blue-600">12%</span>
+              </div>
+              <span className="font-semibold">$4,386</span>
+            </div>
+
+            <div className="flex justify-between items-center py-2 px-3 bg-white rounded border">
+              <div className="flex-1">
+                <span className="text-sm text-gray-600">
+                  Remaining $26,525{" "}
+                </span>
+                <span className="text-xs text-gray-500">
+                  ($75,000 − $48,475)
+                </span>
+                <span className="text-sm text-gray-600"> taxed at </span>
+                <span className="font-medium text-blue-600">22%</span>
+              </div>
+              <span className="font-semibold">$5,836</span>
+            </div>
+          </div>
+
+          <div className="border-t-2 border-gray-300 pt-3 mt-4">
+            <div className="flex justify-between items-center py-2 px-3 bg-gray-50 rounded">
+              <span className="font-semibold text-gray-800">
+                Total Federal Tax:
+              </span>
+              <div className="text-right">
+                <div className="font-bold text-lg">$11,415</div>
+                <div className="text-sm text-gray-600">
+                  15.2% effective rate
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       ),
     },

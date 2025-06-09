@@ -160,6 +160,9 @@ export function calculateIncomeTax(
     taxBrackets
   );
 
+  // Calculate Net Investment Income Tax (NIIT)
+  const niitTax = calculateNIIT(values, adjustedGrossIncome);
+
   // Calculate credits
   const credits = calculateTaxCredits(values, adjustedGrossIncome);
   const totalCredits =
@@ -168,15 +171,17 @@ export function calculateIncomeTax(
     credits.educationCredit +
     credits.earnedIncomeCredit;
 
-  // Apply credits to tax owed
-  const taxAfterCredits = Math.max(0, federalTaxOwed - totalCredits);
+  // Apply credits to tax owed (NIIT not reduced by credits)
+  const taxAfterCredits = Math.max(0, federalTaxOwed - totalCredits) + niitTax;
 
   // Calculate total tax withheld
   const totalTaxWithheld =
-    values.federalTaxWithheld +
-    values.federalTaxWithheld2 +
-    values.estimatedTaxPaid +
-    values.estimatedTaxPaid2;
+    values.filingStatus === FilingStatus.MARRIED_JOINT
+      ? values.federalTaxWithheld +
+        values.federalTaxWithheld2 +
+        values.estimatedTaxPaid +
+        values.estimatedTaxPaid2
+      : values.federalTaxWithheld + values.estimatedTaxPaid;
 
   // Calculate refund or amount owed
   const refundOrOwed = totalTaxWithheld - taxAfterCredits;
@@ -276,10 +281,12 @@ function calculateItemizedDeductions(values: IncomeTaxFormValues): number {
   let itemized = 0;
 
   // SALT deduction (capped at $10,000)
-  const saltDeduction = Math.min(
-    values.realEstateTax + values.stateTaxWithheld + values.stateTaxWithheld2,
-    10000
-  );
+  const stateTaxTotal =
+    values.filingStatus === FilingStatus.MARRIED_JOINT
+      ? values.stateTaxWithheld + values.stateTaxWithheld2
+      : values.stateTaxWithheld;
+
+  const saltDeduction = Math.min(values.realEstateTax + stateTaxTotal, 10000);
   itemized += saltDeduction;
 
   // Mortgage interest
@@ -327,12 +334,16 @@ function calculateFederalTax(
   for (const bracket of brackets) {
     if (remainingIncome <= 0) break;
 
-    const taxableAtThisBracket = Math.min(
+    // Calculate how much income falls in this bracket
+    const incomeInBracket = Math.min(
       remainingIncome,
       bracket.max - bracket.min
     );
-    tax += taxableAtThisBracket * bracket.rate;
-    remainingIncome -= taxableAtThisBracket;
+
+    if (incomeInBracket > 0) {
+      tax += incomeInBracket * bracket.rate;
+      remainingIncome -= incomeInBracket;
+    }
   }
 
   return tax;
@@ -374,6 +385,39 @@ function getMarginalTaxRate(
   return brackets[brackets.length - 1].rate * 100;
 }
 
+function calculateNIIT(values: IncomeTaxFormValues, agi: number): number {
+  // NIIT applies to the lesser of:
+  // 1. Net investment income, or
+  // 2. AGI minus threshold
+
+  // NIIT thresholds for 2025
+  const niitThreshold =
+    values.filingStatus === FilingStatus.MARRIED_JOINT ? 250000 : 200000;
+
+  if (agi <= niitThreshold) {
+    return 0;
+  }
+
+  // Calculate net investment income
+  const netInvestmentIncome =
+    values.interestIncome +
+    values.ordinaryDividends +
+    values.qualifiedDividends +
+    values.passiveIncome +
+    values.shortTermCapitalGain +
+    values.longTermCapitalGain;
+
+  if (netInvestmentIncome <= 0) {
+    return 0;
+  }
+
+  // NIIT is 3.8% of the lesser of net investment income or excess AGI
+  const excessAGI = agi - niitThreshold;
+  const niitBase = Math.min(netInvestmentIncome, excessAGI);
+
+  return niitBase * 0.038; // 3.8%
+}
+
 function calculateTaxCredits(values: IncomeTaxFormValues, agi: number) {
   // Child Tax Credit
   const totalChildren = values.youngDependents;
@@ -406,19 +450,43 @@ function calculateTaxCredits(values: IncomeTaxFormValues, agi: number) {
   const totalTuition =
     values.tuition1 + values.tuition2 + values.tuition3 + values.tuition4;
   if (totalTuition > 0) {
-    // Simplified calculation - up to $2,500 per student
-    const students = [
+    // American Opportunity Credit: 100% of first $2,000 + 25% of next $2,000 (max $2,500 per student)
+    const tuitionAmounts = [
       values.tuition1,
       values.tuition2,
       values.tuition3,
       values.tuition4,
-    ].filter((t) => t > 0).length;
-    educationCredit = Math.min(students * 2500, totalTuition * 0.4);
+    ].filter((t) => t > 0);
+
+    for (const tuition of tuitionAmounts) {
+      const first2000 = Math.min(tuition, 2000);
+      const next2000 = Math.min(Math.max(tuition - 2000, 0), 2000);
+      const studentCredit = first2000 + next2000 * 0.25;
+      educationCredit += Math.min(studentCredit, 2500);
+    }
+
+    // Phase out education credit for high earners (simplified)
+    // Phase out begins at $80,000 for single filers ($160,000 for joint)
+    const phaseOutStart =
+      values.filingStatus === FilingStatus.MARRIED_JOINT ? 160000 : 80000;
+    const phaseOutEnd =
+      values.filingStatus === FilingStatus.MARRIED_JOINT ? 180000 : 90000;
+
+    if (agi > phaseOutStart) {
+      const phaseOutRatio = Math.min(
+        1,
+        (agi - phaseOutStart) / (phaseOutEnd - phaseOutStart)
+      );
+      educationCredit = educationCredit * (1 - phaseOutRatio);
+    }
   }
 
   // Earned Income Tax Credit (simplified)
   let earnedIncomeCredit = 0;
-  const earnedIncome = values.salaryIncome + values.salaryIncome2;
+  const earnedIncome =
+    values.filingStatus === FilingStatus.MARRIED_JOINT
+      ? values.salaryIncome + values.salaryIncome2
+      : values.salaryIncome;
   if (earnedIncome > 0 && earnedIncome < 50000 && totalChildren > 0) {
     // Very simplified EITC calculation
     earnedIncomeCredit = Math.min(totalChildren * 1000, earnedIncome * 0.1);
@@ -497,8 +565,13 @@ export function calculateTaxBreakdown(
   }
 
   // Deductions breakdown
-  const saltDeduction = Math.min(
-    values.realEstateTax + values.stateTaxWithheld + values.stateTaxWithheld2,
+  const stateTaxTotalBreakdown =
+    values.filingStatus === FilingStatus.MARRIED_JOINT
+      ? values.stateTaxWithheld + values.stateTaxWithheld2
+      : values.stateTaxWithheld;
+
+  const saltDeductionBreakdown = Math.min(
+    values.realEstateTax + stateTaxTotalBreakdown,
     10000
   );
   const deductionsBreakdown = {
@@ -507,7 +580,7 @@ export function calculateTaxBreakdown(
       realEstateTax: values.realEstateTax,
       mortgageInterest: values.mortgageInterest,
       charitableDonations: values.charitableDonations,
-      stateLocalTax: saltDeduction,
+      stateLocalTax: saltDeductionBreakdown,
       otherDeductibles: values.otherDeductibles,
       total: itemizedDeductions,
     },
