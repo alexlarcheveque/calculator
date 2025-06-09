@@ -4,36 +4,35 @@ const taxPlanningSections: ContentSection[] = [
   {
     type: "text",
     content:
-      "Effective tax planning involves strategic timing of income and deductions, maximizing tax-advantaged accounts, and understanding the long-term impact of tax decisions. Proactive planning throughout the year can save thousands in taxes.",
+      "Strategic tax planning throughout the year can significantly reduce your tax burden. The key is understanding which strategies work best for your situation and implementing them before year-end.",
   },
   {
     type: "subheader",
-    heading: "Income Timing Strategies",
+    heading: "Year-End Tax Strategies",
     headingLevel: "h3",
   },
   {
-    type: "grid",
-    gridCols: 2,
-    gridItems: [
+    type: "list",
+    listItems: [
       {
-        title: "Defer Income",
+        label: "Maximize Retirement Contributions",
         description:
-          "Delay receiving income until the next tax year if you expect to be in a lower tax bracket. Useful for bonuses, consulting income, or investment gains.",
+          "Contribute to tax-advantaged retirement accounts by December 31st (IRA contributions allowed until tax filing deadline). These reduce current taxable income",
       },
       {
-        title: "Accelerate Income",
-        description:
-          "Receive income earlier if you expect higher tax rates in the future or need to meet minimum income requirements for certain credits or deductions.",
-      },
-      {
-        title: "Harvest Tax Losses",
+        label: "Harvest Tax Losses",
         description:
           "Sell investments at a loss to offset capital gains. Can deduct up to $3,000 in excess losses against ordinary income annually.",
       },
       {
-        title: "Manage Capital Gains",
+        label: "Bunch Charitable Deductions",
         description:
-          "Time the sale of appreciated assets to optimize between short-term (ordinary rates) and long-term (preferential rates) capital gains treatment.",
+          "Combine multiple years of charitable giving into one year to exceed the standard deduction threshold, especially effective with donor-advised funds",
+      },
+      {
+        label: "Timing Income and Deductions",
+        description:
+          "Defer income to next year or accelerate deductions into current year, depending on expected tax bracket changes",
       },
     ],
   },
@@ -46,140 +45,111 @@ const taxPlanningSections: ContentSection[] = [
     type: "list",
     listItems: [
       {
-        label: "Maximize 401(k) Contributions",
+        label: "401(k) Contributions",
         description:
-          "2024 limit: $23,000 ($30,500 if 50+). Reduces current taxable income while building retirement savings. Always capture full employer match first",
+          "2025 limit: $23,500 ($31,000 if 50+). Reduces current taxable income while building retirement savings. Always capture full employer match first",
       },
       {
-        label: "Traditional vs. Roth Decisions",
+        label: "Traditional IRA",
         description:
-          "Traditional provides immediate tax deduction; Roth provides tax-free growth. Choose based on current vs. expected future tax rates",
+          "2025 limit: $7,000 ($8,000 if 50+). Traditional IRA deduction phases out with higher incomes if you have workplace plan",
       },
       {
-        label: "IRA Contributions",
+        label: "Roth IRA",
         description:
-          "2024 limit: $7,000 ($8,000 if 50+). Traditional IRA deduction phases out with higher incomes if you have workplace plan",
+          "Same contribution limits as traditional IRA but no current deduction. Tax-free growth and withdrawals in retirement. Income limits apply",
       },
       {
-        label: "Roth Conversions",
+        label: "Backdoor Roth IRA",
         description:
-          "Convert traditional IRA/401(k) to Roth in low-income years. Pay taxes now at lower rates for tax-free future withdrawals",
+          "For high earners above Roth IRA income limits. Contribute to non-deductible traditional IRA, then convert to Roth. No income limits on conversions",
       },
     ],
   },
   {
     type: "subheader",
-    heading: "Year-End Tax Moves",
+    heading: "Advanced Planning Strategies",
     headingLevel: "h3",
   },
   {
-    type: "callout",
-    callout: {
-      type: "success",
-      title: "December Tax Planning Checklist",
-      content: (
-        <div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="font-semibold mb-2">Income Management:</p>
-              <ul className="space-y-1">
-                <li>• Defer year-end bonuses if beneficial</li>
-                <li>• Realize capital gains/losses</li>
-                <li>• Consider Roth conversions</li>
-                <li>• Bunch income or spread it out</li>
-              </ul>
-            </div>
-            <div>
-              <p className="font-semibold mb-2">Deduction Timing:</p>
-              <ul className="space-y-1">
-                <li>• Prepay property taxes (if beneficial)</li>
-                <li>• Make charitable contributions</li>
-                <li>• Pay outstanding medical bills</li>
-                <li>• Consider bunching itemized deductions</li>
-              </ul>
-            </div>
-          </div>
-          <p className="mt-3 text-xs text-gray-600 text-center">
-            Most year-end moves must be completed by December 31
-          </p>
-        </div>
-      ),
-    },
-  },
-  {
-    type: "subheader",
-    heading: "Advanced Strategies",
-    headingLevel: "h4",
-  },
-  {
-    type: "grid",
-    gridCols: 3,
-    gridItems: [
+    type: "list",
+    listItems: [
       {
-        title: "HSA Maximization",
+        label: "Roth Conversions",
         description:
-          "Triple tax advantage: deductible contributions, tax-free growth, and tax-free withdrawals for medical expenses. 2024 limits: $4,300 (individual), $8,550 (family).",
+          "Convert traditional IRA/401(k) funds to Roth during low-income years. Pay taxes now at lower rates for tax-free future growth",
       },
       {
-        title: "Tax-Loss Harvesting",
+        label: "Qualified Small Business Stock (QSBS)",
         description:
-          "Systematically realize losses to offset gains while avoiding wash sale rules. Can carry forward unused losses indefinitely to future years.",
+          "Up to $10 million or 10x basis (whichever is greater) exclusion on gain from qualified small business stock held 5+ years",
       },
       {
-        title: "Charitable Planning",
+        label: "Tax-Loss Harvesting in Taxable Accounts",
         description:
-          "Consider donor-advised funds, appreciated securities donations, and bunching strategies. Qualified charitable distributions from IRA if 70½ or older.",
+          "Systematically realize losses to offset gains throughout the year. Avoid wash sale rules by waiting 31 days before repurchasing",
+      },
+      {
+        label: "Asset Location Optimization",
+        description:
+          "Place tax-inefficient investments in tax-advantaged accounts and tax-efficient investments in taxable accounts",
       },
     ],
   },
   {
     type: "subheader",
-    heading: "Multi-Year Planning",
-    headingLevel: "h4",
+    heading: "Health Savings Account (HSA)",
+    headingLevel: "h3",
   },
   {
-    type: "callout",
-    callout: {
-      type: "info",
-      title: "Long-Term Tax Considerations",
-      content: (
-        <div>
-          <p className="mb-2">
-            <strong>Plan for life events and tax law changes:</strong>
-          </p>
-          <ul className="space-y-2 text-sm">
-            <li>
-              • <strong>Career changes:</strong> Plan Roth conversions during
-              low-income years between jobs
-            </li>
-            <li>
-              • <strong>Retirement transition:</strong> Manage withdrawal
-              sequences from different account types
-            </li>
-            <li>
-              • <strong>Estate planning:</strong> Understand step-up in basis
-              and gift/estate tax implications
-            </li>
-            <li>
-              • <strong>Tax law sunset:</strong> Many current provisions expire
-              after 2025, including higher standard deductions
-            </li>
-            <li>
-              • <strong>State tax planning:</strong> Consider domicile changes
-              for retirees in high-tax states
-            </li>
-          </ul>
-        </div>
-      ),
-    },
+    type: "list",
+    listItems: [
+      {
+        label: "Triple Tax Advantage",
+        description:
+          "HSAs offer a triple tax advantage: deductible contributions, tax-free growth, and tax-free withdrawals for medical expenses. 2025 limits: $4,300 (individual), $8,550 (family).",
+      },
+      {
+        label: "Retirement Benefits",
+        description:
+          "After age 65, HSA functions like traditional IRA for non-medical withdrawals (taxable but no penalty).",
+      },
+    ],
+  },
+  {
+    type: "subheader",
+    heading: "Common Tax Planning Mistakes",
+    headingLevel: "h3",
+  },
+  {
+    type: "list",
+    listItems: [
+      {
+        label: "Waiting Until Year-End",
+        description:
+          "Many strategies require full-year implementation. Start planning in January, not December",
+      },
+      {
+        label: "Ignoring State Taxes",
+        description:
+          "Focus only on federal tax optimization while ignoring state tax implications, especially for multi-state situations",
+      },
+      {
+        label: "Over-Optimizing for Current Year",
+        description:
+          "Making decisions that save taxes today but create larger problems in future years. Think multi-year",
+      },
+      {
+        label: "Not Considering Phase-Outs",
+        description:
+          "Income-based phase-outs can create effective marginal tax rates much higher than stated bracket rates",
+      },
+    ],
   },
 ];
 
 export default function TaxPlanning() {
   return (
-    <InfoCard
-      title="Tax Planning & Optimization Strategies"
-      sections={taxPlanningSections}
-    />
+    <InfoCard title="Strategic Tax Planning" sections={taxPlanningSections} />
   );
 }

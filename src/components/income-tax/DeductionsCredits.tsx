@@ -4,7 +4,7 @@ const deductionsCreditsSections: ContentSection[] = [
   {
     type: "text",
     content:
-      "Deductions and credits are the primary ways to reduce your tax liability, but they work differently. Understanding when to itemize, which credits you qualify for, and how to maximize both can significantly reduce your tax burden.",
+      "Tax deductions and credits can significantly reduce your tax liability. Understanding the difference and maximizing both can save you thousands of dollars annually.",
   },
   {
     type: "subheader",
@@ -29,42 +29,43 @@ const deductionsCreditsSections: ContentSection[] = [
   },
   {
     type: "subheader",
-    heading: "Standard vs. Itemized Deductions",
+    heading: "Standard Deduction",
     headingLevel: "h3",
   },
   {
-    type: "callout",
-    callout: {
-      type: "info",
-      title: "2024 Standard Deduction Amounts",
-      content: (
-        <div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div className="text-center">
-              <p className="font-semibold">Single</p>
-              <p className="text-lg font-bold text-blue-600">$14,600</p>
-            </div>
-            <div className="text-center">
-              <p className="font-semibold">Married Filing Jointly</p>
-              <p className="text-lg font-bold text-blue-600">$29,200</p>
-            </div>
-            <div className="text-center">
-              <p className="font-semibold">Head of Household</p>
-              <p className="text-lg font-bold text-blue-600">$21,900</p>
-            </div>
+    type: "text",
+    content: (
+      <div>
+        <h4 className="font-semibold mb-3">2025 Standard Deduction Amounts</h4>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+          <div className="text-center p-4 bg-blue-50 rounded-lg">
+            <h5 className="font-medium text-gray-800 mb-1">Single</h5>
+            <p className="text-lg font-bold text-blue-600">$15,000</p>
           </div>
-          <p className="mt-3 text-xs text-gray-600">
-            Additional $1,550 for taxpayers 65 or older (single) or $1,250
-            (married)
-          </p>
+          <div className="text-center p-4 bg-blue-50 rounded-lg">
+            <h5 className="font-medium text-gray-800 mb-1">
+              Married Filing Jointly
+            </h5>
+            <p className="text-lg font-bold text-blue-600">$30,000</p>
+          </div>
+          <div className="text-center p-4 bg-blue-50 rounded-lg">
+            <h5 className="font-medium text-gray-800 mb-1">
+              Head of Household
+            </h5>
+            <p className="text-lg font-bold text-blue-600">$22,500</p>
+          </div>
         </div>
-      ),
-    },
+        <p className="text-sm text-gray-600">
+          Additional $1,550 for taxpayers 65 or older (single) or $1,250
+          (married filing jointly) for each spouse 65 or older
+        </p>
+      </div>
+    ),
   },
   {
     type: "subheader",
-    heading: "Common Itemized Deductions",
-    headingLevel: "h4",
+    heading: "Major Itemized Deductions",
+    headingLevel: "h3",
   },
   {
     type: "list",
@@ -82,12 +83,7 @@ const deductionsCreditsSections: ContentSection[] = [
       {
         label: "Charitable Contributions",
         description:
-          "Donations to qualified organizations, generally limited to 50-60% of AGI. Requires proper documentation and receipts for amounts over $250",
-      },
-      {
-        label: "Medical Expenses",
-        description:
-          "Qualified medical expenses exceeding 7.5% of AGI. Includes insurance premiums, medical care, prescriptions, and some travel for medical care",
+          "Generally up to 60% of AGI for cash donations to qualifying charities. Keep detailed documentation and receipts for amounts over $250",
       },
     ],
   },
@@ -97,28 +93,27 @@ const deductionsCreditsSections: ContentSection[] = [
     headingLevel: "h3",
   },
   {
-    type: "grid",
-    gridCols: 2,
-    gridItems: [
+    type: "list",
+    listItems: [
       {
-        title: "Child Tax Credit",
+        label: "Child Tax Credit",
         description:
           "$2,000 per qualifying child under 17, with up to $1,400 refundable. Phases out starting at $200,000 (single) or $400,000 (married filing jointly).",
       },
       {
-        title: "Child and Dependent Care Credit",
+        label: "Child and Dependent Care Credit",
         description:
           "20-35% of qualified expenses up to $3,000 for one child or $6,000 for two or more children. Credit percentage decreases as income increases.",
       },
       {
-        title: "American Opportunity Tax Credit",
+        label: "American Opportunity Tax Credit",
         description:
           "Up to $2,500 per student for first four years of college. 40% is refundable. Phases out between $80,000-$90,000 (single) or $160,000-$180,000 (joint).",
       },
       {
-        title: "Earned Income Tax Credit",
+        label: "Earned Income Tax Credit",
         description:
-          "Refundable credit for lower-income workers, ranging from $600-$7,430 for 2024 depending on income and number of children. Encourages work participation.",
+          "Refundable credit for lower-income workers, ranging from $649-$8,046 for 2025 depending on income and number of children. Encourages work participation.",
       },
     ],
   },
@@ -128,45 +123,56 @@ const deductionsCreditsSections: ContentSection[] = [
     headingLevel: "h4",
   },
   {
-    type: "callout",
-    callout: {
-      type: "success",
-      title: "Tax Optimization Strategies",
-      content: (
-        <div>
-          <p className="mb-2">
-            <strong>Deduction strategies:</strong>
-          </p>
-          <ul className="space-y-1 text-sm mb-3">
-            <li>• Bundle deductible expenses into alternating years</li>
-            <li>• Consider prepaying property taxes or state taxes</li>
-            <li>• Time charitable contributions strategically</li>
-            <li>• Use donor-advised funds for large charitable gifts</li>
-          </ul>
-          <p className="mb-2">
-            <strong>Credit optimization:</strong>
-          </p>
-          <ul className="space-y-1 text-sm">
-            <li>• Claim all eligible dependents for Child Tax Credit</li>
-            <li>• Time education expenses to maximize credits</li>
-            <li>
-              • Consider income timing to stay within credit phase-out ranges
-            </li>
-            <li>
-              • Don't overlook lesser-known credits (Retirement Savings,
-              Adoption, etc.)
-            </li>
-          </ul>
-        </div>
-      ),
-    },
+    type: "list",
+    listItems: [
+      {
+        label: "Bundle deductible expenses into alternating years",
+        description:
+          "Concentrate charitable donations, medical expenses, and other deductions into one year to exceed the standard deduction threshold",
+      },
+      {
+        label: "Consider prepaying property taxes or state taxes",
+        description:
+          "Pay early to maximize deductions in high-income years, but watch SALT cap limitations",
+      },
+      {
+        label: "Time charitable contributions strategically",
+        description:
+          "Donate appreciated securities to avoid capital gains while getting full deduction value",
+      },
+      {
+        label: "Use donor-advised funds for large charitable gifts",
+        description:
+          "Get immediate tax deduction while maintaining flexibility over when and where to distribute funds",
+      },
+      {
+        label: "Claim all eligible dependents for Child Tax Credit",
+        description:
+          "Ensure you meet all requirements and understand phase-out thresholds based on income",
+      },
+      {
+        label: "Time education expenses to maximize credits",
+        description:
+          "Coordinate timing of tuition payments with American Opportunity and Lifetime Learning Credits",
+      },
+      {
+        label: "Consider income timing to stay within credit phase-out ranges",
+        description:
+          "Defer income or accelerate deductions to remain eligible for income-limited credits",
+      },
+      {
+        label: "Don't overlook lesser-known credits",
+        description:
+          "Research Retirement Savings Credit, Adoption Credit, and energy-related credits you may qualify for",
+      },
+    ],
   },
 ];
 
 export default function DeductionsCredits() {
   return (
     <InfoCard
-      title="Deductions & Credits Guide"
+      title="Tax Deductions & Credits Guide"
       sections={deductionsCreditsSections}
     />
   );

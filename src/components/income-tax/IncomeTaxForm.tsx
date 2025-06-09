@@ -52,6 +52,27 @@ export default function IncomeTaxForm({
         Income Tax Details
       </h2>
 
+      {/* Tax Year */}
+      <div className="bg-gray-50 p-4 my-4 rounded-lg">
+        <h3 className="text-lg font-semibold mb-3 text-gray-800">Tax Year</h3>
+        <div className="space-y-3">
+          <div className="flex items-center">
+            <input
+              type="radio"
+              id="taxYear2025"
+              name="taxYear"
+              value={TaxYear.YEAR_2025}
+              checked={values.taxYear === TaxYear.YEAR_2025}
+              onChange={(e) => onChange("taxYear", e.target.value)}
+              className="mr-2"
+            />
+            <label htmlFor="taxYear2025" className="text-sm font-medium">
+              2025 (return filed in 2026)
+            </label>
+          </div>
+        </div>
+      </div>
+
       <div className="space-y-6">
         {/* Filing Status */}
         <div className="form-group">
@@ -112,41 +133,6 @@ export default function IncomeTaxForm({
           </div>
         </div>
 
-        {/* Tax Year */}
-        <div className="form-group">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Tax Year
-          </label>
-          <div className="space-y-2">
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="taxYear"
-                value={TaxYear.YEAR_2024}
-                checked={values.taxYear === TaxYear.YEAR_2024}
-                onChange={handleChange}
-                className="form-radio h-4 w-4 text-blue-600"
-              />
-              <span className="ml-2 text-sm text-gray-700">
-                2024 (return filed in 2025)
-              </span>
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="taxYear"
-                value={TaxYear.YEAR_2025}
-                checked={values.taxYear === TaxYear.YEAR_2025}
-                onChange={handleChange}
-                className="form-radio h-4 w-4 text-blue-600"
-              />
-              <span className="ml-2 text-sm text-gray-700">
-                2025 (return filed in 2026)
-              </span>
-            </label>
-          </div>
-        </div>
-
         {/* Income Section */}
         <div className="border-t pt-6">
           <h3 className="text-lg font-medium text-gray-800 mb-4">Income</h3>
@@ -161,11 +147,9 @@ export default function IncomeTaxForm({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Wages, Tips, Other Compensation
-                  <span className="text-xs text-gray-500 block">
-                    (W-2 box 1)
-                  </span>
+                <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                  <span>Wages, Tips, Other Compensation</span>
+                  <span className="text-xs text-gray-500">(W-2 box 1)</span>
                 </label>
                 <div className="relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -183,11 +167,9 @@ export default function IncomeTaxForm({
               </div>
 
               <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Federal Income Tax Withheld
-                  <span className="text-xs text-gray-500 block">
-                    (W-2 box 2)
-                  </span>
+                <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                  <span>Federal Income Tax Withheld</span>
+                  <span className="text-xs text-gray-500">(W-2 box 2)</span>
                 </label>
                 <div className="relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -205,11 +187,9 @@ export default function IncomeTaxForm({
               </div>
 
               <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  State Income Tax Withheld
-                  <span className="text-xs text-gray-500 block">
-                    (W-2 box 17)
-                  </span>
+                <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                  <span>State Income Tax Withheld</span>
+                  <span className="text-xs text-gray-500">(W-2 box 17)</span>
                 </label>
                 <div className="relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -227,11 +207,9 @@ export default function IncomeTaxForm({
               </div>
 
               <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Local Income Tax Withheld
-                  <span className="text-xs text-gray-500 block">
-                    (W-2 box 19)
-                  </span>
+                <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                  <span>Local Income Tax Withheld</span>
+                  <span className="text-xs text-gray-500">(W-2 box 19)</span>
                 </label>
                 <div className="relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -287,10 +265,10 @@ export default function IncomeTaxForm({
             {/* Business Income Fields */}
             {values.hasBusiness && (
               <div className="ml-4 space-y-4 border-l-2 border-gray-200 pl-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="form-group">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Business Income
+                    <label className="block text-sm font-medium text-gray-700 mb-2 h-8 flex flex-col justify-start">
+                      <span>Business Income</span>
                     </label>
                     <div className="relative rounded-md shadow-sm">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -308,8 +286,8 @@ export default function IncomeTaxForm({
                   </div>
 
                   <div className="form-group">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Estimated Tax Paid
+                    <label className="block text-sm font-medium text-gray-700 mb-2 h-8 flex flex-col justify-start">
+                      <span>Estimated Tax Paid</span>
                     </label>
                     <div className="relative rounded-md shadow-sm">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -326,10 +304,10 @@ export default function IncomeTaxForm({
                     </div>
                   </div>
 
-                  <div className="form-group">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Medicare Wages
-                      <span className="text-xs text-gray-500 block">
+                  <div className="form-group md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                      <span>Medicare Wages</span>
+                      <span className="text-xs text-gray-500">
                         (W-2 box 5, use 0 if no W-2)
                       </span>
                     </label>
@@ -361,11 +339,9 @@ export default function IncomeTaxForm({
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="form-group">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Wages, Tips, Other Compensation
-                    <span className="text-xs text-gray-500 block">
-                      (W-2 box 1)
-                    </span>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                    <span>Wages, Tips, Other Compensation</span>
+                    <span className="text-xs text-gray-500">(W-2 box 1)</span>
                   </label>
                   <div className="relative rounded-md shadow-sm">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -383,11 +359,9 @@ export default function IncomeTaxForm({
                 </div>
 
                 <div className="form-group">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Federal Income Tax Withheld
-                    <span className="text-xs text-gray-500 block">
-                      (W-2 box 2)
-                    </span>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                    <span>Federal Income Tax Withheld</span>
+                    <span className="text-xs text-gray-500">(W-2 box 2)</span>
                   </label>
                   <div className="relative rounded-md shadow-sm">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -405,11 +379,9 @@ export default function IncomeTaxForm({
                 </div>
 
                 <div className="form-group">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    State Income Tax Withheld
-                    <span className="text-xs text-gray-500 block">
-                      (W-2 box 17)
-                    </span>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                    <span>State Income Tax Withheld</span>
+                    <span className="text-xs text-gray-500">(W-2 box 17)</span>
                   </label>
                   <div className="relative rounded-md shadow-sm">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -427,11 +399,9 @@ export default function IncomeTaxForm({
                 </div>
 
                 <div className="form-group">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Local Income Tax Withheld
-                    <span className="text-xs text-gray-500 block">
-                      (W-2 box 19)
-                    </span>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                    <span>Local Income Tax Withheld</span>
+                    <span className="text-xs text-gray-500">(W-2 box 19)</span>
                   </label>
                   <div className="relative rounded-md shadow-sm">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -487,10 +457,10 @@ export default function IncomeTaxForm({
               {/* Business Income Fields for Person 2 */}
               {values.hasBusiness2 && (
                 <div className="ml-4 space-y-4 border-l-2 border-gray-200 pl-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="form-group">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Business Income
+                      <label className="block text-sm font-medium text-gray-700 mb-2 h-8 flex flex-col justify-start">
+                        <span>Business Income</span>
                       </label>
                       <div className="relative rounded-md shadow-sm">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -508,8 +478,8 @@ export default function IncomeTaxForm({
                     </div>
 
                     <div className="form-group">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Estimated Tax Paid
+                      <label className="block text-sm font-medium text-gray-700 mb-2 h-8 flex flex-col justify-start">
+                        <span>Estimated Tax Paid</span>
                       </label>
                       <div className="relative rounded-md shadow-sm">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -526,10 +496,10 @@ export default function IncomeTaxForm({
                       </div>
                     </div>
 
-                    <div className="form-group">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Medicare Wages
-                        <span className="text-xs text-gray-500 block">
+                    <div className="form-group md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                        <span>Medicare Wages</span>
+                        <span className="text-xs text-gray-500">
                           (W-2 box 5, use 0 if no W-2)
                         </span>
                       </label>
@@ -562,9 +532,9 @@ export default function IncomeTaxForm({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Interest Income
-                <span className="text-xs text-gray-500 block">1099-INT</span>
+              <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                <span>Interest Income</span>
+                <span className="text-xs text-gray-500">1099-INT</span>
               </label>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -582,8 +552,8 @@ export default function IncomeTaxForm({
             </div>
 
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Ordinary Dividends
+              <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                <span>Ordinary Dividends</span>
               </label>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -601,9 +571,9 @@ export default function IncomeTaxForm({
             </div>
 
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Qualified Dividends
-                <span className="text-xs text-gray-500 block">1099-DIV</span>
+              <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                <span>Qualified Dividends</span>
+                <span className="text-xs text-gray-500">1099-DIV</span>
               </label>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -621,9 +591,9 @@ export default function IncomeTaxForm({
             </div>
 
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Passive Income
-                <span className="text-xs text-gray-500 block">
+              <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                <span>Passive Income</span>
+                <span className="text-xs text-gray-500">
                   e.g. rentals and real estate, royalties
                 </span>
               </label>
@@ -643,8 +613,8 @@ export default function IncomeTaxForm({
             </div>
 
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Short-term Capital Gain
+              <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                <span>Short-term Capital Gain</span>
               </label>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -662,8 +632,8 @@ export default function IncomeTaxForm({
             </div>
 
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Long-term Capital Gain
+              <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                <span>Long-term Capital Gain</span>
               </label>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -681,9 +651,9 @@ export default function IncomeTaxForm({
             </div>
 
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Other Income
-                <span className="text-xs text-gray-500 block">
+              <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                <span>Other Income</span>
+                <span className="text-xs text-gray-500">
                   e.g. unemployment pay(1099-G), retirement pay (1099-R)
                 </span>
               </label>
@@ -703,8 +673,8 @@ export default function IncomeTaxForm({
             </div>
 
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                State+Local Tax Rate (%)
+              <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                <span>State+Local Tax Rate (%)</span>
               </label>
               <div className="relative rounded-md shadow-sm">
                 <input
@@ -734,8 +704,8 @@ export default function IncomeTaxForm({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                IRA Contributions
+              <label className="block text-sm font-medium text-gray-700 mb-2 h-8 flex flex-col justify-start">
+                <span>IRA Contributions</span>
               </label>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -753,8 +723,8 @@ export default function IncomeTaxForm({
             </div>
 
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Real Estate Tax
+              <label className="block text-sm font-medium text-gray-700 mb-2 h-8 flex flex-col justify-start">
+                <span>Real Estate Tax</span>
               </label>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -772,8 +742,8 @@ export default function IncomeTaxForm({
             </div>
 
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Mortgage Interest
+              <label className="block text-sm font-medium text-gray-700 mb-2 h-8 flex flex-col justify-start">
+                <span>Mortgage Interest</span>
               </label>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -791,8 +761,8 @@ export default function IncomeTaxForm({
             </div>
 
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Charitable Donations
+              <label className="block text-sm font-medium text-gray-700 mb-2 h-8 flex flex-col justify-start">
+                <span>Charitable Donations</span>
               </label>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -810,11 +780,9 @@ export default function IncomeTaxForm({
             </div>
 
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Student Loan Interest
-                <span className="text-xs text-gray-500 block">
-                  Max $2,500/Person
-                </span>
+              <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                <span>Student Loan Interest</span>
+                <span className="text-xs text-gray-500">Max $2,500/Person</span>
               </label>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -832,9 +800,9 @@ export default function IncomeTaxForm({
             </div>
 
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Child & Dependent Care Expense
-                <span className="text-xs text-gray-500 block">
+              <label className="block text-sm font-medium text-gray-700 mb-2 h-12 flex flex-col justify-start">
+                <span>Child & Dependent Care Expense</span>
+                <span className="text-xs text-gray-500">
                   Max $3,000/Person, $6,000 total, up to age 13
                 </span>
               </label>

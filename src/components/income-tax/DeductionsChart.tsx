@@ -94,16 +94,18 @@ export default function DeductionsChart({ breakdown }: DeductionsChartProps) {
   };
 
   return (
-    <div className="h-64">
-      <Bar ref={chartRef} data={data} options={options} />
+    <div className="space-y-4">
+      <div className="h-48">
+        <Bar ref={chartRef} data={data} options={options} />
+      </div>
 
       {/* Itemized Deductions Breakdown */}
       {breakdown.deductionsBreakdown.itemizedDeductions.total > 0 && (
-        <div className="mt-4 text-sm">
-          <h4 className="font-medium text-gray-700 mb-2">
+        <div className="bg-white p-3 rounded border">
+          <h4 className="font-medium text-gray-700 mb-2 text-sm">
             Itemized Breakdown:
           </h4>
-          <div className="space-y-1 text-gray-600">
+          <div className="space-y-1 text-xs text-gray-600">
             {breakdown.deductionsBreakdown.itemizedDeductions.realEstateTax >
               0 && (
               <div className="flex justify-between">

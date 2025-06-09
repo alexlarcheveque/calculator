@@ -34,12 +34,12 @@ const incomeTaxFAQItems: FAQItem[] = [
     answer: (
       <>
         <p className="mb-2">
-          <strong>Standard Deduction (2024):</strong>
+          <strong>Standard Deduction (2025):</strong>
         </p>
         <ul className="list-disc list-inside space-y-1 text-sm mb-3">
-          <li>Single: $14,600</li>
-          <li>Married Filing Jointly: $29,200</li>
-          <li>Head of Household: $21,900</li>
+          <li>Single: $15,000</li>
+          <li>Married Filing Jointly: $30,000</li>
+          <li>Head of Household: $22,500</li>
         </ul>
         <p className="mb-2">
           <strong>
@@ -76,7 +76,7 @@ const incomeTaxFAQItems: FAQItem[] = [
           <li>Child Tax Credit: $2,000 per qualifying child</li>
           <li>Child and Dependent Care Credit: Up to $3,000</li>
           <li>American Opportunity Tax Credit: Up to $2,500</li>
-          <li>Earned Income Tax Credit: Up to $7,430 (2024)</li>
+          <li>Earned Income Tax Credit: Up to $8,046 (2025)</li>
         </ul>
       </>
     ),
@@ -166,7 +166,7 @@ const incomeTaxFAQItems: FAQItem[] = [
     answer: (
       <>
         <p className="mb-2">
-          <strong>2024 Child Tax Credit:</strong>
+          <strong>2025 Child Tax Credit:</strong>
         </p>
         <ul className="list-disc list-inside space-y-1 text-sm mb-3">
           <li>$2,000 per qualifying child under 17</li>
@@ -195,13 +195,13 @@ const incomeTaxFAQItems: FAQItem[] = [
           least 90% of this year's tax or 100% of last year's tax.
         </p>
         <p className="mb-2">
-          <strong>2024 Quarterly Due Dates:</strong>
+          <strong>2025 Quarterly Due Dates:</strong>
         </p>
         <ul className="list-disc list-inside space-y-1 text-sm mb-3">
-          <li>Q1 2024: April 15, 2024</li>
-          <li>Q2 2024: June 17, 2024</li>
-          <li>Q3 2024: September 16, 2024</li>
-          <li>Q4 2024: January 15, 2025</li>
+          <li>Q1 2025: April 15, 2025</li>
+          <li>Q2 2025: June 16, 2025</li>
+          <li>Q3 2025: September 15, 2025</li>
+          <li>Q4 2025: January 15, 2026</li>
         </ul>
         <p>
           Common situations requiring quarterly payments include self-employment
@@ -260,9 +260,9 @@ const incomeTaxFAQItems: FAQItem[] = [
         <p className="mb-2">
           <strong>Retirement planning:</strong>
         </p>
-        <ul className="list-disc list-inside space-y-1 text-sm">
-          <li>Maximize 401(k) contributions ($23,000 limit for 2024)</li>
-          <li>IRA contributions ($7,000 limit for 2024)</li>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>Maximize 401(k) contributions ($23,500 limit for 2025)</li>
+          <li>IRA contributions ($7,000 limit for 2025)</li>
           <li>HSA contributions (triple tax advantage)</li>
           <li>Consider traditional vs. Roth options</li>
         </ul>

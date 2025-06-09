@@ -12,7 +12,7 @@ export interface ListItem {
 }
 
 export interface CalloutBox {
-  type: "info" | "warning" | "success" | "error";
+  type?: "info" | "warning" | "success" | "error" | "neutral";
   title?: string;
   content: React.ReactNode;
 }
@@ -34,8 +34,9 @@ export interface InfoCardProps {
   className?: string;
 }
 
-const getCalloutStyles = (type: CalloutBox["type"]) => {
+const getCalloutStyles = (type: CalloutBox["type"] = "neutral") => {
   const styles = {
+    neutral: "bg-gray-50 border-gray-200 text-gray-800",
     info: "bg-blue-50 border-blue-200 text-blue-800",
     warning: "bg-yellow-50 border-yellow-200 text-yellow-800",
     success: "bg-green-50 border-green-200 text-green-800",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import IncomeTaxForm from "@/components/income-tax/IncomeTaxForm";
 import IncomeTaxSummary from "@/components/income-tax/IncomeTaxSummary";
 import IncomeTaxCharts from "@/components/income-tax/IncomeTaxCharts";
@@ -20,56 +21,62 @@ import {
   TaxYear,
 } from "@/types/incomeTax";
 
+const defaultFormValues: IncomeTaxFormValues = {
+  filingStatus: FilingStatus.SINGLE,
+  youngDependents: 0,
+  otherDependents: 0,
+  taxYear: TaxYear.YEAR_2025,
+
+  // Person 1 Income
+  salaryIncome: 80000,
+  federalTaxWithheld: 9000,
+  stateTaxWithheld: 0,
+  localTaxWithheld: 0,
+  hasBusiness: false,
+  businessIncome: 0,
+  estimatedTaxPaid: 0,
+  medicareWages: 0,
+
+  // Person 2 Income
+  salaryIncome2: 0,
+  federalTaxWithheld2: 0,
+  stateTaxWithheld2: 0,
+  localTaxWithheld2: 0,
+  hasBusiness2: false,
+  businessIncome2: 0,
+  estimatedTaxPaid2: 0,
+  medicareWages2: 0,
+
+  // Other Income
+  interestIncome: 0,
+  ordinaryDividends: 0,
+  qualifiedDividends: 0,
+  passiveIncome: 0,
+  shortTermCapitalGain: 0,
+  longTermCapitalGain: 0,
+  otherIncome: 0,
+  stateLocalTaxRate: 0,
+
+  // Deductions & Credits
+  iraContributions: 0,
+  realEstateTax: 0,
+  mortgageInterest: 0,
+  charitableDonations: 0,
+  studentLoanInterest: 0,
+  childCareExpense: 0,
+  tuition1: 0,
+  tuition2: 0,
+  tuition3: 0,
+  tuition4: 0,
+  otherDeductibles: 0,
+};
+
 export default function IncomeTaxPage() {
-  const [formValues, setFormValues] = useState<IncomeTaxFormValues>({
-    filingStatus: FilingStatus.SINGLE,
-    youngDependents: 0,
-    otherDependents: 0,
-    taxYear: TaxYear.YEAR_2024,
-
-    // Person 1 Income
-    salaryIncome: 80000,
-    federalTaxWithheld: 9000,
-    stateTaxWithheld: 0,
-    localTaxWithheld: 0,
-    hasBusiness: false,
-    businessIncome: 0,
-    estimatedTaxPaid: 0,
-    medicareWages: 0,
-
-    // Person 2 Income
-    salaryIncome2: 0,
-    federalTaxWithheld2: 0,
-    stateTaxWithheld2: 0,
-    localTaxWithheld2: 0,
-    hasBusiness2: false,
-    businessIncome2: 0,
-    estimatedTaxPaid2: 0,
-    medicareWages2: 0,
-
-    // Other Income
-    interestIncome: 0,
-    ordinaryDividends: 0,
-    qualifiedDividends: 0,
-    passiveIncome: 0,
-    shortTermCapitalGain: 0,
-    longTermCapitalGain: 0,
-    otherIncome: 0,
-    stateLocalTaxRate: 0,
-
-    // Deductions & Credits
-    iraContributions: 0,
-    realEstateTax: 0,
-    mortgageInterest: 0,
-    charitableDonations: 0,
-    studentLoanInterest: 0,
-    childCareExpense: 0,
-    tuition1: 0,
-    tuition2: 0,
-    tuition3: 0,
-    tuition4: 0,
-    otherDeductibles: 0,
-  });
+  const [formValues, setFormValues, isFormLoaded] =
+    useLocalStorage<IncomeTaxFormValues>(
+      "income-tax-form-values",
+      defaultFormValues
+    );
 
   const [results, setResults] = useState<IncomeTaxResults | null>(null);
   const [breakdown, setBreakdown] = useState<TaxCalculationBreakdown | null>(
@@ -77,6 +84,9 @@ export default function IncomeTaxPage() {
   );
 
   useEffect(() => {
+    // Only calculate if form values are loaded from localStorage
+    if (!isFormLoaded) return;
+
     try {
       const taxResults = calculateIncomeTax(formValues);
       const taxBreakdown = calculateTaxBreakdown(formValues);
@@ -88,7 +98,7 @@ export default function IncomeTaxPage() {
       setResults(null);
       setBreakdown(null);
     }
-  }, [formValues]);
+  }, [formValues, isFormLoaded]);
 
   const handleInputChange = (
     name: string,
@@ -99,6 +109,18 @@ export default function IncomeTaxPage() {
       [name]: value,
     }));
   };
+
+  // Show loading state until localStorage data is loaded
+  if (!isFormLoaded) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-500">Loading calculator...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

@@ -90,13 +90,30 @@ export function calculateFinance(
       if (effectiveRate === 0) {
         calculatedValue = -(finalPV + finalFV) / finalPMT;
       } else {
-        const numerator = Math.log(
-          1 +
-            (finalFV * effectiveRate) /
-              (finalPMT * pmtFactor + finalPV * effectiveRate)
+        // Use iterative approach to solve the TVM equation for N
+        // PV * (1 + r)^N + PMT * pmtFactor * ((1 + r)^N - 1) / r + FV = 0
+        calculatedValue = solveForPeriods(
+          finalPV,
+          finalPMT,
+          finalFV,
+          effectiveRate,
+          pmtFactor
         );
-        const denominator = Math.log(1 + effectiveRate);
-        calculatedValue = numerator / denominator;
+
+        // Check if the scenario is impossible
+        if (!isFinite(calculatedValue) || isNaN(calculatedValue)) {
+          // Return an error result indicating impossible scenario
+          return {
+            calculatedValue: NaN,
+            sumOfPayments: NaN,
+            totalInterest: NaN,
+            presentValue: finalPV,
+            futureValue: finalFV,
+            periodicPayment: finalPMT,
+            numberOfPeriods: NaN,
+            interestPerYear: finalIY,
+          };
+        }
       }
       finalN = calculatedValue;
       break;
@@ -116,8 +133,35 @@ export function calculateFinance(
   }
 
   // Calculate summary values
-  const totalPayments = Math.abs(finalPMT * finalN);
-  const totalInterest = Math.abs(finalFV - finalPV - totalPayments);
+  const totalPayments = finalPMT * finalN;
+
+  // Calculate total interest as the net cost of the financial arrangement
+  // Total all cash outflows and subtract all cash inflows
+  let totalOutflows = 0;
+  let totalInflows = 0;
+
+  // Present Value: positive = inflow, negative = outflow
+  if (finalPV > 0) {
+    totalInflows += finalPV;
+  } else {
+    totalOutflows += Math.abs(finalPV);
+  }
+
+  // Payments: negative = outflow, positive = inflow
+  if (totalPayments < 0) {
+    totalOutflows += Math.abs(totalPayments);
+  } else {
+    totalInflows += totalPayments;
+  }
+
+  // Future Value: positive = inflow, negative = outflow
+  if (finalFV > 0) {
+    totalInflows += finalFV;
+  } else {
+    totalOutflows += Math.abs(finalFV);
+  }
+
+  const totalInterest = totalOutflows - totalInflows;
 
   return {
     calculatedValue,
@@ -139,18 +183,73 @@ function solveForInterestRate(
   pmtFactor: number,
   periodsPerYear: number
 ): number {
-  // Newton-Raphson method to solve for interest rate
-  let rate = 0.1; // Initial guess (10%)
-  const tolerance = 1e-10;
-  const maxIterations = 100;
+  // Use bisection method followed by Newton-Raphson for more robust convergence
+  // TVM equation: PV * (1 + r)^n + PMT * pmtFactor * ((1 + r)^n - 1) / r + FV = 0
 
+  const tolerance = 1e-12;
+  const maxIterations = 1000;
+
+  // First, try to find bounds using bisection method
+  let lowerBound = -0.99; // -99% interest rate
+  let upperBound = 5.0; // 500% interest rate
+
+  // Helper function to evaluate TVM equation
+  const evaluateTVM = (annualRate: number): number => {
+    if (annualRate <= -1) return Infinity; // Invalid rate
+
+    const effectiveRate = annualRate / periodsPerYear;
+
+    if (Math.abs(effectiveRate) < 1e-10) {
+      // Handle zero interest rate case
+      return pv + pmt * pmtFactor * n + fv;
+    }
+
+    const factor = Math.pow(1 + effectiveRate, n);
+    return pv * factor + pmt * pmtFactor * ((factor - 1) / effectiveRate) + fv;
+  };
+
+  // Check if bounds contain a root
+  let fLower = evaluateTVM(lowerBound);
+  let fUpper = evaluateTVM(upperBound);
+
+  // Adjust bounds if necessary
+  while (fLower * fUpper > 0 && upperBound < 10) {
+    upperBound *= 2;
+    fUpper = evaluateTVM(upperBound);
+  }
+
+  // Use bisection method to narrow down the range
+  let rate = (lowerBound + upperBound) / 2;
+
+  for (let i = 0; i < 50; i++) {
+    const fMid = evaluateTVM(rate);
+
+    if (Math.abs(fMid) < tolerance) break;
+
+    if (fLower * fMid < 0) {
+      upperBound = rate;
+      fUpper = fMid;
+    } else {
+      lowerBound = rate;
+      fLower = fMid;
+    }
+
+    rate = (lowerBound + upperBound) / 2;
+  }
+
+  // Refine with Newton-Raphson method
   for (let i = 0; i < maxIterations; i++) {
     const effectiveRate = rate / periodsPerYear;
 
-    if (effectiveRate === 0) {
-      const f = pv + pmt * n + fv;
+    if (effectiveRate <= -1) {
+      rate = 0.01; // Reset to positive rate
+      continue;
+    }
+
+    if (Math.abs(effectiveRate) < 1e-10) {
+      const f = pv + pmt * pmtFactor * n + fv;
       if (Math.abs(f) < tolerance) break;
-      rate = 0.01; // Small positive rate if zero doesn't work
+      rate = 0.01;
       continue;
     }
 
@@ -160,20 +259,102 @@ function solveForInterestRate(
 
     if (Math.abs(f) < tolerance) break;
 
-    // Calculate derivative
+    // Calculate derivative df/dr (with respect to annual rate)
     const dfdr =
-      (pv * n * factor) / (1 + effectiveRate) +
-      (pmt * pmtFactor * (n * effectiveRate * factor - factor + 1)) /
-        (effectiveRate * effectiveRate * (1 + effectiveRate));
+      (1 / periodsPerYear) *
+      ((pv * n * factor) / (1 + effectiveRate) +
+        pmt *
+          pmtFactor *
+          ((n * effectiveRate * factor - factor + 1) /
+            (effectiveRate * effectiveRate * (1 + effectiveRate))));
 
-    const newRate = rate - (f / dfdr) * periodsPerYear;
+    if (Math.abs(dfdr) < tolerance) break;
+
+    const newRate = rate - f / dfdr;
 
     if (Math.abs(newRate - rate) < tolerance) break;
 
-    rate = newRate;
+    // Keep rate within reasonable bounds
+    rate = Math.max(-0.99, Math.min(10, newRate));
   }
 
   return rate * 100; // Convert to percentage
+}
+
+function solveForPeriods(
+  pv: number,
+  pmt: number,
+  fv: number,
+  effectiveRate: number,
+  pmtFactor: number
+): number {
+  // First check if the scenario is mathematically possible
+  if (effectiveRate > 0) {
+    // For positive interest rates, check if payments can service the debt
+    const interestOnPV = pv * effectiveRate;
+    const netPayment = Math.abs(pmt * pmtFactor);
+
+    // If we're borrowing money (PV > 0) and making payments (PMT < 0)
+    // but the payments are smaller than the interest alone, it's impossible
+    if (pv > 0 && pmt < 0 && netPayment < interestOnPV && fv < 0) {
+      return NaN; // Impossible scenario
+    }
+
+    // If we're lending money (PV < 0) but receiving small payments (PMT > 0)
+    // that can't cover the growth, it's also impossible
+    if (
+      pv < 0 &&
+      pmt > 0 &&
+      netPayment < Math.abs(pv * effectiveRate) &&
+      fv > 0
+    ) {
+      return NaN; // Impossible scenario
+    }
+  }
+
+  // Use Newton-Raphson method to solve for number of periods
+  // Equation: PV * (1 + r)^N + PMT * pmtFactor * ((1 + r)^N - 1) / r + FV = 0
+
+  let n = 5; // Initial guess - start with a reasonable value
+  const tolerance = 1e-10;
+  const maxIterations = 100;
+
+  for (let i = 0; i < maxIterations; i++) {
+    const factor = Math.pow(1 + effectiveRate, n);
+
+    // Calculate the TVM equation value
+    const f =
+      pv * factor + pmt * pmtFactor * ((factor - 1) / effectiveRate) + fv;
+
+    if (Math.abs(f) < tolerance) break;
+
+    // Calculate derivative df/dn
+    const lnFactor = Math.log(1 + effectiveRate);
+    const dfdn =
+      pv * factor * lnFactor +
+      (pmt * pmtFactor * factor * lnFactor) / effectiveRate;
+
+    if (Math.abs(dfdn) < tolerance) break; // Avoid division by zero
+
+    const newN = n - f / dfdn;
+
+    if (Math.abs(newN - n) < tolerance) break;
+
+    // Ensure N stays positive and reasonable
+    n = Math.max(0.01, Math.min(1000, newN));
+
+    // If we're not converging to a reasonable solution, it might be impossible
+    if (i > 50 && (n < 0.1 || n > 500)) {
+      return NaN; // Likely impossible scenario
+    }
+  }
+
+  // Final sanity check
+  if (n < 0.1 || n > 500 || !isFinite(n)) {
+    return NaN;
+  }
+
+  return n;
 }
 
 export function calculateFinanceSchedule(

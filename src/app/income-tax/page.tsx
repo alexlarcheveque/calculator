@@ -12,12 +12,12 @@ export default function IncomeTaxCalculatorRoute() {
     <div className="container mx-auto p-4">
       <header className="text-center mb-8">
         <h1 className="text-4xl font-bold text-blue-600">
-          Income Tax Calculator
+          2025 Income Tax Calculator
         </h1>
         <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">
-          Calculate U.S. federal tax refunds or owed amounts for 2024 and 2025
-          tax years. Supports both salary earners and independent contractors
-          with accurate tax brackets and deductions.
+          Calculate U.S. federal tax refunds or owed amounts for the 2025 fiscal
+          year. Supports both salary earners and independent contractors with
+          accurate tax brackets and deductions.
         </p>
       </header>
       <IncomeTaxPage />
