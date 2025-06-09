@@ -11,6 +11,10 @@ const formatNumberWithCommas = (value: number): string => {
 };
 
 const parseNumberFromString = (value: string): number => {
+  // Handle empty string case to allow clearing inputs
+  if (value.trim() === "") {
+    return 0;
+  }
   const cleanedValue = value.replace(/,/g, "");
   const parsed = parseFloat(cleanedValue);
   return isNaN(parsed) ? 0 : parsed;
@@ -21,8 +25,14 @@ export default function InterestRateForm({
   onChange,
 }: InterestRateFormProps) {
   const [displayValues, setDisplayValues] = useState({
-    loanAmount: formatNumberWithCommas(values.loanAmount),
-    monthlyPayment: formatNumberWithCommas(values.monthlyPayment),
+    loanAmount:
+      values.loanAmount > 0 ? formatNumberWithCommas(values.loanAmount) : "",
+    monthlyPayment:
+      values.monthlyPayment > 0
+        ? formatNumberWithCommas(values.monthlyPayment)
+        : "",
+    loanTermYears: values.loanTermYears.toString(),
+    loanTermMonths: values.loanTermMonths.toString(),
   });
 
   const handleCurrencyChange = (
@@ -30,12 +40,27 @@ export default function InterestRateForm({
     fieldName: string
   ) => {
     const { value } = e.target;
+
+    // Handle empty string case
+    if (value.trim() === "") {
+      setDisplayValues((prev) => ({
+        ...prev,
+        [fieldName]: "",
+      }));
+      onChange(fieldName, 0);
+      return;
+    }
+
     const numericValue = parseNumberFromString(value);
 
-    // Update display value with commas
+    // Only format with commas if value is greater than 0
+    const formattedValue =
+      numericValue > 0 ? formatNumberWithCommas(numericValue) : "";
+
+    // Update display value
     setDisplayValues((prev) => ({
       ...prev,
-      [fieldName]: formatNumberWithCommas(numericValue),
+      [fieldName]: formattedValue,
     }));
 
     // Update actual value
@@ -44,7 +69,26 @@ export default function InterestRateForm({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    onChange(name, parseFloat(value) || 0);
+
+    // Handle empty string case for number inputs
+    if (value === "") {
+      setDisplayValues((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+      onChange(name, 0);
+      return;
+    }
+
+    const numericValue = parseFloat(value);
+    const finalValue = isNaN(numericValue) ? 0 : numericValue;
+
+    setDisplayValues((prev) => ({
+      ...prev,
+      [name]: finalValue.toString(),
+    }));
+
+    onChange(name, finalValue);
   };
 
   const handleClear = () => {
@@ -58,6 +102,8 @@ export default function InterestRateForm({
     setDisplayValues({
       loanAmount: formatNumberWithCommas(defaultValues.loanAmount),
       monthlyPayment: formatNumberWithCommas(defaultValues.monthlyPayment),
+      loanTermYears: defaultValues.loanTermYears.toString(),
+      loanTermMonths: defaultValues.loanTermMonths.toString(),
     });
 
     Object.entries(defaultValues).forEach(([key, value]) => {
@@ -106,8 +152,8 @@ export default function InterestRateForm({
                   type="number"
                   id="loanTermYears"
                   name="loanTermYears"
-                  className="block w-full pr-12 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  value={values.loanTermYears}
+                  className="block w-full pl-3 pr-12 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  value={displayValues.loanTermYears}
                   onChange={handleChange}
                   min="0"
                   max="50"
@@ -124,8 +170,8 @@ export default function InterestRateForm({
                   type="number"
                   id="loanTermMonths"
                   name="loanTermMonths"
-                  className="block w-full pr-16 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  value={values.loanTermMonths}
+                  className="block w-full pl-3 pr-16 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  value={displayValues.loanTermMonths}
                   onChange={handleChange}
                   min="0"
                   max="11"
@@ -162,37 +208,6 @@ export default function InterestRateForm({
             />
           </div>
         </div>
-
-        {/* Action Buttons */}
-        <div className="flex space-x-3 pt-4">
-          <button
-            type="button"
-            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-            onClick={() => {
-              // Trigger recalculation by updating a value
-              onChange("loanAmount", values.loanAmount);
-            }}
-          >
-            Calculate
-          </button>
-          <button
-            type="button"
-            onClick={handleClear}
-            className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
-          >
-            Clear
-          </button>
-        </div>
-      </div>
-
-      {/* Helpful Information */}
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-        <h3 className="text-sm font-medium text-blue-800 mb-2">How it works</h3>
-        <p className="text-sm text-blue-700">
-          Enter your loan amount, term, and monthly payment to calculate the
-          interest rate. This is useful when you know the payment amount but
-          need to find the actual interest rate.
-        </p>
       </div>
     </div>
   );

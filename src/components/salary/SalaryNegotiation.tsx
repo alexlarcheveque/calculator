@@ -75,13 +75,13 @@ const salaryNegotiationSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "info",
+      type: "neutral",
       title: "Effective Negotiation Tactics",
       content: (
         <div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="font-semibold mb-2">Do:</p>
+              <p className="font-semibold my-2">✅ Do:</p>
               <ul className="space-y-1">
                 <li>• Express enthusiasm for the role</li>
                 <li>• Present data-driven arguments</li>
@@ -91,7 +91,7 @@ const salaryNegotiationSections: ContentSection[] = [
               </ul>
             </div>
             <div>
-              <p className="font-semibold mb-2">Don't:</p>
+              <p className="font-semibold my-2">❌ Don't:</p>
               <ul className="space-y-1">
                 <li>• Make ultimatums or threats</li>
                 <li>• Focus on personal financial needs</li>
@@ -136,41 +136,36 @@ const salaryNegotiationSections: ContentSection[] = [
     heading: "Long-Term Salary Growth",
     headingLevel: "h4",
   },
+
   {
-    type: "callout",
-    callout: {
-      type: "info",
-      title: "Building Long-Term Earning Power",
-      content: (
-        <div>
-          <p className="mb-2">
-            <strong>Strategies for sustained salary growth:</strong>
-          </p>
-          <ul className="space-y-2 text-sm">
-            <li>
-              • <strong>Skill development:</strong> Continuously learn in-demand
-              skills and technologies relevant to your field
-            </li>
-            <li>
-              • <strong>Network building:</strong> Maintain professional
-              relationships that can lead to opportunities and referrals
-            </li>
-            <li>
-              • <strong>Performance tracking:</strong> Document achievements
-              quarterly to support regular salary discussions
-            </li>
-            <li>
-              • <strong>Strategic job changes:</strong> Well-timed moves to new
-              companies can accelerate salary growth
-            </li>
-            <li>
-              • <strong>Leadership development:</strong> Seek management or
-              mentoring opportunities to qualify for higher-level roles
-            </li>
-          </ul>
-        </div>
-      ),
-    },
+    type: "list",
+    listItems: [
+      {
+        label: "Skill development",
+        description:
+          "Continuously learn in-demand skills and technologies relevant to your field",
+      },
+      {
+        label: "Network building",
+        description:
+          "Maintain professional relationships that can lead to opportunities and referrals",
+      },
+      {
+        label: "Performance tracking",
+        description:
+          "Document achievements quarterly to support regular salary discussions",
+      },
+      {
+        label: "Strategic job changes",
+        description:
+          "Well-timed moves to new companies can accelerate salary growth",
+      },
+      {
+        label: "Leadership development",
+        description:
+          "Seek management or mentoring opportunities to qualify for higher-level roles",
+      },
+    ],
   },
 ];
 

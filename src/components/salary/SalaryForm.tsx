@@ -11,29 +11,48 @@ interface SalaryFormProps {
 
 export default function SalaryForm({ values, onChange }: SalaryFormProps) {
   const [salaryAmountDisplay, setSalaryAmountDisplay] = useState<string>(
-    formatNumberWithCommas(values.salaryAmount)
+    values.salaryAmount > 0 ? formatNumberWithCommas(values.salaryAmount) : ""
   );
 
+  const [numberDisplays, setNumberDisplays] = useState({
+    hoursPerWeek: values.hoursPerWeek.toString(),
+    daysPerWeek: values.daysPerWeek.toString(),
+    holidaysPerYear: values.holidaysPerYear.toString(),
+    vacationDaysPerYear: values.vacationDaysPerYear.toString(),
+  });
+
   useEffect(() => {
-    setSalaryAmountDisplay(formatNumberWithCommas(values.salaryAmount));
+    setSalaryAmountDisplay(
+      values.salaryAmount > 0 ? formatNumberWithCommas(values.salaryAmount) : ""
+    );
   }, [values.salaryAmount]);
 
   const handleSalaryAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/,/g, "");
+
+    // Handle completely empty input
+    if (rawValue === "") {
+      onChange("salaryAmount", 0);
+      setSalaryAmountDisplay("");
+      return;
+    }
+
     const numericValue = parseFloat(rawValue);
 
     if (!isNaN(numericValue) && numericValue >= 0) {
       onChange("salaryAmount", numericValue);
-      setSalaryAmountDisplay(formatNumberWithCommas(numericValue));
-    } else if (rawValue === "") {
-      onChange("salaryAmount", 0);
-      setSalaryAmountDisplay("");
+      // Only format with commas if value is greater than 0
+      const formattedValue =
+        numericValue > 0 ? formatNumberWithCommas(numericValue) : "";
+      setSalaryAmountDisplay(formattedValue);
     }
   };
 
   const handleSalaryAmountBlur = () => {
     if (values.salaryAmount > 0) {
       setSalaryAmountDisplay(formatNumberWithCommas(values.salaryAmount));
+    } else {
+      setSalaryAmountDisplay("");
     }
   };
 
@@ -45,8 +64,22 @@ export default function SalaryForm({ values, onChange }: SalaryFormProps) {
     if (name === "payFrequency") {
       onChange(name, value as PayFrequency);
     } else {
+      // Handle empty string case for number inputs
+      if (value === "") {
+        setNumberDisplays((prev) => ({
+          ...prev,
+          [name]: "",
+        }));
+        onChange(name, 0);
+        return;
+      }
+
       const numericValue = parseFloat(value);
       if (!isNaN(numericValue)) {
+        setNumberDisplays((prev) => ({
+          ...prev,
+          [name]: numericValue.toString(),
+        }));
         onChange(name, numericValue);
       }
     }
@@ -59,6 +92,15 @@ export default function SalaryForm({ values, onChange }: SalaryFormProps) {
     onChange("daysPerWeek", 5);
     onChange("holidaysPerYear", 10);
     onChange("vacationDaysPerYear", 15);
+
+    // Reset display states
+    setSalaryAmountDisplay(formatNumberWithCommas(50));
+    setNumberDisplays({
+      hoursPerWeek: "40",
+      daysPerWeek: "5",
+      holidaysPerYear: "10",
+      vacationDaysPerYear: "15",
+    });
   };
 
   return (
@@ -124,7 +166,7 @@ export default function SalaryForm({ values, onChange }: SalaryFormProps) {
             id="hoursPerWeek"
             name="hoursPerWeek"
             className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            value={values.hoursPerWeek}
+            value={numberDisplays.hoursPerWeek}
             onChange={handleChange}
             min="1"
             max="168"
@@ -145,7 +187,7 @@ export default function SalaryForm({ values, onChange }: SalaryFormProps) {
             id="daysPerWeek"
             name="daysPerWeek"
             className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            value={values.daysPerWeek}
+            value={numberDisplays.daysPerWeek}
             onChange={handleChange}
             min="1"
             max="7"
@@ -166,7 +208,7 @@ export default function SalaryForm({ values, onChange }: SalaryFormProps) {
             id="holidaysPerYear"
             name="holidaysPerYear"
             className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            value={values.holidaysPerYear}
+            value={numberDisplays.holidaysPerYear}
             onChange={handleChange}
             min="0"
             max="365"
@@ -180,40 +222,19 @@ export default function SalaryForm({ values, onChange }: SalaryFormProps) {
             htmlFor="vacationDaysPerYear"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Vacation days per year
+            Vacation per year (unpaid)
           </label>
           <input
             type="number"
             id="vacationDaysPerYear"
             name="vacationDaysPerYear"
             className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            value={values.vacationDaysPerYear}
+            value={numberDisplays.vacationDaysPerYear}
             onChange={handleChange}
             min="0"
             max="365"
             step="1"
           />
-        </div>
-
-        {/* Action buttons */}
-        <div className="flex space-x-4 pt-4">
-          <button
-            type="button"
-            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-            onClick={() => {
-              // Trigger recalculation by updating a value
-              onChange("salaryAmount", values.salaryAmount);
-            }}
-          >
-            Calculate
-          </button>
-          <button
-            type="button"
-            onClick={handleClear}
-            className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
-          >
-            Clear
-          </button>
         </div>
       </div>
     </div>

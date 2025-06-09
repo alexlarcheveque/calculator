@@ -14,25 +14,34 @@ const compoundInterestFormulasSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "info",
+      type: "neutral",
       title: "Standard Compound Interest",
       content: (
         <div>
-          <div className="bg-white p-3 rounded border text-center font-mono text-lg mb-3">
+          <div className="font-mono text-xl text-center mb-4">
             A<sub>t</sub> = A<sub>0</sub>(1 + r)<sup>n</sup>
           </div>
-          <p className="mb-2">
-            <strong>Where:</strong>
-          </p>
-          <ul className="text-sm space-y-1">
+
+          <p className="font-medium mb-3">Where:</p>
+          <ul className="list-disc list-inside space-y-1 text-sm ml-4">
             <li>
-              • A<sub>t</sub> = Final amount after time t
+              <strong>
+                A<sub>t</sub>:
+              </strong>{" "}
+              Final amount after time t
             </li>
             <li>
-              • A<sub>0</sub> = Principal (initial investment)
+              <strong>
+                A<sub>0</sub>:
+              </strong>{" "}
+              Principal (initial investment)
             </li>
-            <li>• r = Annual interest rate (as decimal)</li>
-            <li>• n = Number of compounding periods (usually years)</li>
+            <li>
+              <strong>r:</strong> Annual interest rate (as decimal)
+            </li>
+            <li>
+              <strong>n:</strong> Number of compounding periods (usually years)
+            </li>
           </ul>
         </div>
       ),
@@ -46,35 +55,42 @@ const compoundInterestFormulasSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "info",
+      type: "neutral",
       title: "Multiple Compounding Periods Per Year",
       content: (
         <div>
-          <div className="bg-white p-3 rounded border text-center font-mono text-lg mb-3">
+          <div className="font-mono text-xl text-center mb-4">
             A<sub>t</sub> = A<sub>0</sub> × (1 + r/n)<sup>nt</sup>
           </div>
-          <p className="mb-2">
-            <strong>Where:</strong>
-          </p>
-          <ul className="text-sm space-y-1">
+
+          <p className="font-medium mb-3">Where:</p>
+          <ul className="list-disc list-inside space-y-1 text-sm ml-4 mb-3">
             <li>
-              • A<sub>t</sub> = Final amount after time t
+              <strong>
+                A<sub>t</sub>:
+              </strong>{" "}
+              Final amount after time t
             </li>
             <li>
-              • A<sub>0</sub> = Principal (initial investment)
+              <strong>
+                A<sub>0</sub>:
+              </strong>{" "}
+              Principal (initial investment)
             </li>
-            <li>• r = Annual interest rate (as decimal)</li>
-            <li>• n = Number of compounding periods per year</li>
-            <li>• t = Number of years</li>
+            <li>
+              <strong>r:</strong> Annual interest rate (as decimal)
+            </li>
+            <li>
+              <strong>n:</strong> Number of compounding periods per year
+            </li>
+            <li>
+              <strong>t:</strong> Number of years
+            </li>
           </ul>
-          <p className="mt-2 text-sm">
-            <strong>Examples:</strong>
+
+          <p className="text-sm font-medium">
+            Common frequencies: Monthly (n=12), Quarterly (n=4), Daily (n=365)
           </p>
-          <ul className="text-sm space-y-1">
-            <li>• Monthly: n = 12</li>
-            <li>• Quarterly: n = 4</li>
-            <li>• Daily: n = 365</li>
-          </ul>
         </div>
       ),
     },
@@ -87,26 +103,37 @@ const compoundInterestFormulasSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "info",
+      type: "neutral",
       title: "Mathematical Limit of Compounding",
       content: (
         <div>
-          <div className="bg-white p-3 rounded border text-center font-mono text-lg mb-3">
+          <div className="font-mono text-xl text-center mb-4">
             A<sub>t</sub> = A<sub>0</sub>e<sup>rt</sup>
           </div>
-          <p className="mb-2">
-            <strong>Where:</strong>
-          </p>
-          <ul className="text-sm space-y-1">
+
+          <p className="font-medium mb-3">Where:</p>
+          <ul className="list-disc list-inside space-y-1 text-sm ml-4">
             <li>
-              • A<sub>t</sub> = Final amount after time t
+              <strong>
+                A<sub>t</sub>:
+              </strong>{" "}
+              Final amount after time t
             </li>
             <li>
-              • A<sub>0</sub> = Principal (initial investment)
+              <strong>
+                A<sub>0</sub>:
+              </strong>{" "}
+              Principal (initial investment)
             </li>
-            <li>• e = Mathematical constant (~2.718)</li>
-            <li>• r = Annual interest rate (as decimal)</li>
-            <li>• t = Number of years</li>
+            <li>
+              <strong>e:</strong> Mathematical constant (~2.718)
+            </li>
+            <li>
+              <strong>r:</strong> Annual interest rate (as decimal)
+            </li>
+            <li>
+              <strong>t:</strong> Number of years
+            </li>
           </ul>
         </div>
       ),
@@ -138,13 +165,9 @@ const compoundInterestFormulasSections: ContentSection[] = [
     ],
   },
   {
-    type: "callout",
-    callout: {
-      type: "info",
-      title: "Practical Application",
-      content:
-        "While these formulas are mathematically precise, our calculator above handles all the complex computations for you. Use these formulas to understand the underlying principles and verify calculator results for your specific scenarios.",
-    },
+    type: "text",
+    content:
+      "Our calculator above handles all the complex computations for you. Use these formulas to understand the underlying principles and verify calculator results for your specific scenarios.",
   },
 ];
 

@@ -99,7 +99,9 @@ export default function InfoCard({
                     >
                       {item.title}
                     </h4>
-                    <p className="text-sm text-gray-700">{item.description}</p>
+                    <p className="text-sm text-gray-700 whitespace-pre-line">
+                      {item.description}
+                    </p>
                   </div>
                 ))}
               </div>

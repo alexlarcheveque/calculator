@@ -33,9 +33,18 @@ export default function PaymentDistributionChart({
   totalForPercentage,
   emptyStateMessage = "Chart data not available.",
 }: PaymentDistributionChartProps) {
-  const chartData = useMemo(
-    () => ({
-      labels: data.map((item) => item.label),
+  const chartData = useMemo(() => {
+    const totalValue =
+      totalForPercentage || data.reduce((sum, item) => sum + item.value, 0);
+
+    return {
+      labels: data.map((item) => {
+        if (totalValue === 0) {
+          return item.label;
+        }
+        const percentage = ((item.value / totalValue) * 100).toFixed(1);
+        return `${item.label} (${percentage}%)`;
+      }),
       datasets: [
         {
           data: data.map((item) => item.value),
@@ -44,9 +53,8 @@ export default function PaymentDistributionChart({
           borderWidth: 1,
         },
       ],
-    }),
-    [data]
-  );
+    };
+  }, [data, totalForPercentage]);
 
   const totalValue = useMemo(() => {
     return (

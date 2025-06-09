@@ -35,33 +35,33 @@ const compoundInterestBasicsSections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "info",
+      type: "neutral",
       title: "Real-World Example",
       content: (
         <div>
-          <p className="mb-2">
+          <p className="mb-3">
             If you invest $1,000 at 10% interest for 2 years:
           </p>
-          <p className="mb-1">
-            <strong>Simple Interest:</strong>
-          </p>
-          <p className="mb-2 text-sm">
-            Year 1: $1,000 × 10% = $100 → Balance: $1,100
-          </p>
-          <p className="mb-2 text-sm">
-            Year 2: $1,000 × 10% = $100 → Balance: $1,200
-          </p>
-          <p className="mb-1">
-            <strong>Compound Interest:</strong>
-          </p>
-          <p className="mb-2 text-sm">
-            Year 1: $1,000 × 10% = $100 → Balance: $1,100
-          </p>
-          <p className="mb-2 text-sm">
-            Year 2: $1,100 × 10% = $110 → Balance: $1,210
-          </p>
-          <p className="text-sm font-medium">
-            Compound interest advantage: $10 extra
+
+          <div className="mb-4">
+            <p className="font-medium mb-2">Simple Interest:</p>
+            <ul className="list-disc list-inside text-sm mb-2 ml-4">
+              <li>Year 1: $1,000 × 10% = $100 → Balance: $1,100</li>
+              <li>Year 2: $1,000 × 10% = $100 → Balance: $1,200</li>
+            </ul>
+          </div>
+
+          <div className="mb-4">
+            <p className="font-medium mb-2">Compound Interest:</p>
+            <ul className="list-disc list-inside text-sm mb-2 ml-4">
+              <li>Year 1: $1,000 × 10% = $100 → Balance: $1,100</li>
+              <li>Year 2: $1,100 × 10% = $110 → Balance: $1,210</li>
+            </ul>
+          </div>
+
+          <p className="font-medium text-green-700 border-t pt-3">
+            Result: Compound interest produces $10 extra ($1,210 vs $1,200).
+            This advantage grows exponentially over longer time periods.
           </p>
         </div>
       ),

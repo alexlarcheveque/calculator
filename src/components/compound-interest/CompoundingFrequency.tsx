@@ -90,17 +90,36 @@ const compoundingFrequencySections: ContentSection[] = [
   {
     type: "callout",
     callout: {
-      type: "info",
+      type: "neutral",
       title: "Real Impact Example",
       content: (
         <div>
-          <p className="mb-2">$10,000 at 6% interest for 10 years:</p>
-          <p className="mb-1 text-sm">• Annual: $17,908.48</p>
-          <p className="mb-1 text-sm">• Quarterly: $18,061.11</p>
-          <p className="mb-1 text-sm">• Monthly: $18,193.97</p>
-          <p className="mb-1 text-sm">• Daily: $18,220.07</p>
-          <p className="text-sm font-medium">
-            Daily vs. Annual difference: $311.59
+          <p className="mb-4 font-medium">
+            $10,000 at 6% interest for 10 years:
+          </p>
+
+          <ul className="list-disc list-inside space-y-1 text-sm mb-4 ml-4">
+            <li>
+              <strong>Annual Compounding:</strong> $17,908.48 (baseline)
+            </li>
+            <li>
+              <strong>Quarterly Compounding:</strong> $18,061.11 (+$152.63 vs
+              annual)
+            </li>
+            <li>
+              <strong>Monthly Compounding:</strong> $18,193.97 (+$285.49 vs
+              annual)
+            </li>
+            <li>
+              <strong>Daily Compounding:</strong> $18,220.07 (+$311.59 vs
+              annual)
+            </li>
+          </ul>
+
+          <p className="font-medium text-blue-700 border-t pt-3">
+            Key insight: While daily compounding is mathematically best, the
+            difference from monthly is small ($26). Focus more on finding higher
+            interest rates.
           </p>
         </div>
       ),
