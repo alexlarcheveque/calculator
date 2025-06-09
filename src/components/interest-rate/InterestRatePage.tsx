@@ -15,6 +15,9 @@ import InterestRateForm from "@/components/interest-rate/InterestRateForm";
 import InterestRateSummary from "@/components/interest-rate/InterestRateSummary";
 import InterestRateCharts from "@/components/interest-rate/InterestRateCharts";
 import AmortizationTable from "@/components/interest-rate/AmortizationTable";
+import InterestRateBasics from "@/components/interest-rate/InterestRateBasics";
+import InterestRateFactors from "@/components/interest-rate/InterestRateFactors";
+import InterestRateStrategies from "@/components/interest-rate/InterestRateStrategies";
 
 export default function InterestRatePage() {
   const [formValues, setFormValues] = useState<InterestRateFormValues>({
@@ -98,6 +101,13 @@ export default function InterestRatePage() {
             </p>
           )}
         </div>
+      </div>
+
+      {/* Info Sections */}
+      <div className="space-y-8 mb-8">
+        <InterestRateBasics />
+        <InterestRateFactors />
+        <InterestRateStrategies />
       </div>
 
       {/* FAQ Section */}

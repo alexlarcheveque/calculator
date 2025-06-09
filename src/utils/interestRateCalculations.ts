@@ -19,56 +19,59 @@ export function calculateInterestRate({
   // Calculate total interest paid
   const totalInterestPaid = totalOfPayments - loanAmount;
 
-  // Use Newton-Raphson method to find the interest rate
-  let interestRate = 0.05; // Start with 5% as initial guess
+  // If the monthly payment exactly equals the loan amount divided by total payments,
+  // then it's a 0% interest rate (no interest)
+  const minimumPayment = loanAmount / totalPayments;
+  if (Math.abs(monthlyPayment - minimumPayment) < 0.01) {
+    return {
+      interestRate: 0,
+      totalPayments,
+      totalInterestPaid: 0,
+      totalOfPayments: loanAmount,
+      loanAmount,
+      monthlyPayment: minimumPayment,
+      loanTermYears,
+      loanTermMonths,
+    };
+  }
+
+  // Use binary search to find the interest rate
+  let lowRate = 0.0;
+  let highRate = 1.0; // 100% annual rate
+  let interestRate = 0.05; // Start with 5%
   const tolerance = 0.000001;
   const maxIterations = 100;
 
+  // Function to calculate what the monthly payment would be at a given interest rate
+  function calculatePaymentAtRate(annualRate: number): number {
+    if (annualRate === 0) {
+      return loanAmount / totalPayments;
+    }
+
+    const monthlyRate = annualRate / 12;
+    const factor = Math.pow(1 + monthlyRate, totalPayments);
+    return (loanAmount * monthlyRate * factor) / (factor - 1);
+  }
+
+  // Binary search for the correct interest rate
   for (let i = 0; i < maxIterations; i++) {
-    const monthlyRate = interestRate / 12;
-
-    // Calculate the present value of payments using current interest rate
-    let presentValue = 0;
-    if (monthlyRate === 0) {
-      presentValue = monthlyPayment * totalPayments;
-    } else {
-      presentValue =
-        (monthlyPayment * (1 - Math.pow(1 + monthlyRate, -totalPayments))) /
-        monthlyRate;
-    }
-
-    // Calculate the derivative for Newton-Raphson
-    let derivative = 0;
-    if (monthlyRate === 0) {
-      derivative = (monthlyPayment * totalPayments * totalPayments) / 2;
-    } else {
-      const factor1 =
-        (1 - Math.pow(1 + monthlyRate, -totalPayments)) / monthlyRate;
-      const factor2 =
-        (totalPayments * Math.pow(1 + monthlyRate, -totalPayments - 1)) /
-        monthlyRate;
-      const factor3 =
-        (1 - Math.pow(1 + monthlyRate, -totalPayments)) /
-        (monthlyRate * monthlyRate);
-      derivative = (monthlyPayment * (factor2 + factor3)) / 12;
-    }
-
-    // Newton-Raphson update
-    const newInterestRate =
-      interestRate - (presentValue - loanAmount) / derivative;
+    const calculatedPayment = calculatePaymentAtRate(interestRate);
+    const difference = calculatedPayment - monthlyPayment;
 
     // Check for convergence
-    if (Math.abs(newInterestRate - interestRate) < tolerance) {
-      interestRate = newInterestRate;
+    if (Math.abs(difference) < tolerance) {
       break;
     }
 
-    interestRate = newInterestRate;
-
-    // Ensure interest rate stays positive
-    if (interestRate < 0) {
-      interestRate = 0.001;
+    // Adjust search range based on whether calculated payment is too high or low
+    if (calculatedPayment > monthlyPayment) {
+      highRate = interestRate;
+    } else {
+      lowRate = interestRate;
     }
+
+    // New midpoint
+    interestRate = (lowRate + highRate) / 2;
   }
 
   // Convert to percentage

@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import {
   InterestRateResults,
   AmortizationDataPoint,
@@ -14,32 +17,41 @@ export default function InterestRateCharts({
   results,
   amortizationData,
 }: InterestRateChartsProps) {
+  const [activeTab, setActiveTab] = useState<"payment" | "amortization">(
+    "payment"
+  );
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-6 text-gray-800">
-        Loan Visualization
-      </h2>
+      <div className="flex border-b border-gray-200 mb-6">
+        <button
+          onClick={() => setActiveTab("payment")}
+          className={`py-2 px-4 font-medium text-sm mr-4 ${
+            activeTab === "payment"
+              ? "text-primary-600 border-b-2 border-primary-500"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Payment Breakdown
+        </button>
+        <button
+          onClick={() => setActiveTab("amortization")}
+          className={`py-2 px-4 font-medium text-sm ${
+            activeTab === "amortization"
+              ? "text-primary-600 border-b-2 border-primary-500"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Loan Amortization
+        </button>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Loan Amortization Graph */}
-        <div>
-          <h3 className="text-lg font-medium text-gray-800 mb-4 text-center">
-            Loan Amortization Graph
-          </h3>
-          <div className="h-64">
-            <AmortizationChart data={amortizationData} />
-          </div>
-        </div>
-
-        {/* Payment Breakdown */}
-        <div>
-          <h3 className="text-lg font-medium text-gray-800 mb-4 text-center">
-            Payment Breakdown
-          </h3>
-          <div className="h-64">
-            <PaymentDistributionChart results={results} />
-          </div>
-        </div>
+      <div className="w-full h-96">
+        {activeTab === "payment" ? (
+          <PaymentDistributionChart results={results} />
+        ) : (
+          <AmortizationChart data={amortizationData} />
+        )}
       </div>
     </div>
   );

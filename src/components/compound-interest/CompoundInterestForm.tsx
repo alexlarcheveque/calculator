@@ -108,38 +108,6 @@ export default function CompoundInterestForm({
             ))}
           </select>
         </div>
-
-        {/* Clear Button */}
-        <div className="pt-4">
-          <button
-            type="button"
-            onClick={() => {
-              onChange("inputInterestRate", 6);
-              onChange(
-                "inputCompoundingFrequency",
-                CompoundingFrequency.MONTHLY
-              );
-              onChange(
-                "outputCompoundingFrequency",
-                CompoundingFrequency.ANNUALLY
-              );
-            }}
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-md transition-colors duration-200"
-          >
-            Clear
-          </button>
-        </div>
-      </div>
-
-      {/* Instructions */}
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-        <h3 className="text-sm font-medium text-blue-800 mb-2">How to use:</h3>
-        <ul className="text-xs text-blue-700 space-y-1">
-          <li>• Enter your interest rate as a percentage</li>
-          <li>• Select how often the input rate compounds</li>
-          <li>• Choose the output compounding frequency</li>
-          <li>• The equivalent rate will be calculated automatically</li>
-        </ul>
       </div>
     </div>
   );

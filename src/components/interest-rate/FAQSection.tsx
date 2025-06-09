@@ -566,18 +566,9 @@ export default function InterestRateFAQSection() {
   return (
     <FAQSection
       items={interestRateFAQItems}
-      title="Frequently Asked Questions About Interest Rate Calculations"
       allowMultipleOpen={false}
       includeSchema={true}
       schemaId="interest-rate-faq-schema"
-      relatedLinks={[
-        { href: "/mortgage", label: "Mortgage Calculator" },
-        { href: "/loan", label: "Loan Calculator" },
-        { href: "/auto-loan", label: "Auto Loan Calculator" },
-        { href: "/compound-interest", label: "Compound Interest Calculator" },
-        { href: "/payment", label: "Payment Calculator" },
-        { href: "/refinance", label: "Refinance Calculator" },
-      ]}
     />
   );
 }

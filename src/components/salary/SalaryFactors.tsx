@@ -73,38 +73,20 @@ const salaryFactorsSections: ContentSection[] = [
     headingLevel: "h3",
   },
   {
-    type: "callout",
-    callout: {
-      type: "info",
-      title: "Location Impact on Salary",
-      content: (
-        <div>
-          <p className="mb-2">
-            Geographic location significantly affects salary levels:
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="font-semibold mb-2">High-Cost Areas:</p>
-              <ul className="space-y-1">
-                <li>• San Francisco Bay Area: +40-60%</li>
-                <li>• New York City: +30-50%</li>
-                <li>• Washington DC: +25-40%</li>
-                <li>• Seattle: +20-35%</li>
-              </ul>
-            </div>
-            <div>
-              <p className="font-semibold mb-2">Considerations:</p>
-              <ul className="space-y-1">
-                <li>• Higher cost of living</li>
-                <li>• More career opportunities</li>
-                <li>• Remote work changing dynamics</li>
-                <li>• State tax implications</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      ),
-    },
+    type: "grid",
+    gridCols: 2,
+    gridItems: [
+      {
+        title: "High-Cost Areas",
+        description:
+          "High-cost areas typically have a higher salary premium due to the cost of living. For example, San Francisco Bay Area has a higher cost of living than other regions, but it also has a higher salary premium due to the tech industry concentration.",
+      },
+      {
+        title: "Key Considerations",
+        description:
+          "Things to consider are higher cost of living, more career opportunities, remote work changing dynamics, and state tax implications. For example, remote work is becoming more common, and states like California and New York have higher state taxes.",
+      },
+    ],
   },
   {
     type: "subheader",
@@ -139,7 +121,7 @@ const salaryFactorsSections: ContentSection[] = [
       title: "Salary Equity Considerations",
       content: (
         <div>
-          <p className="mb-2">
+          <p className="my-2">
             <strong>Important factors affecting pay equity:</strong>
           </p>
           <ul className="space-y-1 text-sm">

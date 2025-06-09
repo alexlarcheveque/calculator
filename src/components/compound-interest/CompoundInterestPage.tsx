@@ -14,13 +14,17 @@ import {
   CompoundingFrequency as CompoundingFrequencyEnum,
   CompoundInterestFormValues,
 } from "@/types/compoundInterest";
-import { calculateCompoundInterestGrowth } from "@/utils/compoundInterestCalculations";
+import {
+  calculateCompoundInterestGrowth,
+  calculateCompoundInterestConversion,
+} from "@/utils/compoundInterestCalculations";
 
 interface FormValues {
   principal: number;
   rate: number;
   time: number;
-  compoundingFrequency: CompoundingFrequencyEnum;
+  inputCompoundingFrequency: CompoundingFrequencyEnum;
+  outputCompoundingFrequency: CompoundingFrequencyEnum;
 }
 
 export default function CompoundInterestPage() {
@@ -28,37 +32,22 @@ export default function CompoundInterestPage() {
     principal: 5000,
     rate: 5,
     time: 10,
-    compoundingFrequency: CompoundingFrequencyEnum.ANNUALLY,
+    inputCompoundingFrequency: CompoundingFrequencyEnum.ANNUALLY,
+    outputCompoundingFrequency: CompoundingFrequencyEnum.MONTHLY,
   });
 
   const [results, setResults] = useState<CompoundInterestResults | null>(null);
 
   useEffect(() => {
-    if (
-      formValues.principal > 0 &&
-      formValues.rate >= 0 &&
-      formValues.time > 0
-    ) {
-      const calculatedResults = calculateCompoundInterestGrowth({
-        principal: formValues.principal,
+    if (formValues.rate >= 0) {
+      // Calculate the rate conversion
+      const conversionResults = calculateCompoundInterestConversion({
         interestRate: formValues.rate,
-        compoundingFrequency: formValues.compoundingFrequency,
-        timeYears: formValues.time,
+        inputFrequency: formValues.inputCompoundingFrequency,
+        outputFrequency: formValues.outputCompoundingFrequency,
       });
 
-      // Convert the growth data points to CompoundInterestResults
-      const lastDataPoint = calculatedResults[calculatedResults.length - 1];
-      setResults({
-        inputRate: formValues.rate,
-        inputFrequency: formValues.compoundingFrequency,
-        outputRate: formValues.rate,
-        outputFrequency: formValues.compoundingFrequency,
-        effectiveAnnualRate:
-          ((lastDataPoint.totalValue / formValues.principal) **
-            (1 / formValues.time) -
-            1) *
-          100,
-      });
+      setResults(conversionResults);
     } else {
       setResults(null);
     }
@@ -68,14 +57,30 @@ export default function CompoundInterestPage() {
     field: string,
     value: number | CompoundingFrequencyEnum
   ) => {
-    setFormValues((prev) => ({ ...prev, [field]: value }));
+    // Map form field names to state properties
+    if (field === "inputInterestRate") {
+      setFormValues((prev) => ({ ...prev, rate: value as number }));
+    } else if (field === "inputCompoundingFrequency") {
+      setFormValues((prev) => ({
+        ...prev,
+        inputCompoundingFrequency: value as CompoundingFrequencyEnum,
+      }));
+    } else if (field === "outputCompoundingFrequency") {
+      setFormValues((prev) => ({
+        ...prev,
+        outputCompoundingFrequency: value as CompoundingFrequencyEnum,
+      }));
+    } else {
+      // Fallback for other fields
+      setFormValues((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   // Convert FormValues to CompoundInterestFormValues
   const compoundInterestFormValues: CompoundInterestFormValues = {
     inputInterestRate: formValues.rate,
-    inputCompoundingFrequency: formValues.compoundingFrequency,
-    outputCompoundingFrequency: formValues.compoundingFrequency,
+    inputCompoundingFrequency: formValues.inputCompoundingFrequency,
+    outputCompoundingFrequency: formValues.outputCompoundingFrequency,
   };
 
   return (
@@ -91,33 +96,7 @@ export default function CompoundInterestPage() {
 
         {/* Results */}
         <div className="lg:col-span-8 space-y-8">
-          {results && (
-            <>
-              <CompoundInterestSummary results={results} />
-              <CompoundInterestChart
-                data={calculateCompoundInterestGrowth({
-                  principal: formValues.principal,
-                  interestRate: formValues.rate,
-                  compoundingFrequency: formValues.compoundingFrequency,
-                  timeYears: formValues.time,
-                })}
-                title="Compound Interest Growth"
-              />
-
-              {/* Effective Annual Rate display */}
-              <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                  Interest Rate Information
-                </h3>
-                <div className="text-sm text-gray-600">
-                  Effective Annual Rate (APY):{" "}
-                  <span className="font-semibold text-blue-600">
-                    {results.effectiveAnnualRate.toFixed(5)}%
-                  </span>
-                </div>
-              </div>
-            </>
-          )}
+          {results && <CompoundInterestSummary results={results} />}
 
           {!results && (
             <p className="text-center text-gray-500 lg:mt-20">
