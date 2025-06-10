@@ -42,19 +42,6 @@ export default function StateTaxTable() {
           </tbody>
         </table>
       </div>
-
-      <div className="mt-4 text-sm text-gray-600">
-        <p className="mb-2">
-          <strong>Note:</strong> Sales tax rates vary by state and locality. The
-          rates shown are general state sales tax rates. Local jurisdictions may
-          impose additional sales taxes.
-        </p>
-        <p>
-          States with 0% state sales tax: Alaska, Delaware, Montana, New
-          Hampshire, and Oregon. However, some local jurisdictions in these
-          states may still impose sales taxes.
-        </p>
-      </div>
     </div>
   );
 }

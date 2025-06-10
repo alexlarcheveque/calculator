@@ -6,7 +6,7 @@ import FAQSection, { FAQItem } from "../ui/FAQSection";
 const salesTaxFAQItems: FAQItem[] = [
   {
     id: "what-is-sales-tax",
-    question: "What is sales tax and how does it work?",
+    question: "What is sales tax and how does it work in 2025?",
     answer: (
       <>
         <p className="mb-2">
@@ -15,20 +15,25 @@ const salesTaxFAQItems: FAQItem[] = [
           point of purchase and remitted to the government.
         </p>
         <p className="mb-2">
-          <strong>Key characteristics:</strong>
+          <strong>Key characteristics in 2025:</strong>
         </p>
         <ul className="list-disc list-inside space-y-1 text-sm">
           <li>Applied only at the final point of sale to consumers</li>
           <li>Collected by businesses on behalf of government</li>
-          <li>Rates vary by state and local jurisdiction</li>
-          <li>Generally applies to tangible goods, some services</li>
+          <li>
+            Rates vary by state and local jurisdiction (0% to 13.43% in 2025)
+          </li>
+          <li>
+            Generally applies to tangible goods, many services, and digital
+            products
+          </li>
         </ul>
       </>
     ),
   },
   {
     id: "how-calculate-sales-tax",
-    question: "How do I calculate sales tax on a purchase?",
+    question: "How do I calculate sales tax on a purchase in 2025?",
     answer: (
       <>
         <p className="mb-2">
@@ -36,32 +41,32 @@ const salesTaxFAQItems: FAQItem[] = [
           Rate
         </p>
         <p className="mb-2">
-          <strong>Example calculations:</strong>
+          <strong>Example calculations with 2025 rates:</strong>
         </p>
         <ul className="list-disc list-inside space-y-1 text-sm mb-3">
-          <li>$100 item at 6.5% rate = $100 × 0.065 = $6.50 tax</li>
-          <li>Total with tax = $100 + $6.50 = $106.50</li>
+          <li>$100 item at 8.25% rate = $100 × 0.0825 = $8.25 tax</li>
+          <li>Total with tax = $100 + $8.25 = $108.25</li>
         </ul>
         <p className="mb-2">
           <strong>To find pre-tax price:</strong> Pre-tax Price = Total Price ÷
           (1 + Tax Rate)
         </p>
         <p className="text-sm">
-          Example: $106.50 total ÷ 1.065 = $100 pre-tax price
+          Example: $108.25 total ÷ 1.0825 = $100 pre-tax price
         </p>
       </>
     ),
   },
   {
     id: "states-without-sales-tax",
-    question: "Which states don't have sales tax?",
+    question: "Which states don't have sales tax in 2025?",
     answer: (
       <>
-        <p className="mb-2">Five states have no statewide sales tax:</p>
+        <p className="mb-2">Five states have no statewide sales tax in 2025:</p>
         <ul className="list-disc list-inside space-y-1 text-sm mb-3">
           <li>
             <strong>Alaska:</strong> No state sales tax, but local taxes up to
-            7.5%
+            9.5%
           </li>
           <li>
             <strong>Delaware:</strong> No state or local sales tax
@@ -79,7 +84,7 @@ const salesTaxFAQItems: FAQItem[] = [
         </ul>
         <p>
           Even in no-sales-tax states, you may still pay sales tax on online
-          purchases from out-of-state retailers.
+          purchases from out-of-state retailers due to economic nexus laws.
         </p>
       </>
     ),
@@ -96,7 +101,7 @@ const salesTaxFAQItems: FAQItem[] = [
           <li>Applied only at final point of sale</li>
           <li>Hidden from consumer until purchase</li>
           <li>Collected by retailer</li>
-          <li>Rates vary dramatically by location</li>
+          <li>Rates vary dramatically by location (0% to 13.43% in 2025)</li>
         </ul>
         <p className="mb-2">
           <strong>VAT (Value-Added Tax - Used in 160+ countries):</strong>
@@ -104,43 +109,15 @@ const salesTaxFAQItems: FAQItem[] = [
         <ul className="list-disc list-inside space-y-1 text-sm">
           <li>Applied at each stage of production/distribution</li>
           <li>Included in advertised prices</li>
-          <li>More uniform rates nationwide</li>
+          <li>More uniform rates nationwide (typically 15-25%)</li>
           <li>Businesses can reclaim VAT on inputs</li>
         </ul>
       </>
     ),
   },
   {
-    id: "sales-tax-deduction-income-tax",
-    question: "Can I deduct sales tax on my federal income tax return?",
-    answer: (
-      <>
-        <p className="mb-2">
-          Yes, but only if you itemize deductions. You can choose to deduct
-          either:
-        </p>
-        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
-          <li>
-            <strong>State and local income taxes, OR</strong>
-          </li>
-          <li>
-            <strong>State and local sales taxes</strong>
-          </li>
-        </ul>
-        <p className="mb-2">
-          <strong>When sales tax deduction makes sense:</strong>
-        </p>
-        <ul className="list-disc list-inside space-y-1 text-sm">
-          <li>You live in a state with no income tax</li>
-          <li>You made large purchases (car, boat, home improvements)</li>
-          <li>You can document all sales tax paid throughout the year</li>
-        </ul>
-      </>
-    ),
-  },
-  {
     id: "why-sales-tax-rates-vary",
-    question: "Why do sales tax rates vary so much between locations?",
+    question: "Why do sales tax rates vary so much between locations in 2025?",
     answer: (
       <>
         <p className="mb-2">
@@ -150,149 +127,128 @@ const salesTaxFAQItems: FAQItem[] = [
         <ul className="list-disc list-inside space-y-1 text-sm mb-3">
           <li>
             <strong>State governments:</strong> Set base sales tax rates
-            (0-7.25%)
+            (0-7.25% in 2025)
           </li>
           <li>
-            <strong>Counties:</strong> Can add their own sales tax
+            <strong>Counties:</strong> Can add their own sales tax (up to 5%+)
           </li>
           <li>
             <strong>Cities:</strong> May impose additional municipal sales tax
+            (up to 4%+)
           </li>
           <li>
             <strong>Special districts:</strong> Transportation, schools may add
-            taxes
+            taxes (up to 2%+)
           </li>
         </ul>
         <p className="mb-2">
-          <strong>Highest combined rates (2024):</strong>
+          <strong>Highest combined rates in 2025:</strong>
         </p>
         <ul className="list-disc list-inside space-y-1 text-sm">
-          <li>Tennessee: Up to 9.75%</li>
-          <li>Louisiana: Up to 11.45%</li>
-          <li>Arkansas: Up to 11.25%</li>
+          <li>Arizona: Up to 13.43%</li>
+          <li>Alabama: Up to 13.00%</li>
+          <li>Arkansas: Up to 12.625%</li>
+          <li>Louisiana: Up to 12.00%</li>
         </ul>
       </>
     ),
   },
   {
-    id: "sales-tax-exemptions",
-    question: "What items are typically exempt from sales tax?",
+    id: "online-sales-tax-2025",
+    question: "How does online sales tax work in 2025?",
     answer: (
       <>
-        <p className="mb-2">Common sales tax exemptions (varies by state):</p>
+        <p className="mb-2">
+          Online sales tax has evolved significantly since the 2018 Supreme
+          Court Wayfair decision:
+        </p>
         <ul className="list-disc list-inside space-y-1 text-sm mb-3">
           <li>
-            <strong>Food:</strong> Groceries often exempt, restaurants usually
-            taxed
+            <strong>Economic nexus:</strong> Most states require tax collection
+            if you exceed $100,000 in sales or 200 transactions annually
           </li>
           <li>
-            <strong>Prescription medications:</strong> Usually exempt
+            <strong>Destination-based taxation:</strong> Tax rates based on
+            where customer receives the product
           </li>
           <li>
-            <strong>Medical devices:</strong> Often exempt with prescription
+            <strong>Marketplace facilitator laws:</strong> Amazon, eBay, etc.
+            collect tax for third-party sellers
           </li>
           <li>
-            <strong>Clothing:</strong> Some states exempt basic clothing
+            <strong>Digital products:</strong> Many states now tax software,
+            streaming services, and digital downloads
+          </li>
+        </ul>
+        <p className="text-sm">
+          As of 2025, over 45 states require out-of-state sellers to collect
+          sales tax when they meet economic nexus thresholds.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "sales-tax-exemptions-2025",
+    question: "What items are exempt from sales tax in 2025?",
+    answer: (
+      <>
+        <p className="mb-2">
+          Common sales tax exemptions vary by state but typically include:
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
+          <li>
+            <strong>Groceries:</strong> Most states exempt unprepared food
+            (Kansas reduced food tax to 0% in 2025)
           </li>
           <li>
-            <strong>Services:</strong> Many professional services exempt
+            <strong>Prescription medications:</strong> Exempt in virtually all
+            states
+          </li>
+          <li>
+            <strong>Clothing:</strong> Some states exempt basic clothing items
+          </li>
+          <li>
+            <strong>Business purchases:</strong> Items for resale with valid
+            certificates
+          </li>
+          <li>
+            <strong>Manufacturing equipment:</strong> Often exempt in industrial
+            states
           </li>
         </ul>
         <p className="mb-2">
-          <strong>Sales tax holidays:</strong> Many states offer temporary
-          exemptions for:
+          <strong>2025 updates:</strong>
         </p>
         <ul className="list-disc list-inside space-y-1 text-sm">
-          <li>Back-to-school items (clothing, supplies)</li>
-          <li>Energy-efficient appliances</li>
-          <li>Emergency preparedness supplies</li>
+          <li>Nevada: Diapers (adult and children) now exempt</li>
+          <li>Louisiana: Digital products now taxable</li>
         </ul>
       </>
     ),
   },
   {
-    id: "online-purchases-sales-tax",
-    question: "How does sales tax work for online purchases?",
+    id: "business-sales-tax-compliance",
+    question: "What are business sales tax compliance requirements in 2025?",
     answer: (
       <>
         <p className="mb-2">
-          <strong>Current rules (post-2018 Wayfair decision):</strong>
+          <strong>Key compliance requirements for businesses:</strong>
         </p>
         <ul className="list-disc list-inside space-y-1 text-sm mb-3">
-          <li>Sales tax based on delivery address, not seller location</li>
-          <li>Major retailers collect sales tax automatically</li>
-          <li>States can require collection from out-of-state sellers</li>
-          <li>Economic nexus thresholds vary by state</li>
+          <li>Register for sales tax permits in all nexus states</li>
+          <li>Collect appropriate tax rates based on customer location</li>
+          <li>File returns monthly, quarterly, or annually based on volume</li>
+          <li>Maintain detailed transaction records for 3-7 years</li>
+          <li>Monitor economic nexus thresholds across all states</li>
         </ul>
         <p className="mb-2">
-          <strong>Use tax responsibility:</strong>
+          <strong>Technology solutions in 2025:</strong>
         </p>
         <ul className="list-disc list-inside space-y-1 text-sm">
-          <li>If sales tax not collected, you may owe "use tax"</li>
-          <li>Report on state income tax return</li>
-          <li>Same rate as local sales tax</li>
-          <li>Many states have voluntary compliance programs</li>
-        </ul>
-      </>
-    ),
-  },
-  {
-    id: "business-sales-tax-collection",
-    question: "How do businesses handle sales tax collection and remittance?",
-    answer: (
-      <>
-        <p className="mb-2">
-          <strong>Business responsibilities:</strong>
-        </p>
-        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
-          <li>Register for sales tax permit in each state where required</li>
-          <li>Collect appropriate tax rate based on delivery location</li>
-          <li>File regular returns (monthly, quarterly, or annually)</li>
-          <li>Remit collected taxes by due dates</li>
-        </ul>
-        <p className="mb-2">
-          <strong>Economic nexus thresholds (varies by state):</strong>
-        </p>
-        <ul className="list-disc list-inside space-y-1 text-sm">
-          <li>$100,000+ in sales, OR</li>
-          <li>200+ separate transactions</li>
-          <li>Some states use only sales threshold</li>
-        </ul>
-      </>
-    ),
-  },
-  {
-    id: "sales-tax-planning-strategies",
-    question: "Are there strategies to minimize sales tax legally?",
-    answer: (
-      <>
-        <p className="mb-2">
-          <strong>Legal strategies to reduce sales tax:</strong>
-        </p>
-        <ul className="list-disc list-inside space-y-1 text-sm mb-3">
-          <li>
-            <strong>Timing:</strong> Make large purchases during sales tax
-            holidays
-          </li>
-          <li>
-            <strong>Location:</strong> Buy in lower-tax jurisdictions (if
-            practical)
-          </li>
-          <li>
-            <strong>Business purchases:</strong> Obtain resale certificates for
-            inventory
-          </li>
-          <li>
-            <strong>Exemptions:</strong> Understand what qualifies in your state
-          </li>
-        </ul>
-        <p className="mb-2">
-          <strong>For businesses:</strong>
-        </p>
-        <ul className="list-disc list-inside space-y-1 text-sm">
-          <li>Use proper exemption certificates</li>
-          <li>Consider business structure for purchases</li>
-          <li>Track exemptions and deductions carefully</li>
+          <li>Automated tax calculation software</li>
+          <li>Real-time rate updates and nexus monitoring</li>
+          <li>Integration with e-commerce platforms</li>
+          <li>Streamlined filing and remittance systems</li>
         </ul>
       </>
     ),
@@ -302,15 +258,8 @@ const salesTaxFAQItems: FAQItem[] = [
 export default function SalesTaxFAQSection() {
   return (
     <FAQSection
+      title="2025 Sales Tax Frequently Asked Questions"
       items={salesTaxFAQItems}
-      title="Frequently Asked Questions About Sales Tax"
-      allowMultipleOpen={false}
-      includeSchema={true}
-      schemaId="sales-tax-calculator-faq-schema"
-      relatedLinks={[
-        { href: "/income-tax", label: "Income Tax Calculator" },
-        { href: "/salary", label: "Salary Calculator" },
-      ]}
     />
   );
 }

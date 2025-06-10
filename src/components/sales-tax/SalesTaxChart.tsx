@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useState } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -30,9 +30,26 @@ interface SalesTaxChartProps {
 }
 
 export default function SalesTaxChart({ results }: SalesTaxChartProps) {
+  const [activeTab, setActiveTab] = useState<"breakdown" | "comparison">(
+    "breakdown"
+  );
+
+  // Calculate percentages for legend labels
+  const beforeTaxPercentage =
+    results.afterTaxPrice > 0
+      ? ((results.beforeTaxPrice / results.afterTaxPrice) * 100).toFixed(1)
+      : "0.0";
+  const salesTaxPercentage =
+    results.afterTaxPrice > 0
+      ? ((results.salesTaxAmount / results.afterTaxPrice) * 100).toFixed(1)
+      : "0.0";
+
   // Doughnut chart data for tax breakdown
   const doughnutData = {
-    labels: ["Before Tax Price", "Sales Tax"],
+    labels: [
+      `Before Tax Price (${beforeTaxPercentage}%)`,
+      `Sales Tax (${salesTaxPercentage}%)`,
+    ],
     datasets: [
       {
         data: [results.beforeTaxPrice, results.salesTaxAmount],
@@ -49,19 +66,22 @@ export default function SalesTaxChart({ results }: SalesTaxChartProps) {
     plugins: {
       legend: {
         position: "bottom" as const,
+        labels: {
+          padding: 20,
+          usePointStyle: true,
+          font: {
+            size: 12,
+          },
+        },
       },
       title: {
-        display: true,
-        text: "Price Breakdown",
-        font: {
-          size: 16,
-          weight: "bold" as const,
-        },
+        display: false,
       },
       tooltip: {
         callbacks: {
           label: function (context: any) {
-            const label = context.label || "";
+            const originalLabels = ["Before Tax Price", "Sales Tax"];
+            const label = originalLabels[context.dataIndex] || "";
             const value = context.parsed;
             const percentage = ((value / results.afterTaxPrice) * 100).toFixed(
               1
@@ -73,54 +93,105 @@ export default function SalesTaxChart({ results }: SalesTaxChartProps) {
     },
   };
 
-  // Bar chart data for comparison
-  const barData = {
-    labels: ["Before Tax", "Sales Tax", "After Tax"],
+  // Rate comparison data - common state/city rates
+  const userRatePercent = results.salesTaxRate; // Already in percentage form
+
+  // Create array of all rates and sort them
+  const allRates = [
+    { name: "Your State's Rate", rate: userRatePercent, isUser: true },
+    { name: "Colorado", rate: 2.9, isUser: false },
+    { name: "Wyoming", rate: 4, isUser: false },
+    { name: "Utah", rate: 4.7, isUser: false },
+    { name: "Nevada", rate: 4.6, isUser: false },
+    { name: "Louisiana", rate: 5.0, isUser: false },
+    { name: "Wisconsin", rate: 5.7, isUser: false },
+    { name: "Virginia", rate: 5.77, isUser: false },
+    { name: "North Carolina", rate: 7.0, isUser: false },
+    { name: "Texas", rate: 8.2, isUser: false },
+    { name: "Nevada", rate: 8.24, isUser: false },
+    { name: "Illinois", rate: 8.86, isUser: false },
+    { name: "Tennessee", rate: 9.55, isUser: false },
+    { name: "Washington", rate: 9.38, isUser: false },
+    { name: "Louisiana", rate: 10.11, isUser: false },
+  ].sort((a, b) => a.rate - b.rate);
+
+  // Generate chart data from sorted array
+  const sortedLabels = allRates.map((item) => item.name);
+  const sortedData = allRates.map((item) => item.rate);
+  const sortedBackgroundColors = allRates.map((item) => {
+    if (item.isUser) {
+      return "#EF4444"; // User's rate in red
+    } else {
+      return "#3B82F6"; // All other states in blue
+    }
+  });
+
+  const sortedBorderColors = allRates.map((item) => {
+    if (item.isUser) {
+      return "#DC2626"; // User's rate border
+    } else {
+      return "#2563EB"; // All other states border
+    }
+  });
+
+  const rateComparisonData = {
+    labels: sortedLabels,
     datasets: [
       {
-        label: "Amount",
-        data: [
-          results.beforeTaxPrice,
-          results.salesTaxAmount,
-          results.afterTaxPrice,
-        ],
-        backgroundColor: ["#3B82F6", "#EF4444", "#10B981"],
-        borderColor: ["#2563EB", "#DC2626", "#059669"],
+        label: "Sales Tax Rate (%)",
+        data: sortedData,
+        backgroundColor: sortedBackgroundColors,
+        borderColor: sortedBorderColors,
         borderWidth: 2,
+        borderRadius: 4,
+        borderSkipped: false,
       },
     ],
   };
 
-  const barOptions = {
+  const rateComparisonOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    indexAxis: "y" as const,
     plugins: {
       legend: {
         display: false,
       },
       title: {
-        display: true,
-        text: "Sales Tax Comparison",
-        font: {
-          size: 16,
-          weight: "bold" as const,
-        },
+        display: false,
       },
       tooltip: {
         callbacks: {
           label: function (context: any) {
-            return `${context.label}: ${formatCurrency(context.parsed.y)}`;
+            const rate = context.parsed.x;
+            return `${context.label}: ${rate.toFixed(2)}%`;
           },
         },
       },
     },
     scales: {
-      y: {
+      x: {
         beginAtZero: true,
+        max: 12,
+        grid: {
+          color: "rgba(0, 0, 0, 0.1)",
+        },
         ticks: {
           callback: function (value: any) {
-            return formatCurrency(value);
+            return `${value}%`;
           },
+        },
+        title: {
+          display: true,
+          text: "Tax Rate (%)",
+          font: {
+            size: 12,
+          },
+        },
+      },
+      y: {
+        grid: {
+          display: false,
         },
       },
     },
@@ -130,10 +201,7 @@ export default function SalesTaxChart({ results }: SalesTaxChartProps) {
   if (results.beforeTaxPrice <= 0 && results.afterTaxPrice <= 0) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-6 text-gray-800">
-          Visual Breakdown
-        </h2>
-        <div className="flex items-center justify-center h-64 text-gray-500">
+        <div className="flex items-center justify-center h-96 text-gray-500">
           <p>Enter values to see visual breakdown</p>
         </div>
       </div>
@@ -142,47 +210,41 @@ export default function SalesTaxChart({ results }: SalesTaxChartProps) {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-6 text-gray-800">
-        Visual Breakdown
-      </h2>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Doughnut Chart */}
-        <div className="h-64">
-          <Doughnut data={doughnutData} options={doughnutOptions} />
-        </div>
-
-        {/* Bar Chart */}
-        <div className="h-64">
-          <Bar data={barData} options={barOptions} />
-        </div>
+      <div className="flex border-b border-gray-200 mb-6">
+        <button
+          onClick={() => setActiveTab("breakdown")}
+          className={`py-2 px-4 font-medium text-sm mr-4 ${
+            activeTab === "breakdown"
+              ? "text-primary-600 border-b-2 border-primary-500"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+          aria-label="View price breakdown chart"
+        >
+          Price Breakdown
+        </button>
+        <button
+          onClick={() => setActiveTab("comparison")}
+          className={`py-2 px-4 font-medium text-sm ${
+            activeTab === "comparison"
+              ? "text-primary-600 border-b-2 border-primary-500"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+          aria-label="View rate comparison chart"
+        >
+          Rate Comparison
+        </button>
       </div>
 
-      {/* Chart Summary */}
-      <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-        <h3 className="text-sm font-medium text-gray-700 mb-2">
-          Chart Summary
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-            <span className="text-gray-600">
-              Before Tax: {formatCurrency(results.beforeTaxPrice)}
-            </span>
+      <div className="w-full h-96">
+        {activeTab === "breakdown" ? (
+          <div className="h-full flex items-center justify-center">
+            <div className="w-full max-w-md h-full">
+              <Doughnut data={doughnutData} options={doughnutOptions} />
+            </div>
           </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-            <span className="text-gray-600">
-              Tax: {formatCurrency(results.salesTaxAmount)}
-            </span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-            <span className="text-gray-600">
-              Total: {formatCurrency(results.afterTaxPrice)}
-            </span>
-          </div>
-        </div>
+        ) : (
+          <Bar data={rateComparisonData} options={rateComparisonOptions} />
+        )}
       </div>
     </div>
   );
