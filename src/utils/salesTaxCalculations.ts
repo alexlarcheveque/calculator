@@ -102,33 +102,33 @@ export function formatInputWithCommas(value: string): string {
   return parts.join(".");
 }
 
-// State tax data based on the HTML reference
+// State tax data updated for 2025 - based on the latest Tax Foundation and official state data
 export const stateTaxData: StateTaxInfo[] = [
   {
     state: "Alabama",
     generalStateSalesTax: "4%",
-    maxTaxRateWithLocal: "13.50%",
+    maxTaxRateWithLocal: "13.00%",
   },
-  { state: "Alaska", generalStateSalesTax: "0%", maxTaxRateWithLocal: "7%" },
+  { state: "Alaska", generalStateSalesTax: "0%", maxTaxRateWithLocal: "9.50%" },
   {
     state: "Arizona",
     generalStateSalesTax: "5.60%",
-    maxTaxRateWithLocal: "10.725%",
+    maxTaxRateWithLocal: "13.43%",
   },
   {
     state: "Arkansas",
     generalStateSalesTax: "6.50%",
-    maxTaxRateWithLocal: "11.625%",
+    maxTaxRateWithLocal: "12.625%",
   },
   {
     state: "California",
     generalStateSalesTax: "7.25%",
-    maxTaxRateWithLocal: "10.50%",
+    maxTaxRateWithLocal: "10.25%",
   },
   {
     state: "Colorado",
     generalStateSalesTax: "2.90%",
-    maxTaxRateWithLocal: "10%",
+    maxTaxRateWithLocal: "11.20%",
   },
   {
     state: "Connecticut",
@@ -144,33 +144,33 @@ export const stateTaxData: StateTaxInfo[] = [
   {
     state: "Florida",
     generalStateSalesTax: "6%",
-    maxTaxRateWithLocal: "7.50%",
+    maxTaxRateWithLocal: "8.00%",
   },
-  { state: "Georgia", generalStateSalesTax: "4%", maxTaxRateWithLocal: "8%" },
+  { state: "Georgia", generalStateSalesTax: "4%", maxTaxRateWithLocal: "9%" },
   { state: "Guam", generalStateSalesTax: "4%", maxTaxRateWithLocal: "4%" },
   {
     state: "Hawaii",
-    generalStateSalesTax: "4.166%",
-    maxTaxRateWithLocal: "4.712%",
+    generalStateSalesTax: "4%",
+    maxTaxRateWithLocal: "4.50%",
   },
-  { state: "Idaho", generalStateSalesTax: "6%", maxTaxRateWithLocal: "8.50%" },
+  { state: "Idaho", generalStateSalesTax: "6%", maxTaxRateWithLocal: "9%" },
   {
     state: "Illinois",
     generalStateSalesTax: "6.25%",
-    maxTaxRateWithLocal: "10.25%",
+    maxTaxRateWithLocal: "11%",
   },
   { state: "Indiana", generalStateSalesTax: "7%", maxTaxRateWithLocal: "7%" },
-  { state: "Iowa", generalStateSalesTax: "6%", maxTaxRateWithLocal: "7%" },
+  { state: "Iowa", generalStateSalesTax: "6%", maxTaxRateWithLocal: "8%" },
   {
     state: "Kansas",
     generalStateSalesTax: "6.50%",
-    maxTaxRateWithLocal: "11.60%",
+    maxTaxRateWithLocal: "10.60%",
   },
   { state: "Kentucky", generalStateSalesTax: "6%", maxTaxRateWithLocal: "6%" },
   {
     state: "Louisiana",
-    generalStateSalesTax: "4.45%",
-    maxTaxRateWithLocal: "11.45%",
+    generalStateSalesTax: "5.00%",
+    maxTaxRateWithLocal: "12.00%",
   },
   {
     state: "Maine",
@@ -187,17 +187,17 @@ export const stateTaxData: StateTaxInfo[] = [
   {
     state: "Minnesota",
     generalStateSalesTax: "6.875%",
-    maxTaxRateWithLocal: "7.875%",
+    maxTaxRateWithLocal: "8.375%",
   },
   {
     state: "Mississippi",
     generalStateSalesTax: "7%",
-    maxTaxRateWithLocal: "7.25%",
+    maxTaxRateWithLocal: "8%",
   },
   {
     state: "Missouri",
     generalStateSalesTax: "4.225%",
-    maxTaxRateWithLocal: "10.85%",
+    maxTaxRateWithLocal: "10.10%",
   },
   { state: "Montana", generalStateSalesTax: "0%", maxTaxRateWithLocal: "0%" },
   {
@@ -207,8 +207,8 @@ export const stateTaxData: StateTaxInfo[] = [
   },
   {
     state: "Nevada",
-    generalStateSalesTax: "6.85%",
-    maxTaxRateWithLocal: "8.375%",
+    generalStateSalesTax: "4.60%",
+    maxTaxRateWithLocal: "8.265%",
   },
   {
     state: "New Hampshire",
@@ -218,12 +218,12 @@ export const stateTaxData: StateTaxInfo[] = [
   {
     state: "New Jersey",
     generalStateSalesTax: "6.625%",
-    maxTaxRateWithLocal: "12.625%",
+    maxTaxRateWithLocal: "6.625%",
   },
   {
     state: "New Mexico",
     generalStateSalesTax: "5.125%",
-    maxTaxRateWithLocal: "8.688%",
+    maxTaxRateWithLocal: "9.0625%",
   },
   {
     state: "New York",
@@ -238,13 +238,13 @@ export const stateTaxData: StateTaxInfo[] = [
   {
     state: "North Dakota",
     generalStateSalesTax: "5%",
-    maxTaxRateWithLocal: "8%",
+    maxTaxRateWithLocal: "8.50%",
   },
   { state: "Ohio", generalStateSalesTax: "5.75%", maxTaxRateWithLocal: "8%" },
   {
     state: "Oklahoma",
     generalStateSalesTax: "4.50%",
-    maxTaxRateWithLocal: "11%",
+    maxTaxRateWithLocal: "11.50%",
   },
   { state: "Oregon", generalStateSalesTax: "0%", maxTaxRateWithLocal: "0%" },
   {
@@ -269,24 +269,28 @@ export const stateTaxData: StateTaxInfo[] = [
   },
   {
     state: "South Dakota",
-    generalStateSalesTax: "4%",
-    maxTaxRateWithLocal: "6%",
+    generalStateSalesTax: "4.50%",
+    maxTaxRateWithLocal: "6.50%",
   },
   {
     state: "Tennessee",
     generalStateSalesTax: "7%",
-    maxTaxRateWithLocal: "9.75%",
+    maxTaxRateWithLocal: "10%",
   },
   {
     state: "Texas",
     generalStateSalesTax: "6.25%",
     maxTaxRateWithLocal: "8.25%",
   },
-  { state: "Utah", generalStateSalesTax: "6.1%", maxTaxRateWithLocal: "8.35%" },
+  {
+    state: "Utah",
+    generalStateSalesTax: "4.70%",
+    maxTaxRateWithLocal: "8.70%",
+  },
   { state: "Vermont", generalStateSalesTax: "6%", maxTaxRateWithLocal: "7%" },
   {
     state: "Virginia",
-    generalStateSalesTax: "5.30%",
+    generalStateSalesTax: "4.30%",
     maxTaxRateWithLocal: "7%",
   },
   {
@@ -302,7 +306,7 @@ export const stateTaxData: StateTaxInfo[] = [
   {
     state: "Wisconsin",
     generalStateSalesTax: "5%",
-    maxTaxRateWithLocal: "6.9%",
+    maxTaxRateWithLocal: "7%",
   },
   { state: "Wyoming", generalStateSalesTax: "4%", maxTaxRateWithLocal: "6%" },
 ];

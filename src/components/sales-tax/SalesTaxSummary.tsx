@@ -12,68 +12,50 @@ export default function SalesTaxSummary({ results }: SalesTaxSummaryProps) {
         Calculation Results
       </h2>
 
-      {/* Main Results Section */}
+      {/* Price Breakdown Section */}
       <div className="mb-6">
         <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
-          Sales Tax Breakdown
+          Price Breakdown
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Before Tax Price */}
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div className="text-sm text-gray-600">Before Tax Price</div>
-            <div className="text-2xl font-bold text-gray-800">
-              {formatCurrency(results.beforeTaxPrice)}
+        <div className="flex items-center justify-center bg-gray-50 p-8 rounded-lg border border-gray-100">
+          <div className="flex items-center space-x-8 text-2xl">
+            <div className="text-center">
+              <div className="font-bold text-gray-800 text-3xl">
+                {formatCurrency(results.beforeTaxPrice)}
+              </div>
+              <div className="text-sm text-gray-500 mt-2">Before Tax</div>
             </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Original price without tax
-            </div>
-          </div>
 
-          {/* Sales Tax Amount */}
-          <div className="bg-primary-50 p-4 rounded-lg border border-primary-100">
-            <div className="text-sm text-gray-600">Sales Tax Amount</div>
-            <div className="text-2xl font-bold text-gray-800">
-              {formatCurrency(results.salesTaxAmount)}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Tax added to purchase
-            </div>
-          </div>
+            <div className="text-4xl font-bold text-gray-600">+</div>
 
-          {/* After Tax Price */}
-          <div className="bg-green-50 p-4 rounded-lg border border-green-100">
-            <div className="text-sm text-gray-600">After Tax Price</div>
-            <div className="text-2xl font-bold text-gray-800">
-              {formatCurrency(results.afterTaxPrice)}
+            <div className="text-center">
+              <div className="font-bold text-blue-600 text-3xl">
+                {formatCurrency(results.salesTaxAmount)}
+              </div>
+              <div className="text-sm text-gray-500 mt-2">Sales Tax</div>
             </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Total amount to pay
+
+            <div className="text-4xl font-bold text-gray-600">=</div>
+
+            <div className="text-center">
+              <div className="font-bold text-green-600 text-4xl">
+                {formatCurrency(results.afterTaxPrice)}
+              </div>
+              <div className="text-sm text-gray-500 mt-2">Total Price</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Tax Rate Information */}
-      <div className="mb-6">
+      {/* Tax Analysis Section */}
+      <div>
         <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
-          Tax Rate Information
+          Tax Analysis
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-            <div className="text-sm text-gray-600">Sales Tax Rate</div>
-            <div className="text-2xl font-bold text-gray-800">
-              {formatPercentage(results.salesTaxRate)}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Percentage applied to purchase
-            </div>
-          </div>
-
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div className="text-sm text-gray-600">
-              Tax as Percentage of Total
-            </div>
-            <div className="text-2xl font-bold text-gray-800">
+            <div className="text-sm text-gray-600">Tax Portion of Total</div>
+            <div className="text-lg font-bold text-gray-800">
               {results.afterTaxPrice > 0
                 ? formatPercentage(
                     (results.salesTaxAmount / results.afterTaxPrice) * 100
@@ -81,70 +63,21 @@ export default function SalesTaxSummary({ results }: SalesTaxSummaryProps) {
                 : "0.00%"}
             </div>
             <div className="text-xs text-gray-500 mt-1">
-              Tax portion of final price
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Additional Information */}
-      <div>
-        <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
-          Additional Information
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div className="text-sm text-gray-600">Effective Tax Rate</div>
-            <div className="text-lg font-bold text-gray-800">
-              {results.beforeTaxPrice > 0
-                ? formatPercentage(
-                    (results.salesTaxAmount / results.beforeTaxPrice) * 100
-                  )
-                : "0.00%"}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Tax as percentage of pre-tax price
+              How much of your total goes to tax
             </div>
           </div>
 
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div className="text-sm text-gray-600">Tax Per Dollar</div>
+            <div className="text-sm text-gray-600">Tax Per $100</div>
             <div className="text-lg font-bold text-gray-800">
-              {results.salesTaxRate > 0
-                ? formatCurrency(results.salesTaxRate / 100)
-                : formatCurrency(0)}
+              {formatCurrency(results.salesTaxRate)}
             </div>
             <div className="text-xs text-gray-500 mt-1">
-              Tax amount per $1.00 spent
+              Tax amount on $100 purchase
             </div>
           </div>
         </div>
       </div>
-
-      {/* Quick Comparison */}
-      {results.beforeTaxPrice > 0 && results.salesTaxRate > 0 && (
-        <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <h4 className="text-sm font-medium text-yellow-800 mb-2">
-            Quick Comparison
-          </h4>
-          <div className="text-sm text-yellow-700">
-            <p>
-              • For every $100 spent before tax, you pay{" "}
-              <span className="font-semibold">
-                {formatCurrency(100 + results.salesTaxRate)}
-              </span>{" "}
-              total
-            </p>
-            <p>
-              • The tax adds{" "}
-              <span className="font-semibold">
-                {formatCurrency(results.salesTaxRate)}
-              </span>{" "}
-              to every $100 purchase
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

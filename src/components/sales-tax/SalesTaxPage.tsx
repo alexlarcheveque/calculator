@@ -58,6 +58,7 @@ export default function SalesTaxPage() {
             <>
               <SalesTaxSummary results={results} />
               <SalesTaxChart results={results} />
+              <StateTaxTable />
             </>
           )}
 
@@ -69,13 +70,8 @@ export default function SalesTaxPage() {
         </div>
       </div>
 
-      {/* State Tax Table */}
-      <div className="mb-16">
-        <StateTaxTable />
-      </div>
-
       {/* Info Cards Section */}
-      <div className="space-y-8 mb-16">
+      <div className="space-y-8 mb-8">
         <SalesTaxBasics />
         <StateLocalVariations />
         <BusinessPlanning />
