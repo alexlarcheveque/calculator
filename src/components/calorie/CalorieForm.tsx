@@ -21,9 +21,14 @@ import {
 interface CalorieFormProps {
   values: CalorieFormValues;
   onChange: (name: string, value: number | string) => void;
+  onMultipleChanges?: (updates: Partial<CalorieFormValues>) => void;
 }
 
-export default function CalorieForm({ values, onChange }: CalorieFormProps) {
+export default function CalorieForm({
+  values,
+  onChange,
+  onMultipleChanges,
+}: CalorieFormProps) {
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
   const handleChange = (
@@ -34,8 +39,17 @@ export default function CalorieForm({ values, onChange }: CalorieFormProps) {
     if (type === "radio") {
       onChange(name, value);
     } else if (type === "number") {
-      const numericValue = parseFloat(value) || 0;
+      // Handle empty string to allow clearing the input
+      if (value === "") {
+        // Don't set to 0 immediately, let the input be empty
+        return;
+      } else {
+        const numericValue = parseFloat(value);
+        // Only set numeric value if it's a valid number
+        if (!isNaN(numericValue)) {
       onChange(name, numericValue);
+        }
+      }
     } else {
       onChange(name, value);
     }
@@ -60,9 +74,14 @@ export default function CalorieForm({ values, onChange }: CalorieFormProps) {
         newValues.weightLbs = convertWeightToImperial(values.weightKg);
       }
 
+      // Use bulk update if available, otherwise fall back to individual updates
+      if (onMultipleChanges) {
+        onMultipleChanges(newValues);
+      } else {
       Object.entries(newValues).forEach(([key, value]) => {
         onChange(key, value);
       });
+      }
     }
   };
 
@@ -113,7 +132,7 @@ export default function CalorieForm({ values, onChange }: CalorieFormProps) {
             type="number"
             id="age"
             name="age"
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full pl-2 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             value={values.age}
             onChange={handleChange}
             min="15"
@@ -167,7 +186,7 @@ export default function CalorieForm({ values, onChange }: CalorieFormProps) {
                     type="number"
                     id="heightFeet"
                     name="heightFeet"
-                    className="block w-full pr-12 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full pl-2 pr-12 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                     value={values.heightFeet}
                     onChange={handleChange}
                     min="3"
@@ -185,7 +204,7 @@ export default function CalorieForm({ values, onChange }: CalorieFormProps) {
                     type="number"
                     id="heightInches"
                     name="heightInches"
-                    className="block w-full pr-16 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full pl-2 pr-16 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                     value={values.heightInches}
                     onChange={handleChange}
                     min="0"
@@ -204,7 +223,7 @@ export default function CalorieForm({ values, onChange }: CalorieFormProps) {
                 type="number"
                 id="heightCm"
                 name="heightCm"
-                className="block w-full pr-8 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full pl-2 pr-8 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 value={values.heightCm}
                 onChange={handleChange}
                 min="100"
@@ -243,7 +262,7 @@ export default function CalorieForm({ values, onChange }: CalorieFormProps) {
                   ? "weightLbs"
                   : "weightKg"
               }
-              className="block w-full pr-16 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="block w-full pl-2 pr-16 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               value={
                 values.unitSystem === UnitSystem.IMPERIAL
                   ? values.weightLbs
@@ -368,8 +387,8 @@ export default function CalorieForm({ values, onChange }: CalorieFormProps) {
                       type="number"
                       id="bodyFatPercentage"
                       name="bodyFatPercentage"
-                      className="block w-full pr-8 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                      value={values.bodyFatPercentage || ""}
+                      className="block w-full pl-2 pr-8 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      value={values.bodyFatPercentage || 0}
                       onChange={handleChange}
                       min="5"
                       max="50"

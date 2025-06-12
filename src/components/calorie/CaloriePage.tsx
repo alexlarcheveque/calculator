@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import CalorieForm from "@/components/calorie/CalorieForm";
 import CalorieSummary from "@/components/calorie/CalorieSummary";
 import CalorieCharts from "@/components/calorie/CalorieCharts";
-import MacroTable from "@/components/calorie/MacroTable";
-import FoodEnergyConverter from "@/components/calorie/FoodEnergyConverter";
 import FAQSection from "@/components/calorie/FAQSection";
+import CalorieBasics from "@/components/calorie/CalorieBasics";
+import NutritionGuidelines from "@/components/calorie/NutritionGuidelines";
 import {
   calculateCalories,
   convertHeightToMetric,
@@ -21,22 +21,26 @@ import {
   UnitSystem,
   ResultUnit,
 } from "@/types/calorie";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export default function CaloriePage() {
-  const [formValues, setFormValues] = useState<CalorieFormValues>({
-    age: 25,
-    gender: Gender.MALE,
-    heightFeet: 5,
-    heightInches: 10,
-    heightCm: 178,
-    weightLbs: 165,
-    weightKg: 75,
-    activityLevel: ActivityLevel.MODERATE,
-    unitSystem: UnitSystem.IMPERIAL,
-    resultUnit: ResultUnit.CALORIES,
-    bmrFormula: BMRFormula.MIFFLIN,
-    bodyFatPercentage: 20,
-  });
+  const [formValues, setFormValues] = useLocalStorage<CalorieFormValues>(
+    "calorieFormValues",
+    {
+      age: 25,
+      gender: Gender.MALE,
+      heightFeet: 5,
+      heightInches: 10,
+      heightCm: 178,
+      weightLbs: 165,
+      weightKg: 75,
+      activityLevel: ActivityLevel.MODERATE,
+      unitSystem: UnitSystem.IMPERIAL,
+      resultUnit: ResultUnit.CALORIES,
+      bmrFormula: BMRFormula.MIFFLIN,
+      bodyFatPercentage: 20,
+    }
+  );
 
   const [results, setResults] = useState<CalorieResults | null>(null);
 
@@ -99,12 +103,23 @@ export default function CaloriePage() {
     }));
   };
 
+  const handleMultipleInputChanges = (updates: Partial<CalorieFormValues>) => {
+    setFormValues((prev) => ({
+      ...prev,
+      ...updates,
+    }));
+  };
+
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">
-          <CalorieForm values={formValues} onChange={handleInputChange} />
+          <CalorieForm
+            values={formValues}
+            onChange={handleInputChange}
+            onMultipleChanges={handleMultipleInputChanges}
+          />
         </div>
 
         {/* Results */}
@@ -118,12 +133,7 @@ export default function CaloriePage() {
               <CalorieCharts
                 results={results}
                 resultUnit={formValues.resultUnit}
-              />
-              <MacroTable
-                results={results}
-                resultUnit={formValues.resultUnit}
-                unitSystem={formValues.unitSystem}
-              />
+              />{" "}
             </>
           )}
 
@@ -135,9 +145,10 @@ export default function CaloriePage() {
         </div>
       </div>
 
-      {/* Food Energy Converter Section */}
-      <div className="mb-16">
-        <FoodEnergyConverter />
+      {/* Info Sections */}
+      <div className="space-y-8 mb-16">
+        <CalorieBasics />
+        <NutritionGuidelines />
       </div>
 
       {/* FAQ Section */}

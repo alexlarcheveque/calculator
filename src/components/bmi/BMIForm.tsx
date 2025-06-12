@@ -1,7 +1,6 @@
 "use client";
 
 import { BMIFormValues, UnitSystem, Gender } from "@/types/bmi";
-import { useState } from "react";
 
 interface BMIFormProps {
   values: BMIFormValues;
@@ -17,8 +16,14 @@ export default function BMIForm({ values, onChange }: BMIFormProps) {
     if (name === "unitSystem" || name === "gender") {
       onChange(name, value);
     } else {
-      const numericValue = parseFloat(value) || 0;
-      onChange(name, numericValue);
+      if (value === "" || value === null || value === undefined) {
+        onChange(name, "");
+      } else {
+        const numericValue = parseFloat(value);
+        if (!isNaN(numericValue)) {
+          onChange(name, numericValue);
+        }
+      }
     }
   };
 
@@ -44,7 +49,7 @@ export default function BMIForm({ values, onChange }: BMIFormProps) {
               onClick={() => handleUnitSystemChange(UnitSystem.IMPERIAL)}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
                 values.unitSystem === UnitSystem.IMPERIAL
-                  ? "bg-blue-600 text-white"
+                  ? "bg-blue-600 text-white shadow-sm"
                   : "text-gray-700 hover:bg-gray-200"
               }`}
             >
@@ -55,7 +60,7 @@ export default function BMIForm({ values, onChange }: BMIFormProps) {
               onClick={() => handleUnitSystemChange(UnitSystem.METRIC)}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
                 values.unitSystem === UnitSystem.METRIC
-                  ? "bg-blue-600 text-white"
+                  ? "bg-blue-600 text-white shadow-sm"
                   : "text-gray-700 hover:bg-gray-200"
               }`}
             >
@@ -76,14 +81,14 @@ export default function BMIForm({ values, onChange }: BMIFormProps) {
             type="number"
             id="age"
             name="age"
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             value={values.age}
             onChange={handleChange}
             min="2"
             max="120"
             step="1"
+            placeholder="Enter age"
           />
-          <p className="mt-1 text-xs text-gray-500">Ages: 2 - 120</p>
         </div>
 
         {/* Gender */}
@@ -92,25 +97,25 @@ export default function BMIForm({ values, onChange }: BMIFormProps) {
             Gender
           </label>
           <div className="flex space-x-4">
-            <label className="flex items-center">
+            <label className="flex items-center cursor-pointer">
               <input
                 type="radio"
                 name="gender"
                 value={Gender.MALE}
                 checked={values.gender === Gender.MALE}
                 onChange={handleChange}
-                className="form-radio h-4 w-4 text-blue-600"
+                className="form-radio h-4 w-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
               />
               <span className="ml-2 text-sm text-gray-700">Male</span>
             </label>
-            <label className="flex items-center">
+            <label className="flex items-center cursor-pointer">
               <input
                 type="radio"
                 name="gender"
                 value={Gender.FEMALE}
                 checked={values.gender === Gender.FEMALE}
                 onChange={handleChange}
-                className="form-radio h-4 w-4 text-blue-600"
+                className="form-radio h-4 w-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
               />
               <span className="ml-2 text-sm text-gray-700">Female</span>
             </label>
@@ -123,34 +128,36 @@ export default function BMIForm({ values, onChange }: BMIFormProps) {
             Height
           </label>
           {values.unitSystem === UnitSystem.IMPERIAL ? (
-            <div className="grid grid-cols-2 gap-2">
-              <div className="relative rounded-md shadow-sm">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="relative">
                 <input
                   type="number"
                   id="heightFeet"
                   name="heightFeet"
-                  className="block w-full pr-12 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full pl-2 pr-16 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   value={values.heightFeet}
                   onChange={handleChange}
                   min="3"
                   max="8"
                   step="1"
+                  placeholder="5"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                   <span className="text-gray-500 text-sm">feet</span>
                 </div>
               </div>
-              <div className="relative rounded-md shadow-sm">
+              <div className="relative">
                 <input
                   type="number"
                   id="heightInches"
                   name="heightInches"
-                  className="block w-full pr-16 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full pl-2 pr-16 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   value={values.heightInches}
                   onChange={handleChange}
                   min="0"
                   max="11"
                   step="0.1"
+                  placeholder="10"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                   <span className="text-gray-500 text-sm">inches</span>
@@ -158,17 +165,18 @@ export default function BMIForm({ values, onChange }: BMIFormProps) {
               </div>
             </div>
           ) : (
-            <div className="relative rounded-md shadow-sm">
+            <div className="relative">
               <input
                 type="number"
                 id="heightCm"
                 name="heightCm"
-                className="block w-full pr-8 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full pl-2 pr-16 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 value={values.heightCm}
                 onChange={handleChange}
                 min="50"
                 max="250"
                 step="0.1"
+                placeholder="180"
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                 <span className="text-gray-500 text-sm">cm</span>
@@ -183,34 +191,36 @@ export default function BMIForm({ values, onChange }: BMIFormProps) {
             Weight
           </label>
           {values.unitSystem === UnitSystem.IMPERIAL ? (
-            <div className="relative rounded-md shadow-sm">
+            <div className="relative">
               <input
                 type="number"
                 id="weightLbs"
                 name="weightLbs"
-                className="block w-full pr-16 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full pr-16 pl-2 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 value={values.weightLbs}
                 onChange={handleChange}
                 min="50"
                 max="1000"
                 step="0.1"
+                placeholder="160"
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                 <span className="text-gray-500 text-sm">pounds</span>
               </div>
             </div>
           ) : (
-            <div className="relative rounded-md shadow-sm">
+            <div className="relative">
               <input
                 type="number"
                 id="weightKg"
                 name="weightKg"
-                className="block w-full pr-8 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full pl-2 pr-16 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 value={values.weightKg}
                 onChange={handleChange}
                 min="20"
                 max="500"
                 step="0.1"
+                placeholder="65"
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                 <span className="text-gray-500 text-sm">kg</span>

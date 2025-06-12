@@ -11,7 +11,10 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { CalorieResults, ResultUnit } from "@/types/calorie";
-import { convertCaloriesForDisplay } from "@/utils/calorieCalculations";
+import {
+  convertCaloriesForDisplay,
+  formatCalories,
+} from "@/utils/calorieCalculations";
 
 ChartJS.register(
   CategoryScale,
@@ -35,17 +38,17 @@ export default function CalorieGoalsChart({
 
   const data = {
     labels: [
-      "Aggressive Loss\n(-2 lbs/week)",
-      "Moderate Loss\n(-1 lb/week)",
-      "Mild Loss\n(-0.5 lbs/week)",
+      "Aggressive\nLoss\n(-2 lbs/week)",
+      "Moderate\nLoss\n(-1 lb/week)",
+      "Mild\nLoss\n(-0.5 lbs/week)",
       "Maintenance",
-      "Mild Gain\n(+0.5 lbs/week)",
-      "Moderate Gain\n(+1 lb/week)",
-      "Aggressive Gain\n(+2 lbs/week)",
+      "Mild\nGain\n(+0.5 lbs/week)",
+      "Moderate\nGain\n(+1 lb/week)",
+      "Aggressive\nGain\n(+2 lbs/week)",
     ],
     datasets: [
       {
-        label: `Calories (${unitLabel})`,
+        label: `Daily Calories`,
         data: [
           convertCaloriesForDisplay(
             results.weightLossCalories.aggressive,
@@ -83,13 +86,13 @@ export default function CalorieGoalsChart({
           "#a855f7", // purple-500 - aggressive gain
         ],
         borderColor: [
-          "#b91c1c", // red-700
-          "#dc2626", // red-600
-          "#ea580c", // orange-600
-          "#16a34a", // green-600
-          "#2563eb", // blue-600
-          "#7c3aed", // violet-600
-          "#9333ea", // purple-600
+          "#b91c1c",
+          "#dc2626",
+          "#ea580c",
+          "#16a34a",
+          "#2563eb",
+          "#7c3aed",
+          "#9333ea",
         ],
         borderWidth: 1,
       },
@@ -111,13 +114,16 @@ export default function CalorieGoalsChart({
           },
         },
       },
+      datalabels: {
+        display: false,
+      },
     },
     scales: {
       y: {
         beginAtZero: true,
         title: {
           display: true,
-          text: `Calories (${unitLabel})`,
+          text: `Daily Calories (${unitLabel})`,
         },
         ticks: {
           callback: function (value: any) {
@@ -126,32 +132,78 @@ export default function CalorieGoalsChart({
         },
       },
       x: {
-        title: {
-          display: true,
-          text: "Weight Goals",
-        },
         ticks: {
           maxRotation: 0,
-          minRotation: 0,
           font: {
-            size: 10,
+            size: 12,
           },
+          padding: 10,
         },
-      },
-    },
-    layout: {
-      padding: {
-        top: 10,
-        bottom: 10,
-        left: 10,
-        right: 10,
+        grid: {
+          display: false,
+        },
       },
     },
   };
 
   return (
-    <div className="relative">
-      <Bar data={data} options={options} />
+    <div className="flex flex-col items-center h-96">
+      <div className="flex-1 w-full">
+        <Bar data={data} options={options} />
+      </div>
+
+      {/* Legend below chart */}
+      <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-red-700"></div>
+          <span>
+            Aggressive Loss (-2 lbs/week):{" "}
+            {formatCalories(results.weightLossCalories.aggressive, resultUnit)}
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-blue-600"></div>
+          <span>
+            Mild Gain (+0.5 lbs/week):{" "}
+            {formatCalories(results.weightGainCalories.mild, resultUnit)}
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-red-600"></div>
+          <span>
+            Moderate Loss (-1 lb/week):{" "}
+            {formatCalories(results.weightLossCalories.moderate, resultUnit)}
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-purple-600"></div>
+          <span>
+            Moderate Gain (+1 lb/week):{" "}
+            {formatCalories(results.weightGainCalories.moderate, resultUnit)}
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-orange-600"></div>
+          <span>
+            Mild Loss (-0.5 lbs/week):{" "}
+            {formatCalories(results.weightLossCalories.mild, resultUnit)}
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-purple-700"></div>
+          <span>
+            Aggressive Gain (+2 lbs/week):{" "}
+            {formatCalories(results.weightGainCalories.aggressive, resultUnit)}
+          </span>
+        </div>
+        <div className="flex items-center space-x-2 col-span-2 justify-center">
+          <div className="w-3 h-3 bg-green-500"></div>
+          <span className="font-medium">
+            Maintenance:{" "}
+            {formatCalories(results.maintenanceCalories, resultUnit)}
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

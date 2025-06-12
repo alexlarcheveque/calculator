@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import PregnancyForm from "@/components/pregnancy/PregnancyForm";
 import PregnancySummary from "@/components/pregnancy/PregnancySummary";
 import PregnancyCharts from "@/components/pregnancy/PregnancyCharts";
-import MilestonesTable from "@/components/pregnancy/MilestonesTable";
-import FAQSection from "@/components/pregnancy/FAQSection";
+import PregnancyTimeline from "@/components/pregnancy/PregnancyTimeline";
+import DueDateCalculator from "@/components/pregnancy/DueDateCalculator";
+import PregnancyWeightGain from "@/components/pregnancy/PregnancyWeightGain";
+import ConceptionDateCalculator from "@/components/pregnancy/ConceptionDateCalculator";
 import { calculatePregnancy } from "@/utils/pregnancyCalculations";
 import {
   PregnancyFormValues,
@@ -13,22 +15,31 @@ import {
   CalculationMethod,
   EmbryoAge,
 } from "@/types/pregnancy";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import FAQSection from "@/components/pregnancy/FAQSection";
 
 export default function PregnancyPage() {
-  const [formValues, setFormValues] = useState<PregnancyFormValues>({
-    calculationMethod: CalculationMethod.DUE_DATE,
-    dueDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split("T")[0], // 90 days from now
-    lastPeriodDate: "",
-    cycleLength: 28,
-    conceptionDate: "",
-    ultrasoundDate: "",
-    ultrasoundWeeks: 20,
-    ultrasoundDays: 0,
-    ivfTransferDate: "",
-    embryoAge: EmbryoAge.DAY_5,
-  });
+  const [formValues, setFormValues] = useLocalStorage<PregnancyFormValues>(
+    "pregnancyFormValues",
+    {
+      calculationMethod: CalculationMethod.DUE_DATE,
+      dueDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0], // 90 days from now
+      lastPeriodDate: new Date(
+        Date.now() - 10 * 7 * 24 * 60 * 60 * 1000 // 10 weeks ago
+      )
+        .toISOString()
+        .split("T")[0],
+      cycleLength: 28,
+      conceptionDate: "",
+      ultrasoundDate: "",
+      ultrasoundWeeks: 20,
+      ultrasoundDays: 0,
+      ivfTransferDate: "",
+      embryoAge: EmbryoAge.DAY_5,
+    }
+  );
 
   const [results, setResults] = useState<PregnancyResults | null>(null);
 
@@ -96,13 +107,24 @@ export default function PregnancyPage() {
             <>
               <PregnancySummary results={results} />
               <PregnancyCharts results={results} />
-              <MilestonesTable
-                milestones={results.milestones}
-                currentWeek={results.currentWeek}
-              />
+              <PregnancyTimeline results={results} />
             </>
           )}
+
+          {!results && (
+            <p className="text-center text-gray-500 lg:mt-20">
+              Enter your last menstrual period date to calculate pregnancy
+              details.
+            </p>
+          )}
         </div>
+      </div>
+
+      {/* Additional Calculators */}
+      <div className="space-y-8 mb-16">
+        <DueDateCalculator />
+        <ConceptionDateCalculator />
+        <PregnancyWeightGain />
       </div>
 
       {/* FAQ Section */}

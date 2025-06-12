@@ -33,6 +33,7 @@ export interface BMIResults {
   idealWeight: number;
   weightToLose?: number;
   weightToGain?: number;
+  percentile?: number;
 }
 
 export interface BMICategory {

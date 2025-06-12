@@ -193,33 +193,6 @@ export default function IdealWeightForm({
             </div>
           </div>
         )}
-
-        {/* Calculate Button */}
-        <div className="form-group pt-4">
-          <button
-            type="button"
-            className="w-full bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium text-lg shadow-sm"
-          >
-            Calculate
-          </button>
-        </div>
-
-        {/* Clear Button */}
-        <div className="form-group">
-          <button
-            type="button"
-            onClick={() => {
-              onChange("age", 25);
-              onChange("gender", Gender.MALE);
-              onChange("heightFeet", 5);
-              onChange("heightInches", 10);
-              onChange("heightCm", 180);
-            }}
-            className="w-full bg-gray-200 text-gray-700 py-3 px-6 rounded-md hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors font-medium"
-          >
-            Clear
-          </button>
-        </div>
       </div>
     </div>
   );

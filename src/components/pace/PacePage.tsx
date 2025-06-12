@@ -3,10 +3,13 @@
 import { useState, useEffect } from "react";
 import PaceForm from "@/components/pace/PaceForm";
 import PaceSummary from "@/components/pace/PaceSummary";
+import PaceCharts from "@/components/pace/PaceCharts";
 import MultipointCalculator from "@/components/pace/MultipointCalculator";
 import PaceConverter from "@/components/pace/PaceConverter";
 import FinishTimeCalculator from "@/components/pace/FinishTimeCalculator";
 import WorldRecordsTable from "@/components/pace/WorldRecordsTable";
+import PaceTrainingGuide from "@/components/pace/PaceTrainingGuide";
+import RunningMetricsGuide from "@/components/pace/RunningMetricsGuide";
 import FAQSection from "@/components/pace/FAQSection";
 import {
   CalculatorType,
@@ -16,16 +19,20 @@ import {
   PaceResults,
 } from "@/types/pace";
 import { calculatePace } from "@/utils/paceCalculations";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export default function PacePage() {
-  const [formValues, setFormValues] = useState<PaceFormValues>({
+  const [formValues, setFormValues] = useLocalStorage<PaceFormValues>(
+    "paceFormValues",
+    {
     calculatorType: CalculatorType.PACE,
     time: "00:50:25",
     distance: 5,
     distanceUnit: DistanceUnit.MILES,
     pace: "00:08:10",
     paceUnit: PaceUnit.TIME_PER_MILE,
-  });
+    }
+  );
 
   const [results, setResults] = useState<PaceResults | null>(null);
 
@@ -77,10 +84,19 @@ export default function PacePage() {
         {/* Results */}
         <div className="lg:col-span-8 space-y-8">
           {results && (
+            <>
             <PaceSummary
               results={results}
               calculationType={getCalculationTypeLabel()}
             />
+              <PaceCharts results={results} />
+            </>
+          )}
+
+          {!results && (
+            <p className="text-center text-gray-500 lg:mt-20">
+              Enter your pace, time, or distance to calculate running metrics.
+            </p>
           )}
         </div>
       </div>
@@ -104,6 +120,12 @@ export default function PacePage() {
 
         {/* World Records Table */}
         <WorldRecordsTable />
+      </div>
+
+      {/* Info Sections */}
+      <div className="space-y-8 mb-16">
+        <PaceTrainingGuide />
+        <RunningMetricsGuide />
       </div>
 
       {/* FAQ Section */}

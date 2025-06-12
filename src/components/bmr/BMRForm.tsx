@@ -5,9 +5,14 @@ import { feetToFeetInches, feetInchesToFeet } from "@/utils/bmrCalculations";
 interface BMRFormProps {
   values: BMRFormValues;
   onChange: (name: string, value: number | string) => void;
+  onBatchChange: (updates: Record<string, number | string>) => void;
 }
 
-export default function BMRForm({ values, onChange }: BMRFormProps) {
+export default function BMRForm({
+  values,
+  onChange,
+  onBatchChange,
+}: BMRFormProps) {
   const [showSettings, setShowSettings] = useState(false);
   const [heightInputMode, setHeightInputMode] = useState<
     "combined" | "separate"
@@ -21,6 +26,12 @@ export default function BMRForm({ values, onChange }: BMRFormProps) {
     if (type === "radio") {
       onChange(name, value);
     } else {
+      // Allow empty values for number inputs so users can clear them
+      if (value === "") {
+        onChange(name, "");
+        return;
+      }
+
       const numericValue = parseFloat(value);
       if (!isNaN(numericValue)) {
         onChange(name, numericValue);
@@ -30,6 +41,13 @@ export default function BMRForm({ values, onChange }: BMRFormProps) {
 
   const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
+    // Allow empty values for height inputs so users can clear them
+    if (value === "") {
+      onChange(name === "height" ? "height" : name, "");
+      return;
+    }
+
     const numericValue = parseFloat(value);
 
     if (isNaN(numericValue)) return;
@@ -67,8 +85,17 @@ export default function BMRForm({ values, onChange }: BMRFormProps) {
           <button
             type="button"
             onClick={() => {
-              onChange("heightUnit", "feet");
-              onChange("weightUnit", "lbs");
+              console.log(
+                "Before US click:",
+                values.heightUnit,
+                values.weightUnit
+              );
+              console.log("Calling onBatchChange for US units");
+              onBatchChange({
+                heightUnit: "feet",
+                weightUnit: "lbs",
+              });
+              console.log("After US batch change call made");
             }}
             className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
               values.heightUnit === "feet" && values.weightUnit === "lbs"
@@ -81,8 +108,26 @@ export default function BMRForm({ values, onChange }: BMRFormProps) {
           <button
             type="button"
             onClick={() => {
-              onChange("heightUnit", "cm");
-              onChange("weightUnit", "kg");
+              console.log(
+                "Before metric click:",
+                values.heightUnit,
+                values.weightUnit
+              );
+              console.log("Calling onBatchChange for metric units");
+              onBatchChange({
+                heightUnit: "cm",
+                weightUnit: "kg",
+              });
+              console.log("After metric batch change call made");
+
+              // Check values after a small delay to see if state updated
+              setTimeout(() => {
+                console.log(
+                  "Values after delay:",
+                  values.heightUnit,
+                  values.weightUnit
+                );
+              }, 100);
             }}
             className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
               values.heightUnit === "cm" && values.weightUnit === "kg"
@@ -108,7 +153,7 @@ export default function BMRForm({ values, onChange }: BMRFormProps) {
             type="number"
             id="age"
             name="age"
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             value={values.age}
             onChange={handleChange}
             min="15"
@@ -161,7 +206,7 @@ export default function BMRForm({ values, onChange }: BMRFormProps) {
                   <input
                     type="number"
                     name="heightFeet"
-                    className="block w-full pr-12 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full pr-12 py-3 px-4 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                     value={currentHeightFeetInches.feet}
                     onChange={handleHeightChange}
                     min="3"
@@ -178,7 +223,7 @@ export default function BMRForm({ values, onChange }: BMRFormProps) {
                   <input
                     type="number"
                     name="heightInches"
-                    className="block w-full pr-12 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full pr-16 py-3 px-4 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                     value={currentHeightFeetInches.inches}
                     onChange={handleHeightChange}
                     min="0"
@@ -196,7 +241,7 @@ export default function BMRForm({ values, onChange }: BMRFormProps) {
               <input
                 type="number"
                 name="height"
-                className="block w-full pr-8 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full pr-12 py-3 px-4 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 value={values.height}
                 onChange={handleHeightChange}
                 min="100"
@@ -204,7 +249,7 @@ export default function BMRForm({ values, onChange }: BMRFormProps) {
                 step="1"
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <span className="text-gray-500">cm</span>
+                <span className="text-gray-500 text-sm">cm</span>
               </div>
             </div>
           )}
@@ -223,7 +268,7 @@ export default function BMRForm({ values, onChange }: BMRFormProps) {
               type="number"
               id="weight"
               name="weight"
-              className="block w-full pr-16 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="block w-full pr-20 py-3 px-4 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               value={values.weight}
               onChange={handleChange}
               min={values.weightUnit === "lbs" ? "50" : "20"}
@@ -231,7 +276,7 @@ export default function BMRForm({ values, onChange }: BMRFormProps) {
               step={values.weightUnit === "lbs" ? "1" : "0.1"}
             />
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-              <span className="text-gray-500">
+              <span className="text-gray-500 text-sm">
                 {values.weightUnit === "lbs" ? "pounds" : "kg"}
               </span>
             </div>
@@ -337,15 +382,15 @@ export default function BMRForm({ values, onChange }: BMRFormProps) {
                             <input
                               type="number"
                               name="bodyFatPercentage"
-                              className="block w-full pr-8 py-1 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                              className="block w-full pr-8 py-3 px-4 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                               value={values.bodyFatPercentage}
                               onChange={handleChange}
                               min="5"
                               max="50"
                               step="0.1"
                             />
-                            <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
-                              <span className="text-gray-500 text-xs">%</span>
+                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                              <span className="text-gray-500 text-sm">%</span>
                             </div>
                           </div>
                         </div>

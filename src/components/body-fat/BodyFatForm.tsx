@@ -6,17 +6,35 @@ import { useState } from "react";
 interface BodyFatFormProps {
   values: BodyFatFormValues;
   onChange: (name: string, value: number | string) => void;
+  onMultipleChanges?: (updates: Partial<BodyFatFormValues>) => void;
 }
 
-export default function BodyFatForm({ values, onChange }: BodyFatFormProps) {
+export default function BodyFatForm({
+  values,
+  onChange,
+  onMultipleChanges,
+}: BodyFatFormProps) {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+
     if (name === "gender" || name === "unitSystem") {
       onChange(name, value);
+    } else if (type === "number") {
+      // Handle empty string to allow clearing the input
+      if (value === "") {
+        // Don't set to 0 immediately, let the input be empty
+        return;
+      } else {
+        const numericValue = parseFloat(value);
+        // Only set numeric value if it's a valid number
+        if (!isNaN(numericValue)) {
+          onChange(name, numericValue);
+        }
+      }
     } else {
-      onChange(name, parseFloat(value) || 0);
+      onChange(name, value);
     }
   };
 

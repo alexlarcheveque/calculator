@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import FAQSectionUI from "@/components/ui/FAQSection";
 
 interface FAQItem {
   question: string;
@@ -9,7 +9,7 @@ interface FAQItem {
 
 const faqData: FAQItem[] = [
   {
-    question: "How Much Should I Weigh?",
+    question: "How much should I weigh?",
     answer:
       'Most everyone has at some point tried to lose weight, or at least known somebody who has. This is largely due to the perception of an "ideal" body weight, which is often based on what we see promoted through various media such as social media, TV, movies, magazines, etc. Although ideal body weight (IBW) today is sometimes based on perceived visual appeal, IBW was actually introduced to estimate dosages for medical use, and the formulas that calculate it are not at all related to how a person looks at a given weight.',
   },
@@ -51,92 +51,11 @@ const faqData: FAQItem[] = [
 ];
 
 export default function IdealWeightFAQSection() {
-  const [openItems, setOpenItems] = useState<number[]>([]);
-
-  const toggleItem = (index: number) => {
-    setOpenItems((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-    );
-  };
-
   return (
-    <div className="bg-white rounded-lg shadow-md">
-      <div className="p-6 border-b border-gray-200">
-        <h2 className="text-2xl font-bold text-gray-800">
-          Frequently Asked Questions
-        </h2>
-        <p className="text-gray-600 mt-2">
-          Learn more about ideal weight calculations and their limitations
-        </p>
-      </div>
-
-      <div className="divide-y divide-gray-200">
-        {faqData.map((item, index) => (
-          <div key={index} className="p-6">
-            <button
-              onClick={() => toggleItem(index)}
-              className="flex justify-between items-center w-full text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg p-2 -m-2"
-            >
-              <h3 className="text-lg font-semibold text-gray-800 pr-4">
-                {item.question}
-              </h3>
-              <svg
-                className={`w-5 h-5 text-gray-500 transform transition-transform duration-200 flex-shrink-0 ${
-                  openItems.includes(index) ? "rotate-180" : ""
-                }`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-
-            {openItems.includes(index) && (
-              <div className="mt-4 text-gray-600 leading-relaxed">
-                {item.answer}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <div className="p-6 bg-gray-50 rounded-b-lg">
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">
-          Related Calculators
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          <a
-            href="/bmi"
-            className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200 transition-colors"
-          >
-            BMI Calculator
-          </a>
-          <a
-            href="/body-fat"
-            className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200 transition-colors"
-          >
-            Body Fat Calculator
-          </a>
-          <a
-            href="/calorie"
-            className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200 transition-colors"
-          >
-            Calorie Calculator
-          </a>
-          <a
-            href="/bmr"
-            className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200 transition-colors"
-          >
-            BMR Calculator
-          </a>
-        </div>
-      </div>
-    </div>
+    <FAQSectionUI
+      items={faqData}
+      allowMultipleOpen={true}
+      includeSchema={true}
+    />
   );
 }

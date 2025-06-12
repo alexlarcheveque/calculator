@@ -5,6 +5,8 @@ import BodyFatForm from "@/components/body-fat/BodyFatForm";
 import BodyFatSummary from "@/components/body-fat/BodyFatSummary";
 import BodyFatCharts from "@/components/body-fat/BodyFatCharts";
 import ReferenceTables from "@/components/body-fat/ReferenceTables";
+import BodyFatBasics from "@/components/body-fat/BodyFatBasics";
+import BodyCompositionGuide from "@/components/body-fat/BodyCompositionGuide";
 import FAQSection from "@/components/body-fat/FAQSection";
 import { calculateBodyFat } from "@/utils/bodyFatCalculations";
 import {
@@ -13,29 +15,33 @@ import {
   UnitSystem,
   Gender,
 } from "@/types/bodyFat";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export default function BodyFatPage() {
-  const [formValues, setFormValues] = useState<BodyFatFormValues>({
-    unitSystem: UnitSystem.US,
-    gender: Gender.MALE,
-    age: 25,
-    // US Units
-    weightLbs: 152,
-    heightFeet: 5,
-    heightInches: 10.5,
-    neckFeet: 1,
-    neckInches: 7.5,
-    waistFeet: 3,
-    waistInches: 1.5,
-    hipFeet: 2,
-    hipInches: 10.5,
-    // Metric Units
-    weightKg: 70,
-    heightCm: 178,
-    neckCm: 50,
-    waistCm: 96,
-    hipCm: 92,
-  });
+  const [formValues, setFormValues] = useLocalStorage<BodyFatFormValues>(
+    "bodyFatFormValues",
+    {
+      unitSystem: UnitSystem.US,
+      gender: Gender.MALE,
+      age: 25,
+      // US Units
+      weightLbs: 152,
+      heightFeet: 5,
+      heightInches: 10.5,
+      neckFeet: 1,
+      neckInches: 7.5,
+      waistFeet: 3,
+      waistInches: 1.5,
+      hipFeet: 2,
+      hipInches: 10.5,
+      // Metric Units
+      weightKg: 70,
+      heightCm: 178,
+      neckCm: 50,
+      waistCm: 96,
+      hipCm: 92,
+    }
+  );
 
   const [results, setResults] = useState<BodyFatResults | null>(null);
 
@@ -151,12 +157,23 @@ export default function BodyFatPage() {
     setFormValues(newValues);
   };
 
+  const handleMultipleInputChanges = (updates: Partial<BodyFatFormValues>) => {
+    setFormValues((prev) => ({
+      ...prev,
+      ...updates,
+    }));
+  };
+
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">
-          <BodyFatForm values={formValues} onChange={handleInputChange} />
+          <BodyFatForm
+            values={formValues}
+            onChange={handleInputChange}
+            onMultipleChanges={handleMultipleInputChanges}
+          />
         </div>
 
         {/* Results */}
@@ -165,6 +182,7 @@ export default function BodyFatPage() {
             <>
               <BodyFatSummary results={results} />
               <BodyFatCharts results={results} gender={formValues.gender} />
+              <ReferenceTables />
             </>
           )}
 
@@ -176,9 +194,10 @@ export default function BodyFatPage() {
         </div>
       </div>
 
-      {/* Reference Tables */}
-      <div className="mb-16">
-        <ReferenceTables />
+      {/* Info Sections */}
+      <div className="space-y-8 mb-16">
+        <BodyFatBasics />
+        <BodyCompositionGuide />
       </div>
 
       {/* FAQ Section */}

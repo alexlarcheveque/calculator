@@ -57,9 +57,9 @@ export function calculateCalories({
 
   // Calculate weight loss calories (deficit of 250, 500, 1000 calories)
   const weightLossCalories = {
-    mild: Math.max(maintenanceCalories - 250, bmr * 1.2), // 0.5 lbs per week, but not below sedentary level
-    moderate: Math.max(maintenanceCalories - 500, bmr * 1.2), // 1 lb per week
-    aggressive: Math.max(maintenanceCalories - 1000, bmr * 1.2), // 2 lbs per week
+    mild: Math.max(maintenanceCalories - 250, 1200), // 0.5 lbs per week, but not below 1200 cal
+    moderate: Math.max(maintenanceCalories - 500, 1200), // 1 lb per week, but not below 1200 cal
+    aggressive: Math.max(maintenanceCalories - 1000, 1200), // 2 lbs per week, but not below 1200 cal
   };
 
   // Calculate weight gain calories (surplus of 250, 500, 1000 calories)
@@ -138,7 +138,10 @@ export function convertWeightToMetric(pounds: number): number {
   return Math.round(pounds * 0.453592 * 10) / 10; // Convert to kg with 1 decimal place
 }
 
-export function convertHeightToImperial(cm: number): { feet: number; inches: number } {
+export function convertHeightToImperial(cm: number): {
+  feet: number;
+  inches: number;
+} {
   const totalInches = cm / 2.54;
   const feet = Math.floor(totalInches / 12);
   const inches = Math.round(totalInches % 12);
@@ -185,4 +188,4 @@ export function getBMRFormulaDescription(formula: BMRFormula): string {
 
 export function formatNumber(value: number): string {
   return value.toLocaleString("en-US");
-} 
+}
