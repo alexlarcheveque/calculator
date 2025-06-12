@@ -35,38 +35,56 @@ export default function BodyCompositionChart({
     ],
   };
 
+  // Custom plugin to draw text inside pie segments
+  const textInsidePlugin = {
+    id: "textInside",
+    afterDatasetsDraw: function (chart: any) {
+      const ctx = chart.ctx;
+      const dataset = chart.data.datasets[0];
+      const meta = chart.getDatasetMeta(0);
+
+      ctx.save();
+      ctx.font = "bold 14px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#ffffff";
+
+      meta.data.forEach((element: any, index: number) => {
+        const model = element;
+        const x = model.x;
+        const y = model.y;
+
+        // Calculate angle to position text in the middle of the segment
+        const startAngle = model.startAngle;
+        const endAngle = model.endAngle;
+        const midAngle = (startAngle + endAngle) / 2;
+
+        // Calculate position for text (slightly inward from edge)
+        const radius = (model.innerRadius + model.outerRadius) / 2;
+        const textX = x + Math.cos(midAngle) * radius * 0.7;
+        const textY = y + Math.sin(midAngle) * radius * 0.7;
+
+        // Draw the label text
+        const label = chart.data.labels[index];
+        ctx.fillText(label, textX, textY);
+
+        // Draw the percentage below the label
+        ctx.font = "bold 12px Arial";
+        const percentage = index === 0 ? bodyFatPercentage : leanMassPercentage;
+        ctx.fillText(`${percentage}%`, textX, textY + 16);
+        ctx.font = "bold 14px Arial"; // Reset font for next iteration
+      });
+
+      ctx.restore();
+    },
+  };
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: "right" as const,
-        labels: {
-          usePointStyle: true,
-          pointStyle: "rect",
-          padding: 20,
-          generateLabels: function (chart: any) {
-            const data = chart.data;
-            if (data.labels.length && data.datasets.length) {
-              return data.labels.map((label: string, i: number) => {
-                const dataset = data.datasets[0];
-                const value = dataset.data[i];
-                const percentage =
-                  i === 0 ? bodyFatPercentage : leanMassPercentage;
-
-                return {
-                  text: `${label} (${percentage}%)`,
-                  fillStyle: dataset.backgroundColor[i],
-                  strokeStyle: dataset.borderColor[i],
-                  lineWidth: dataset.borderWidth,
-                  hidden: false,
-                  index: i,
-                };
-              });
-            }
-            return [];
-          },
-        },
+        display: false, // Hide legend since we now have text inside
       },
       tooltip: {
         callbacks: {
@@ -82,37 +100,22 @@ export default function BodyCompositionChart({
         },
       },
     },
-    layout: {
-      padding: {
-        top: 10,
-        bottom: 10,
-        left: 10,
-        right: 10,
-      },
-    },
   };
 
   return (
-    <div className="relative">
-      <Pie data={data} options={options} />
+    <div className="space-y-4">
+      <div className="text-center">
+        <h3 className="text-lg font-medium text-gray-800 mb-2">
+          Body Composition
+        </h3>
+        <p className="text-sm text-gray-600">
+          Your body fat vs lean mass distribution
+        </p>
+      </div>
 
-      {/* Summary below chart */}
-      <div className="mt-4 text-center">
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="flex items-center justify-center space-x-2">
-            <div className="w-3 h-3 bg-red-500 rounded"></div>
-            <span className="text-gray-600">
-              Body Fat: {formatWeight(bodyFatMass, results.unitSystem)} (
-              {bodyFatPercentage}%)
-            </span>
-          </div>
-          <div className="flex items-center justify-center space-x-2">
-            <div className="w-3 h-3 bg-green-500 rounded"></div>
-            <span className="text-gray-600">
-              Lean Mass: {formatWeight(leanBodyMass, results.unitSystem)} (
-              {leanMassPercentage}%)
-            </span>
-          </div>
+      <div className="h-96 flex items-center justify-center">
+        <div className="w-full max-w-md h-full">
+          <Pie data={data} options={options} plugins={[textInsidePlugin]} />
         </div>
       </div>
     </div>

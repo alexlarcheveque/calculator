@@ -1,5 +1,6 @@
 "use client";
 
+import InfoCard, { ContentSection } from "@/components/ui/InfoCard";
 import {
   getBodyFatCategories,
   getJacksonPollockData,
@@ -9,15 +10,20 @@ export default function ReferenceTables() {
   const categories = getBodyFatCategories();
   const jacksonPollockData = getJacksonPollockData();
 
-  return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-6 text-gray-800">Reference</h2>
-
-      {/* American Council on Exercise Body Fat Categorization */}
-      <div className="mb-8">
-        <h3 className="text-lg font-medium mb-4 text-gray-700">
-          The American Council on Exercise Body Fat Categorization
-        </h3>
+  const referenceTablesSections: ContentSection[] = [
+    {
+      type: "text",
+      content:
+        "Body fat percentage standards and reference values help interpret your calculated results within the context of established health and fitness guidelines. These tables provide evidence-based classifications from leading health organizations and research studies.",
+    },
+    {
+      type: "subheader",
+      heading: "American Council on Exercise Body Fat Categories",
+      headingLevel: "h3",
+    },
+    {
+      type: "text",
+      content: (
         <div className="overflow-x-auto">
           <table className="w-full border-collapse border border-gray-300">
             <thead>
@@ -50,13 +56,16 @@ export default function ReferenceTables() {
             </tbody>
           </table>
         </div>
-      </div>
-
-      {/* Jackson & Pollock Ideal Body Fat Percentages */}
-      <div>
-        <h3 className="text-lg font-medium mb-4 text-gray-700">
-          Jackson & Pollock Ideal Body Fat Percentages
-        </h3>
+      ),
+    },
+    {
+      type: "subheader",
+      heading: "Jackson & Pollock Ideal Body Fat Percentages",
+      headingLevel: "h3",
+    },
+    {
+      type: "text",
+      content: (
         <div className="overflow-x-auto">
           <table className="w-full border-collapse border border-gray-300">
             <thead>
@@ -89,7 +98,14 @@ export default function ReferenceTables() {
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      ),
+    },
+  ];
+
+  return (
+    <InfoCard
+      title="Body Fat Reference Standards"
+      sections={referenceTablesSections}
+    />
   );
 }

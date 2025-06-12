@@ -11,90 +11,143 @@ interface IdealWeightSummaryProps {
 export default function IdealWeightSummary({
   results,
 }: IdealWeightSummaryProps) {
-  const formulaResults = getAllFormulaResults(results);
+  const formulaResults = getAllFormulaResults(results).sort(
+    (a, b) => a.weight - b.weight
+  );
   const weightUnit = results.unitSystem === UnitSystem.IMPERIAL ? "lbs" : "kg";
+
+  // Calculate average of all formulas
+  const averageWeight =
+    formulaResults.reduce((sum, formula) => sum + formula.weight, 0) /
+    formulaResults.length;
+
+  // Find the formula with highest and lowest estimates
+  const sortedFormulas = [...formulaResults].sort(
+    (a, b) => a.weight - b.weight
+  );
+  const lowestFormula = sortedFormulas[0];
+  const highestFormula = sortedFormulas[sortedFormulas.length - 1];
+
+  const getFormulaDescription = (name: string) => {
+    switch (name) {
+      case "Robinson":
+        return "Modern and widely used";
+      case "Miller":
+        return "Slight variation of Robinson";
+      case "Devine":
+        return "Based on drug dosing studies";
+      case "Hamwi":
+        return "Used in clinical settings";
+      default:
+        return "Formula-based estimate";
+    }
+  };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-800">Result</h2>
-        <div className="flex items-center space-x-2">
-          <svg
-            className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
-            />
-          </svg>
+      <h2 className="text-xl font-semibold mb-6 text-gray-800">
+        Ideal Weight Analysis
+      </h2>
+
+      {/* Main Average Result */}
+      <div className="mb-6">
+        <div className="bg-primary-50 p-4 rounded-lg border border-primary-100">
+          <div className="text-sm text-gray-600 mb-1">Average Ideal Weight</div>
+          <div className="text-3xl font-bold text-gray-900 mb-2">
+            ~ {formatWeight(averageWeight, results.unitSystem)}
+          </div>
+          <div className="text-lg font-semibold text-gray-800">
+            Average of {formulaResults.length} weight formulas
+          </div>
         </div>
       </div>
 
-      <p className="text-gray-600 mb-6">
-        The ideal weight based on popular formulas:
-      </p>
+      {/* Formula Results Breakdown */}
+      <div className="mb-6">
+        <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
+          Formula Comparison
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {formulaResults.map((formula) => {
+            // Default neutral classes
+            let cardClass = "bg-gray-50 border border-gray-200";
+            let titleClass = "text-sm mb-1 text-gray-600";
+            let valueClass = "text-lg font-bold text-gray-900";
 
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="border-b-2 border-gray-200">
-              <th className="text-left py-3 px-4 font-semibold text-gray-700">
-                Formula
-              </th>
-              <th className="text-center py-3 px-4 font-semibold text-gray-700">
-                Ideal Weight
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {formulaResults.map((formula, index) => (
-              <tr
-                key={formula.name}
-                className={`border-b border-gray-100 ${
-                  index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                }`}
-              >
-                <td className="py-3 px-4 text-gray-700">{formula.name}</td>
-                <td className="py-3 px-4 text-center">
-                  <span className="font-semibold text-green-600">
-                    {formatWeight(formula.weight, results.unitSystem)}
-                  </span>
-                </td>
-              </tr>
-            ))}
-            <tr className="border-b border-gray-100 bg-blue-50">
-              <td className="py-3 px-4 text-gray-700 font-medium">
-                Healthy BMI Range
-              </td>
-              <td className="py-3 px-4 text-center">
-                <span className="font-semibold text-green-600">
-                  {formatWeight(results.bmiRangeMin, results.unitSystem)}
-                </span>
-                <span className="text-gray-500 mx-1">-</span>
-                <span className="font-semibold text-green-600">
-                  {formatWeight(results.bmiRangeMax, results.unitSystem)}
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            // Apply colors to match FormulaComparisonChart
+            if (formula.name.startsWith("Robinson")) {
+              cardClass = "bg-blue-50 border border-blue-100";
+              titleClass = "text-sm mb-1 text-blue-600";
+              valueClass = "text-lg font-bold text-blue-900";
+            } else if (formula.name.startsWith("Miller")) {
+              cardClass = "bg-green-50 border border-green-100";
+              titleClass = "text-sm mb-1 text-green-600";
+              valueClass = "text-lg font-bold text-green-900";
+            } else if (formula.name.startsWith("Devine")) {
+              cardClass = "bg-yellow-50 border border-yellow-100";
+              titleClass = "text-sm mb-1 text-yellow-600";
+              valueClass = "text-lg font-bold text-yellow-900";
+            } else if (formula.name.startsWith("Hamwi")) {
+              cardClass = "bg-red-50 border border-red-100";
+              titleClass = "text-sm mb-1 text-red-600";
+              valueClass = "text-lg font-bold text-red-900";
+            }
+
+            return (
+              <div key={formula.name} className={`p-4 rounded-lg ${cardClass}`}>
+                <div className={titleClass}>{formula.name} Formula</div>
+                <div className={valueClass}>
+                  {formatWeight(formula.weight, results.unitSystem)}
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {getFormulaDescription(formula.name)}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-        <h3 className="text-sm font-semibold text-blue-800 mb-2">
-          Important Note
+      {/* BMI Range Assessment */}
+      <div className="mb-6">
+        <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
+          BMI-Based Healthy Weight Range
         </h3>
-        <p className="text-sm text-blue-700">
-          These calculations are for reference only and should not be considered
-          medical advice. Ideal body weight varies based on many factors
-          including muscle mass, bone density, and overall health. Consult with
-          a healthcare professional for personalized guidance.
-        </p>
+        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <div className="text-sm text-gray-600 mb-1">Healthy Weight Range</div>
+          <div className="text-lg font-semibold text-gray-900">
+            {formatWeight(results.bmiRangeMin, results.unitSystem)} -{" "}
+            {formatWeight(results.bmiRangeMax, results.unitSystem)}
+            <span className="text-gray-500 text-sm font-normal ml-2">
+              (BMI 18.5 – 24.9)
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Health Note */}
+      <div>
+        <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
+          Important Health Information
+        </h3>
+        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <div className="text-sm text-gray-700">
+            <p className="mb-2">
+              <strong>These calculations are estimates</strong> based on height
+              and gender only. Ideal weight varies significantly based on:
+            </p>
+            <ul className="list-disc list-inside text-xs space-y-1 text-gray-600">
+              <li>Muscle mass and body composition</li>
+              <li>Bone density and frame size</li>
+              <li>Age and metabolic health</li>
+              <li>Athletic training and fitness level</li>
+            </ul>
+            <p className="mt-2 text-xs text-gray-500">
+              Consult healthcare professionals for personalized weight
+              management advice.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

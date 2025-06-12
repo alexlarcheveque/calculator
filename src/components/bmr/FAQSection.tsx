@@ -99,30 +99,6 @@ export default function BMRFAQSection() {
           </div>
         ))}
       </div>
-
-      <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-        <h3 className="font-semibold text-blue-900 mb-2">BMR Formulas Used</h3>
-        <div className="text-sm text-blue-800 space-y-3">
-          <div>
-            <p className="font-medium">Mifflin-St Jeor Equation:</p>
-            <p>Men: BMR = 10W + 6.25H - 5A + 5</p>
-            <p>Women: BMR = 10W + 6.25H - 5A - 161</p>
-          </div>
-          <div>
-            <p className="font-medium">Revised Harris-Benedict Equation:</p>
-            <p>Men: BMR = 13.397W + 4.799H - 5.677A + 88.362</p>
-            <p>Women: BMR = 9.247W + 3.098H - 4.330A + 447.593</p>
-          </div>
-          <div>
-            <p className="font-medium">Katch-McArdle Formula:</p>
-            <p>BMR = 370 + 21.6(1 - F)W</p>
-          </div>
-          <p className="text-xs mt-2">
-            Where: W = weight in kg, H = height in cm, A = age in years, F =
-            body fat percentage
-          </p>
-        </div>
-      </div>
     </div>
   );
 }

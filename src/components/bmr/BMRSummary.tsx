@@ -9,101 +9,126 @@ interface BMRSummaryProps {
 export default function BMRSummary({ results, formValues }: BMRSummaryProps) {
   const unit = formValues.resultUnit === "calories" ? "Calories/day" : "kJ/day";
 
+  const getActivityLevelDescription = (multiplier: number) => {
+    if (multiplier <= 1.2) return "Sedentary";
+    if (multiplier <= 1.375) return "Lightly Active";
+    if (multiplier <= 1.55) return "Moderately Active";
+    if (multiplier <= 1.725) return "Very Active";
+    if (multiplier <= 1.9) return "Extremely Active";
+    return "Super Active";
+  };
+
+  const getFormulaDescription = (formula: string) => {
+    switch (formula) {
+      case "Mifflin-St Jeor":
+        return "Most accurate for general population";
+      case "Harris-Benedict":
+        return "Traditional formula, slightly higher estimates";
+      case "Katch-McArdle":
+        return "Best for lean individuals";
+      default:
+        return "Selected formula";
+    }
+  };
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-gray-800">Result</h2>
-        <button
-          className="text-gray-400 hover:text-gray-600"
-          title="Save this calculation"
-        >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-            />
-          </svg>
-        </button>
-      </div>
+      <h2 className="text-xl font-semibold mb-6 text-gray-800">BMR Analysis</h2>
 
-      <div className="text-center mb-6">
-        <div className="text-3xl font-bold text-green-600 mb-2">
-          BMR = {formatNumber(results.bmr)} {unit}
+      {/* Main BMR Result */}
+      <div className="mb-6">
+        <div className="bg-primary-50 p-4 rounded-lg border border-primary-100">
+          <div className="text-sm text-gray-600 mb-1">Basal Metabolic Rate</div>
+          <div className="text-3xl font-bold text-gray-900 mb-2">
+            {formatNumber(results.bmr)} {unit}
+          </div>
+          <div className="text-lg font-semibold text-gray-800">
+            {getFormulaDescription(results.formula)}
+      </div>
         </div>
-        <p className="text-sm text-gray-600">Using {results.formula} formula</p>
       </div>
 
-      <div className="bg-gray-50 p-4 rounded-md">
-        <h3 className="font-medium text-gray-800 mb-3">
-          Daily calorie needs based on activity level
+      {/* Daily Calorie Needs */}
+      <div className="mb-6">
+        <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
+          Daily Calorie Needs by Activity Level
         </h3>
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-gray-600">
-              Sedentary: little or no exercise
-            </span>
-            <span className="font-medium">
-              {formatNumber(results.activityLevels.sedentary)}
-            </span>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+            <div className="text-sm text-green-600 mb-1">Sedentary</div>
+            <div className="text-lg font-bold text-green-900">
+              {formatNumber(results.activityLevels.sedentary)}{" "}
+              {formValues.resultUnit === "calories" ? "calories" : "kJ"}
+            </div>
+            <div className="text-xs text-green-500 mt-1">
+              Little/no exercise
+            </div>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">Exercise 1-3 times/week</span>
-            <span className="font-medium">
-              {formatNumber(results.activityLevels.lightlyActive)}
-            </span>
+
+          <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
+            <div className="text-sm text-yellow-600 mb-1">Lightly Active</div>
+            <div className="text-lg font-bold text-yellow-900">
+              {formatNumber(results.activityLevels.lightlyActive)}{" "}
+              {formValues.resultUnit === "calories" ? "calories" : "kJ"}
+            </div>
+            <div className="text-xs text-yellow-500 mt-1">
+              Exercise 1-3x/week
+            </div>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">Exercise 4-5 times/week</span>
-            <span className="font-medium">
-              {formatNumber(results.activityLevels.moderatelyActive)}
-            </span>
+
+          <div className="bg-orange-50 p-4 rounded-lg border border-orange-100">
+            <div className="text-sm text-orange-600 mb-1">
+              Moderately Active
+            </div>
+            <div className="text-lg font-bold text-orange-900">
+              {formatNumber(results.activityLevels.moderatelyActive)}{" "}
+              {formValues.resultUnit === "calories" ? "calories" : "kJ"}
+            </div>
+            <div className="text-xs text-orange-500 mt-1">
+              Exercise 4-5x/week
+            </div>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">
-              Daily exercise or intense exercise 3-4 times/week
-            </span>
-            <span className="font-medium">
-              {formatNumber(results.activityLevels.veryActive)}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">
-              Intense exercise 6-7 times/week
-            </span>
-            <span className="font-medium">
-              {formatNumber(results.activityLevels.extremelyActive)}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">
-              Very intense exercise daily, or physical job
-            </span>
-            <span className="font-medium">
-              {formatNumber(results.activityLevels.superActive)}
-            </span>
+
+          <div className="bg-red-50 p-4 rounded-lg border border-red-100">
+            <div className="text-sm text-red-600 mb-1">Very Active</div>
+            <div className="text-lg font-bold text-red-900">
+              {formatNumber(results.activityLevels.veryActive)}{" "}
+              {formValues.resultUnit === "calories" ? "calories" : "kJ"}
+            </div>
+            <div className="text-xs text-red-500 mt-1">Daily exercise</div>
           </div>
         </div>
+      </div>
 
-        <div className="mt-4 pt-3 border-t border-gray-200 text-xs text-gray-500">
-          <p>
-            <strong>Exercise:</strong> 15-30 minutes of elevated heart rate
-            activity.
-          </p>
-          <p>
-            <strong>Intense exercise:</strong> 45-120 minutes of elevated heart
-            rate activity.
-          </p>
-          <p>
-            <strong>Very intense exercise:</strong> 2+ hours of elevated heart
-            rate activity.
-          </p>
+      {/* Health Insights */}
+      <div className="mb-6">
+        <h3 className="text-md font-medium mb-3 text-gray-700 border-b pb-1">
+          Health Insights
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <div className="text-sm text-gray-600 mb-1">Weight Management</div>
+            <div className="text-lg font-bold text-gray-900">
+              {formatNumber(results.activityLevels.sedentary - 500)} -{" "}
+              {formatNumber(results.activityLevels.lightlyActive - 500)}{" "}
+              {formValues.resultUnit === "calories" ? "calories" : "kJ"}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              Calories weight loss (1 lb/week)
+            </div>
+          </div>
+
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <div className="text-sm text-gray-600 mb-1">Muscle Building</div>
+            <div className="text-lg font-bold text-gray-900">
+              {formatNumber(results.activityLevels.moderatelyActive + 300)} -{" "}
+              {formatNumber(results.activityLevels.veryActive + 500)}{" "}
+              {formValues.resultUnit === "calories" ? "calories" : "kJ"}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              Caloric surplus for gains
+            </div>
+          </div>
         </div>
       </div>
     </div>

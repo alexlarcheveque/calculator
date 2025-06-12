@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { BodyFatResults, Gender } from "@/types/bodyFat";
 import BodyCompositionChart from "./BodyCompositionChart";
 import CategoryComparisonChart from "./CategoryComparisonChart";
@@ -10,32 +11,48 @@ interface BodyFatChartsProps {
 }
 
 export default function BodyFatCharts({ results, gender }: BodyFatChartsProps) {
+  const [activeTab, setActiveTab] = useState<"composition" | "categories">(
+    "categories"
+  );
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-6 text-gray-800">
-        Body Composition Analysis
-      </h2>
+      <div className="flex border-b border-gray-200 mb-6">
+        <button
+          onClick={() => setActiveTab("categories")}
+          className={`py-2 px-4 font-medium text-sm ${
+            activeTab === "categories"
+              ? "text-primary-600 border-b-2 border-primary-500"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+          aria-label="View body fat categories chart"
+        >
+          Categories
+        </button>
+        <button
+          onClick={() => setActiveTab("composition")}
+          className={`py-2 px-4 font-medium text-sm mr-4 ${
+            activeTab === "composition"
+              ? "text-primary-600 border-b-2 border-primary-500"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+          aria-label="View body composition chart"
+        >
+          Body Composition
+        </button>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Body Composition Pie Chart */}
-        <div>
-          <h3 className="text-lg font-medium mb-4 text-gray-700">
-            Body Composition
-          </h3>
-          <div className="h-64">
-            <BodyCompositionChart results={results} />
-          </div>
-        </div>
-
-        {/* Category Comparison Chart */}
-        <div className="flex flex-col">
-          <h3 className="text-lg font-medium mb-4 text-gray-700">
-            Body Fat Categories
-          </h3>
-          <div className="flex-1">
+      <div className="w-full">
+        {activeTab === "categories" && (
+          <div>
             <CategoryComparisonChart results={results} gender={gender} />
           </div>
-        </div>
+        )}
+        {activeTab === "composition" && (
+          <div>
+            <BodyCompositionChart results={results} />
+          </div>
+        )}
       </div>
     </div>
   );
