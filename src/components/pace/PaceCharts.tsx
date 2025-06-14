@@ -1,24 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { PaceResults } from "@/types/pace";
-import SplitTimesChart from "./SplitTimesChart";
+import { PaceResults, PaceFormValues } from "@/types/pace";
 import TrainingZonesChart from "./TrainingZonesChart";
 import PerformanceComparisonChart from "./PerformanceComparisonChart";
 
 interface PaceChartsProps {
   results: PaceResults;
+  formValues: PaceFormValues;
 }
 
-type TabType = "splits" | "zones" | "performance";
+type TabType = "zones" | "performance";
 
-export default function PaceCharts({ results }: PaceChartsProps) {
-  const [activeTab, setActiveTab] = useState<TabType>("splits");
+export default function PaceCharts({ results, formValues }: PaceChartsProps) {
+  const [activeTab, setActiveTab] = useState<TabType>("zones");
 
   const tabs = [
-    { id: "splits" as TabType, label: "Split Analysis" },
-    { id: "zones" as TabType, label: "Training Zones" },
     { id: "performance" as TabType, label: "Performance Comparison" },
+    { id: "zones" as TabType, label: "Training Zones" },
   ];
 
   return (
@@ -47,11 +46,15 @@ export default function PaceCharts({ results }: PaceChartsProps) {
       </div>
 
       {/* Chart Content */}
-      <div className="h-96">
-        {activeTab === "splits" && <SplitTimesChart results={results} />}
-        {activeTab === "zones" && <TrainingZonesChart results={results} />}
+      <div className="h-full">
+        {activeTab === "zones" && (
+          <TrainingZonesChart results={results} formValues={formValues} />
+        )}
         {activeTab === "performance" && (
-          <PerformanceComparisonChart results={results} />
+          <PerformanceComparisonChart
+            results={results}
+            formValues={formValues}
+          />
         )}
       </div>
     </div>

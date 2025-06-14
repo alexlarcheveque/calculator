@@ -1,70 +1,145 @@
 "use client";
 
-import { PaceResults } from "@/types/pace";
+import { PaceResults, PaceFormValues, PaceUnit } from "@/types/pace";
 
 interface TrainingZonesChartProps {
   results: PaceResults;
+  formValues: PaceFormValues;
 }
 
 export default function TrainingZonesChart({
   results,
+  formValues,
 }: TrainingZonesChartProps) {
+  // Get the appropriate pace unit suffix
+  const getPaceUnitSuffix = () => {
+    switch (formValues.paceUnit) {
+      case PaceUnit.TIME_PER_MILE:
+        return "/mile";
+      case PaceUnit.TIME_PER_KILOMETER:
+        return "/km";
+      case PaceUnit.MILES_PER_HOUR:
+        return " mph";
+      case PaceUnit.KILOMETERS_PER_HOUR:
+        return " kph";
+      default:
+        return "";
+    }
+  };
+
   // Calculate training zones based on pace
   const calculateTrainingZones = () => {
     if (!results.pace) return null;
 
-    // Extract pace in seconds per mile/km
-    const paceMatch = results.pace.match(/(\d+):(\d+)/);
-    if (!paceMatch) return null;
+    const unitSuffix = getPaceUnitSuffix();
 
-    const paceSeconds = parseInt(paceMatch[1]) * 60 + parseInt(paceMatch[2]);
+    // Handle different pace unit types
+    if (
+      formValues.paceUnit === PaceUnit.TIME_PER_MILE ||
+      formValues.paceUnit === PaceUnit.TIME_PER_KILOMETER
+    ) {
+      // Time-based pace (MM:SS format)
+      const paceMatch = results.pace.match(/(\d+):(\d+)/);
+      if (!paceMatch) return null;
 
-    return [
-      {
-        name: "Recovery",
-        pace: `${Math.floor((paceSeconds * 1.25) / 60)}:${String(
-          Math.floor((paceSeconds * 1.25) % 60)
-        ).padStart(2, "0")}`,
-        description: "60-70% effort",
-        color: "bg-blue-400",
-        textColor: "text-blue-800",
-        bgColor: "bg-blue-50",
-        percentage: 60,
-      },
-      {
-        name: "Easy Run",
-        pace: `${Math.floor((paceSeconds * 1.15) / 60)}:${String(
-          Math.floor((paceSeconds * 1.15) % 60)
-        ).padStart(2, "0")}`,
-        description: "70-80% effort",
-        color: "bg-green-400",
-        textColor: "text-green-800",
-        bgColor: "bg-green-50",
-        percentage: 75,
-      },
-      {
-        name: "Tempo",
-        pace: `${Math.floor((paceSeconds * 0.95) / 60)}:${String(
-          Math.floor((paceSeconds * 0.95) % 60)
-        ).padStart(2, "0")}`,
-        description: "85-90% effort",
-        color: "bg-yellow-400",
-        textColor: "text-yellow-800",
-        bgColor: "bg-yellow-50",
-        percentage: 87.5,
-      },
-      {
-        name: "Interval",
-        pace: `${Math.floor((paceSeconds * 0.85) / 60)}:${String(
-          Math.floor((paceSeconds * 0.85) % 60)
-        ).padStart(2, "0")}`,
-        description: "95-100% effort",
-        color: "bg-red-400",
-        textColor: "text-red-800",
-        bgColor: "bg-red-50",
-        percentage: 97.5,
-      },
-    ];
+      const paceSeconds = parseInt(paceMatch[1]) * 60 + parseInt(paceMatch[2]);
+
+      return [
+        {
+          name: "Recovery",
+          pace: `${Math.floor((paceSeconds * 1.25) / 60)}:${String(
+            Math.floor((paceSeconds * 1.25) % 60)
+          ).padStart(2, "0")}${unitSuffix}`,
+          description: "60-70% effort",
+          color: "bg-blue-400",
+          textColor: "text-blue-800",
+          bgColor: "bg-blue-50",
+          percentage: 60,
+        },
+        {
+          name: "Easy Run",
+          pace: `${Math.floor((paceSeconds * 1.15) / 60)}:${String(
+            Math.floor((paceSeconds * 1.15) % 60)
+          ).padStart(2, "0")}${unitSuffix}`,
+          description: "70-80% effort",
+          color: "bg-green-400",
+          textColor: "text-green-800",
+          bgColor: "bg-green-50",
+          percentage: 75,
+        },
+        {
+          name: "Tempo",
+          pace: `${Math.floor((paceSeconds * 0.95) / 60)}:${String(
+            Math.floor((paceSeconds * 0.95) % 60)
+          ).padStart(2, "0")}${unitSuffix}`,
+          description: "85-90% effort",
+          color: "bg-yellow-400",
+          textColor: "text-yellow-800",
+          bgColor: "bg-yellow-50",
+          percentage: 87.5,
+        },
+        {
+          name: "Interval",
+          pace: `${Math.floor((paceSeconds * 0.85) / 60)}:${String(
+            Math.floor((paceSeconds * 0.85) % 60)
+          ).padStart(2, "0")}${unitSuffix}`,
+          description: "95-100% effort",
+          color: "bg-red-400",
+          textColor: "text-red-800",
+          bgColor: "bg-red-50",
+          percentage: 97.5,
+        },
+      ];
+    } else if (
+      formValues.paceUnit === PaceUnit.MILES_PER_HOUR ||
+      formValues.paceUnit === PaceUnit.KILOMETERS_PER_HOUR
+    ) {
+      // Speed-based pace (numeric format like mph, kph, m/min, yd/min)
+      const currentSpeed = parseFloat(results.pace);
+      if (isNaN(currentSpeed)) return null;
+
+      return [
+        {
+          name: "Recovery",
+          pace: `${(currentSpeed * 0.8).toFixed(1)}${unitSuffix}`,
+          description: "60-70% effort",
+          color: "bg-blue-400",
+          textColor: "text-blue-800",
+          bgColor: "bg-blue-50",
+          percentage: 60,
+        },
+        {
+          name: "Easy Run",
+          pace: `${(currentSpeed * 0.87).toFixed(1)}${unitSuffix}`,
+          description: "70-80% effort",
+          color: "bg-green-400",
+          textColor: "text-green-800",
+          bgColor: "bg-green-50",
+          percentage: 75,
+        },
+        {
+          name: "Tempo",
+          pace: `${(currentSpeed * 1.05).toFixed(1)}${unitSuffix}`,
+          description: "85-90% effort",
+          color: "bg-yellow-400",
+          textColor: "text-yellow-800",
+          bgColor: "bg-yellow-50",
+          percentage: 87.5,
+        },
+        {
+          name: "Interval",
+          pace: `${(currentSpeed * 1.18).toFixed(1)}${unitSuffix}`,
+          description: "95-100% effort",
+          color: "bg-red-400",
+          textColor: "text-red-800",
+          bgColor: "bg-red-50",
+          percentage: 97.5,
+        },
+      ];
+    } else {
+      // Fallback for unsupported pace units
+      return null;
+    }
   };
 
   const trainingZones = calculateTrainingZones();
@@ -90,7 +165,7 @@ export default function TrainingZonesChart({
         </p>
       </div>
 
-      <div className="flex-1 space-y-6">
+      <div className="flex-1 space-y-6 h-96">
         {trainingZones.map((zone, index) => (
           <div
             key={zone.name}

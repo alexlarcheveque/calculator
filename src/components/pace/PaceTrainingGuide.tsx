@@ -24,25 +24,21 @@ export default function PaceTrainingGuide() {
       gridItems: [
         {
           title: "Easy/Base Pace",
-          titleColor: "text-green-600",
           description:
             "70-80% of max heart rate. Builds aerobic base, promotes recovery. Should feel conversational and sustainable for long periods.",
         },
         {
           title: "Tempo Pace",
-          titleColor: "text-yellow-600",
           description:
             "85-90% max heart rate. Comfortably hard effort. Improves lactate threshold and race pace endurance.",
         },
         {
           title: "Interval Pace",
-          titleColor: "text-red-600",
           description:
             "95-100% max heart rate. Hard, sustainable for 3-8 minutes. Improves VO2 max and speed endurance.",
         },
         {
           title: "Recovery Pace",
-          titleColor: "text-blue-600",
           description:
             "60-70% max heart rate. Very easy effort for active recovery between hard sessions.",
         },

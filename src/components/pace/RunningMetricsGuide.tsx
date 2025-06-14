@@ -24,25 +24,21 @@ export default function RunningMetricsGuide() {
       gridItems: [
         {
           title: "Pace",
-          titleColor: "text-blue-600",
           description:
             "Time per distance unit (min/mile or min/km). Primary metric for training intensity and race prediction.",
         },
         {
           title: "Heart Rate",
-          titleColor: "text-red-600",
           description:
             "Beats per minute. Objective measure of effort level, useful for training zones and recovery monitoring.",
         },
         {
           title: "Cadence",
-          titleColor: "text-green-600",
           description:
             "Steps per minute. Optimal range is 170-190 SPM. Higher cadence often means better efficiency.",
         },
         {
           title: "Stride Length",
-          titleColor: "text-purple-600",
           description:
             "Distance per step. Calculated as speed ÷ cadence. Longer strides at same cadence = faster pace.",
         },

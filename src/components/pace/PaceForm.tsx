@@ -12,9 +12,14 @@ import { getPresetDistances } from "@/utils/paceCalculations";
 interface PaceFormProps {
   values: PaceFormValues;
   onChange: (name: string, value: string | number) => void;
+  onPresetChange: (updates: Partial<PaceFormValues>) => void;
 }
 
-export default function PaceForm({ values, onChange }: PaceFormProps) {
+export default function PaceForm({
+  values,
+  onChange,
+  onPresetChange,
+}: PaceFormProps) {
   const [activeTab, setActiveTab] = useState<CalculatorType>(
     CalculatorType.PACE
   );
@@ -25,7 +30,24 @@ export default function PaceForm({ values, onChange }: PaceFormProps) {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    onChange(name, value);
+
+    // If distance unit is changing, automatically update pace unit too
+    if (name === "distanceUnit") {
+      const updates: Partial<PaceFormValues> = {
+        distanceUnit: value as DistanceUnit,
+      };
+
+      // Automatically set the appropriate pace unit
+      if (value === DistanceUnit.MILES) {
+        updates.paceUnit = PaceUnit.TIME_PER_MILE;
+      } else if (value === DistanceUnit.KILOMETERS) {
+        updates.paceUnit = PaceUnit.TIME_PER_KILOMETER;
+      }
+
+      onPresetChange(updates);
+    } else {
+      onChange(name, value);
+    }
   };
 
   const handleTabChange = (calculatorType: CalculatorType) => {
@@ -34,12 +56,25 @@ export default function PaceForm({ values, onChange }: PaceFormProps) {
   };
 
   const handlePresetDistance = (distance: number, unit: DistanceUnit) => {
-    onChange("distance", distance);
-    onChange("distanceUnit", unit);
+    const updates: Partial<PaceFormValues> = {
+      distance,
+      distanceUnit: unit,
+    };
+
+    // Automatically set the appropriate pace unit based on the distance unit
+    if (unit === DistanceUnit.MILES) {
+      updates.paceUnit = PaceUnit.TIME_PER_MILE;
+    } else if (unit === DistanceUnit.KILOMETERS) {
+      updates.paceUnit = PaceUnit.TIME_PER_KILOMETER;
+    }
+
+    onPresetChange(updates);
   };
 
   const isTimeBasedPaceUnit = (unit: PaceUnit) => {
-    return unit === PaceUnit.TIME_PER_MILE || unit === PaceUnit.TIME_PER_KILOMETER;
+    return (
+      unit === PaceUnit.TIME_PER_MILE || unit === PaceUnit.TIME_PER_KILOMETER
+    );
   };
 
   return (
@@ -85,14 +120,15 @@ export default function PaceForm({ values, onChange }: PaceFormProps) {
                 type="text"
                 id="time"
                 name="time"
+                pattern="^[0-9]{2}:[0-9]{2}:[0-9]{2}$"
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 value={values.time}
                 onChange={handleChange}
-                placeholder="hh:mm:ss"
+                placeholder="00:50:25"
               />
             </div>
             <p className="mt-1 text-xs text-gray-500">
-              Format: hh:mm:ss (e.g., 00:50:25 or 5:3)
+              Format: hh:mm:ss (e.g., 00:50:25)
             </p>
           </div>
         )}
@@ -127,11 +163,8 @@ export default function PaceForm({ values, onChange }: PaceFormProps) {
                   onChange={handleChange}
                   className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 >
-                  {Object.values(DistanceUnit).map((unit) => (
-                    <option key={unit} value={unit}>
-                      {unit}
-                    </option>
-                  ))}
+                  <option value={DistanceUnit.MILES}>Miles</option>
+                  <option value={DistanceUnit.KILOMETERS}>Kilometers</option>
                 </select>
               </div>
             </div>
@@ -170,18 +203,27 @@ export default function PaceForm({ values, onChange }: PaceFormProps) {
             <div className="flex space-x-2">
               <div className="flex-1">
                 <input
-                  type={isTimeBasedPaceUnit(values.paceUnit) ? "text" : "number"}
+                  type={
+                    isTimeBasedPaceUnit(values.paceUnit) ? "text" : "number"
+                  }
                   id="pace"
                   name="pace"
+                  pattern={
+                    isTimeBasedPaceUnit(values.paceUnit)
+                      ? "^[0-9]{2}:[0-9]{2}:[0-9]{2}$"
+                      : undefined
+                  }
                   className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                   value={values.pace}
                   onChange={handleChange}
                   placeholder={
                     isTimeBasedPaceUnit(values.paceUnit)
-                      ? "hh:mm:ss"
+                      ? "00:08:10"
                       : "Enter speed"
                   }
-                  step={isTimeBasedPaceUnit(values.paceUnit) ? undefined : "0.1"}
+                  step={
+                    isTimeBasedPaceUnit(values.paceUnit) ? undefined : "0.1"
+                  }
                 />
               </div>
               <div className="w-40">
@@ -192,24 +234,14 @@ export default function PaceForm({ values, onChange }: PaceFormProps) {
                   className="block w-full py-2 px-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value={PaceUnit.TIME_PER_MILE}>Per Mile</option>
+                  <option value={PaceUnit.MILES_PER_HOUR}>
+                    Miles Per Hour
+                  </option>
                   <option value={PaceUnit.TIME_PER_KILOMETER}>
                     Per Kilometer
                   </option>
-                  <option value={PaceUnit.MILES_PER_HOUR}>Miles Per Hour</option>
                   <option value={PaceUnit.KILOMETERS_PER_HOUR}>
                     Kilometers Per Hour
-                  </option>
-                  <option value={PaceUnit.METERS_PER_MINUTE}>
-                    Meters Per Minute
-                  </option>
-                  <option value={PaceUnit.METERS_PER_SECOND}>
-                    Meters Per Second
-                  </option>
-                  <option value={PaceUnit.YARDS_PER_MINUTE}>
-                    Yards Per Minute
-                  </option>
-                  <option value={PaceUnit.YARDS_PER_SECOND}>
-                    Yards Per Second
                   </option>
                 </select>
               </div>
@@ -221,40 +253,7 @@ export default function PaceForm({ values, onChange }: PaceFormProps) {
             )}
           </div>
         )}
-
-        {/* Calculate Button */}
-        <div className="pt-4">
-          <button
-            type="button"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-          >
-            Calculate
-          </button>
-        </div>
-
-        {/* Clear Button */}
-        <div>
-          <button
-            type="button"
-            onClick={() => {
-              onChange("time", "");
-              onChange("distance", 0);
-              onChange("pace", "");
-            }}
-            className="w-full bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
-          >
-            Clear
-          </button>
-        </div>
-      </div>
-
-      <div className="mt-4 text-xs text-gray-500">
-        <p>
-          Note that placeholder zeros do not need to be entered in the "Time" or
-          "Pace" field. For example, the time 5 minutes 3 seconds does not need
-          to be entered as 00:05:03, and can be entered as 5:3.
-        </p>
       </div>
     </div>
   );
-} 
+}

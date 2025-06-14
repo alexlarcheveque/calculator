@@ -4,9 +4,6 @@ import { useState, useEffect } from "react";
 import PaceForm from "@/components/pace/PaceForm";
 import PaceSummary from "@/components/pace/PaceSummary";
 import PaceCharts from "@/components/pace/PaceCharts";
-import MultipointCalculator from "@/components/pace/MultipointCalculator";
-import PaceConverter from "@/components/pace/PaceConverter";
-import FinishTimeCalculator from "@/components/pace/FinishTimeCalculator";
 import WorldRecordsTable from "@/components/pace/WorldRecordsTable";
 import PaceTrainingGuide from "@/components/pace/PaceTrainingGuide";
 import RunningMetricsGuide from "@/components/pace/RunningMetricsGuide";
@@ -25,12 +22,12 @@ export default function PacePage() {
   const [formValues, setFormValues] = useLocalStorage<PaceFormValues>(
     "paceFormValues",
     {
-    calculatorType: CalculatorType.PACE,
-    time: "00:50:25",
-    distance: 5,
-    distanceUnit: DistanceUnit.MILES,
-    pace: "00:08:10",
-    paceUnit: PaceUnit.TIME_PER_MILE,
+      calculatorType: CalculatorType.PACE,
+      time: "00:50:25",
+      distance: 5,
+      distanceUnit: DistanceUnit.MILES,
+      pace: "00:08:10",
+      paceUnit: PaceUnit.TIME_PER_MILE,
     }
   );
 
@@ -60,6 +57,10 @@ export default function PacePage() {
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handlePresetChange = (updates: Partial<PaceFormValues>) => {
+    setFormValues((prev) => ({ ...prev, ...updates }));
+  };
+
   const getCalculationTypeLabel = () => {
     switch (formValues.calculatorType) {
       case CalculatorType.PACE:
@@ -78,18 +79,24 @@ export default function PacePage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
         {/* Input form */}
         <div className="lg:col-span-4">
-          <PaceForm values={formValues} onChange={handleInputChange} />
+          <PaceForm
+            values={formValues}
+            onChange={handleInputChange}
+            onPresetChange={handlePresetChange}
+          />
         </div>
 
         {/* Results */}
         <div className="lg:col-span-8 space-y-8">
           {results && (
             <>
-            <PaceSummary
-              results={results}
-              calculationType={getCalculationTypeLabel()}
-            />
-              <PaceCharts results={results} />
+              <PaceSummary
+                results={results}
+                calculationType={getCalculationTypeLabel()}
+                formValues={formValues}
+              />
+              <PaceCharts results={results} formValues={formValues} />
+              <WorldRecordsTable />
             </>
           )}
 
@@ -99,27 +106,6 @@ export default function PacePage() {
             </p>
           )}
         </div>
-      </div>
-
-      {/* Additional Calculators */}
-      <div className="space-y-8 mb-16">
-        {/* Multipoint Calculator */}
-        <div id="multipoint">
-          <MultipointCalculator />
-        </div>
-
-        {/* Pace Converter */}
-        <div id="paceconverter">
-          <PaceConverter />
-        </div>
-
-        {/* Finish Time Calculator */}
-        <div id="finishtime">
-          <FinishTimeCalculator />
-        </div>
-
-        {/* World Records Table */}
-        <WorldRecordsTable />
       </div>
 
       {/* Info Sections */}

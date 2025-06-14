@@ -125,18 +125,6 @@ export default function PregnancyFAQSection() {
           </div>
         ))}
       </div>
-
-      <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-        <h3 className="text-lg font-semibold text-blue-900 mb-2">
-          Important Note
-        </h3>
-        <p className="text-blue-800 text-sm">
-          This calculator provides estimates for educational purposes only.
-          Always consult with your healthcare provider for personalized medical
-          advice and accurate pregnancy dating. Every pregnancy is unique, and
-          individual circumstances may affect timing and development.
-        </p>
-      </div>
     </div>
   );
 }
