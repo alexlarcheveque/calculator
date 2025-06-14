@@ -6,21 +6,22 @@ export default function FertilityTips() {
       type: "text",
       content: (
         <>
-          Optimizing fertility involves lifestyle choices, timing, and
-          understanding your body's signals. Both partners play important roles
-          in conception, and small changes can significantly improve your
-          chances of getting pregnant.
+          Optimizing fertility involves understanding your body's signals,
+          making healthy lifestyle choices, and timing intercourse
+          strategically. Both partners play important roles in conception
+          success, and simple changes can significantly improve your chances.
         </>
       ),
     },
     {
       type: "subheader",
-      heading: "Timing and Tracking",
+      heading: "Tracking Your Fertile Window",
       headingLevel: "h3",
       content: (
         <>
-          Accurate timing is crucial for conception. Understanding and tracking
-          your fertile window maximizes your chances of pregnancy.
+          The most effective approach combines multiple tracking methods to
+          identify your most fertile days. Focus on timing intercourse every
+          other day during your fertile window.
         </>
       ),
     },
@@ -29,104 +30,61 @@ export default function FertilityTips() {
       gridCols: 2,
       gridItems: [
         {
-          title: "Ovulation Tracking Methods",
+          title: "Natural Signs",
           description:
-            "Basal body temperature tracking\nCervical mucus monitoring\nOvulation predictor kits\nFertility apps and calendars\nOvulation pain awareness",
+            "Track cervical mucus changes (clear and stretchy during fertile days), basal body temperature, and ovulation pain. These free methods provide valuable fertility insights.",
         },
         {
-          title: "Best Timing for Intercourse",
+          title: "Modern Tools",
           description:
-            "Every other day during fertile window\nDay before and day of ovulation\nRegular intercourse throughout cycle\nAvoid excessive frequency\nMorning timing may be optimal",
+            "Ovulation predictor kits detect hormone surges 24-36 hours before ovulation. Fertility apps and wearable devices can help automate tracking and identify patterns.",
         },
         {
-          title: "Signs of Ovulation",
+          title: "Best Timing",
           description:
-            "Clear, stretchy cervical mucus\nSlight temperature rise\nMild pelvic pain (mittelschmerz)\nIncreased libido\nBreast tenderness",
+            "Have intercourse every other day during your fertile window, especially the 2 days before ovulation. This ensures fresh sperm without causing depletion.",
         },
         {
-          title: "Cycle Irregularities",
+          title: "Cycle Tracking",
           description:
-            "Track for 3+ months\nConsult healthcare provider\nConsider underlying conditions\nStress management\nWeight optimization",
+            "Monitor your cycles for 2-3 months to identify patterns. Note cycle length, ovulation timing, and factors that might affect your cycle like stress or illness.",
         },
       ],
     },
     {
       type: "subheader",
-      heading: "Lifestyle Factors for Both Partners",
+      heading: "Lifestyle for Fertility",
       headingLevel: "h3",
+      content: (
+        <>
+          Healthy lifestyle choices support optimal fertility for both partners.
+          Focus on nutrition, exercise, and avoiding harmful substances.
+        </>
+      ),
     },
     {
       type: "grid",
       gridCols: 2,
       gridItems: [
         {
-          title: "Nutrition for Fertility",
+          title: "Nutrition Essentials",
           description:
-            "Folic acid: 400-800 mcg daily\nAntioxidant-rich foods\nOmega-3 fatty acids\nWhole grains and lean proteins\nLimit processed foods\nStay hydrated",
+            "Take folic acid (400-800 mcg daily), eat antioxidant-rich foods, include omega-3 fatty acids, and maintain a healthy weight. Stay hydrated and limit processed foods.",
         },
         {
-          title: "Exercise and Weight",
+          title: "Exercise & Sleep",
           description:
-            "Maintain healthy BMI (18.5-24.9)\nModerate exercise routine\nAvoid excessive training\nYoga and stress reduction\nRegular sleep schedule\n7-9 hours nightly",
+            "Moderate exercise improves fertility, but avoid excessive training. Get 7-9 hours of quality sleep and manage stress through relaxation techniques.",
         },
-      ],
-    },
-    {
-      type: "subheader",
-      heading: "What to Avoid",
-      headingLevel: "h3",
-    },
-    {
-      type: "list",
-      listItems: [
         {
-          label: "Smoking and Tobacco",
+          title: "What to Avoid",
           description:
-            "Reduces fertility in both partners, affects egg and sperm quality",
+            "Quit smoking, limit alcohol to 1-2 drinks per week, keep caffeine under 200mg daily, and minimize exposure to environmental toxins.",
         },
         {
-          label: "Excessive Alcohol",
-          description: "Limit to 1-2 drinks per week when trying to conceive",
-        },
-        {
-          label: "High Caffeine Intake",
-          description: "Limit to 200mg daily (about 1-2 cups of coffee)",
-        },
-        {
-          label: "Extreme Stress",
+          title: "Male Fertility",
           description:
-            "Chronic stress can disrupt ovulation and hormone balance",
-        },
-        {
-          label: "Environmental Toxins",
-          description:
-            "Pesticides, heavy metals, and certain chemicals can affect fertility",
-        },
-        {
-          label: "Excessive Heat (Men)",
-          description:
-            "Hot tubs, saunas, tight clothing can reduce sperm production",
-        },
-      ],
-    },
-    {
-      type: "subheader",
-      heading: "Male Fertility Optimization",
-      headingLevel: "h3",
-    },
-    {
-      type: "grid",
-      gridCols: 2,
-      gridItems: [
-        {
-          title: "Sperm Health",
-          description:
-            "Zinc and vitamin C supplements\nAntioxidant-rich diet\nRegular exercise\nAvoid excessive heat\nLimit alcohol and smoking\nManage stress levels",
-        },
-        {
-          title: "Lifestyle Factors",
-          description:
-            "Maintain healthy weight\nWear loose-fitting underwear\nLimit laptop use on lap\nAvoid recreational drugs\nGet adequate sleep\nRegular medical checkups",
+            "Men should focus on antioxidants, avoid excessive heat (hot tubs, tight clothing), maintain healthy weight, and limit alcohol and smoking.",
         },
       ],
     },
@@ -134,29 +92,26 @@ export default function FertilityTips() {
       type: "subheader",
       heading: "When to Seek Help",
       headingLevel: "h3",
+      content: (
+        <>
+          Most couples conceive naturally, but knowing when to seek professional
+          guidance can save time and reduce stress.
+        </>
+      ),
     },
     {
-      type: "list",
-      listItems: [
+      type: "grid",
+      gridCols: 2,
+      gridItems: [
         {
-          label: "Under 35 years old",
-          description: "After 12 months of trying without success",
+          title: "Timing Guidelines",
+          description:
+            "Under 35: Try for 12 months before seeking help. Over 35: Consult a specialist after 6 months. Earlier consultation if you have known fertility concerns.",
         },
         {
-          label: "35 years or older",
-          description: "After 6 months of trying without success",
-        },
-        {
-          label: "Irregular cycles",
-          description: "Cycles shorter than 21 days or longer than 35 days",
-        },
-        {
-          label: "Known medical conditions",
-          description: "PCOS, endometriosis, previous pelvic infections",
-        },
-        {
-          label: "Male factor concerns",
-          description: "Previous injuries, infections, or fertility issues",
+          title: "Red Flags",
+          description:
+            "Irregular cycles (shorter than 21 days or longer than 35 days), known conditions like PCOS or endometriosis, or previous fertility issues.",
         },
       ],
     },
@@ -164,26 +119,12 @@ export default function FertilityTips() {
       type: "callout",
       callout: {
         type: "success",
-        title: "Remember",
+        title: "Stay Positive",
         content:
-          "Conception is a natural process that takes time. Most healthy couples conceive within 12 months of trying. Stay positive, maintain healthy habits, and don't hesitate to seek professional guidance when needed.",
-      },
-    },
-    {
-      type: "callout",
-      callout: {
-        type: "warning",
-        title: "Important",
-        content:
-          "If you have any underlying health conditions or concerns about fertility, consult with a healthcare provider before trying to conceive. They can provide personalized advice and necessary testing.",
+          "Conception is a natural process that takes time. Most healthy couples conceive within 12 months. Focus on healthy habits, be patient with your body, and don't hesitate to seek support when needed.",
       },
     },
   ];
 
-  return (
-    <InfoCard
-      title="Fertility Optimization & Conception Tips"
-      sections={sections}
-    />
-  );
+  return <InfoCard title="Fertility Optimization Tips" sections={sections} />;
 }

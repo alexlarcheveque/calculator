@@ -6,22 +6,23 @@ export default function ConceptionBasics() {
       type: "text",
       content: (
         <>
-          Understanding conception and fertility timing is crucial for couples
-          trying to conceive or those wanting to understand their reproductive
-          cycle. Conception occurs when a sperm fertilizes an egg, typically
-          during the fertile window around ovulation.
+          Understanding conception timing is essential for couples planning to
+          start a family. Conception occurs when sperm fertilizes an egg during
+          ovulation, creating the beginning of pregnancy. Success depends on
+          timing intercourse during your fertile window.
         </>
       ),
     },
     {
       type: "subheader",
-      heading: "The Conception Process",
+      heading: "How Conception Works",
       headingLevel: "h3",
       content: (
         <>
-          Conception is a complex process that involves precise timing and
-          optimal conditions. Understanding this process helps identify the best
-          times for conception to occur.
+          Ovulation typically occurs 12-16 days before your next period. The
+          released egg survives 12-24 hours, while sperm can live up to 5 days
+          in the female reproductive tract. This creates a fertile window of
+          approximately 6 days when pregnancy is possible.
         </>
       ),
     },
@@ -32,84 +33,55 @@ export default function ConceptionBasics() {
         {
           title: "Ovulation",
           description:
-            "The release of a mature egg from the ovary, typically occurring 12-16 days before the next menstrual period. The egg survives for 12-24 hours after release.",
+            "The release of a mature egg from the ovary. Occurs about 14 days before your next period. The egg survives 12-24 hours after release.",
         },
         {
           title: "Fertilization",
           description:
-            "When sperm meets egg in the fallopian tube. Sperm can survive in the female reproductive tract for up to 5 days, creating a fertile window.",
+            "When sperm meets egg in the fallopian tube. Sperm can survive up to 5 days, creating your fertile window.",
         },
         {
           title: "Implantation",
           description:
-            "The fertilized egg (blastocyst) attaches to the uterine wall, typically 6-12 days after conception. This is when pregnancy officially begins.",
+            "The fertilized embryo attaches to the uterine wall 6-12 days after conception. This is when pregnancy officially begins.",
         },
         {
-          title: "Early Development",
+          title: "Best Timing",
           description:
-            "Cell division begins immediately after fertilization. The embryo travels down the fallopian tube to the uterus over 6-7 days.",
+            "Highest conception chances occur 2 days before ovulation through ovulation day. Track your cycle to identify these days.",
         },
       ],
     },
     {
       type: "subheader",
-      heading: "Menstrual Cycle and Fertility",
+      heading: "Understanding Your Cycle",
       headingLevel: "h3",
       content: (
         <>
-          The menstrual cycle creates a monthly opportunity for conception.
-          Understanding cycle phases helps identify the most fertile days.
+          Normal cycles range from 21-35 days. The key is identifying when you
+          ovulate, which typically happens 12-16 days before your next period,
+          regardless of cycle length.
         </>
       ),
-    },
-    {
-      type: "list",
-      listItems: [
-        {
-          label: "Menstrual Phase (Days 1-5)",
-          description:
-            "Shedding of the uterine lining. Day 1 is the first day of full menstrual flow",
-        },
-        {
-          label: "Follicular Phase (Days 1-14)",
-          description:
-            "Egg maturation in the ovaries. Estrogen levels rise, preparing the body for ovulation",
-        },
-        {
-          label: "Ovulation (Around Day 14)",
-          description:
-            "Egg release from the ovary. Most fertile time of the cycle",
-        },
-        {
-          label: "Luteal Phase (Days 15-28)",
-          description:
-            "Uterine lining thickens. If no pregnancy occurs, hormone levels drop and menstruation begins",
-        },
-      ],
-    },
-    {
-      type: "subheader",
-      heading: "Fertile Window Calculation",
-      headingLevel: "h3",
     },
     {
       type: "grid",
       gridCols: 3,
       gridItems: [
         {
-          title: "Standard Cycle (28 days)",
+          title: "Short Cycles (21-25 days)",
           description:
-            "Ovulation: Day 14\nFertile window: Days 9-14\nBest conception days: Days 12-14",
+            "Ovulation occurs earlier, around days 7-11. Start tracking fertility signs immediately after your period ends.",
         },
         {
-          title: "Shorter Cycle (24 days)",
+          title: "Average Cycles (26-32 days)",
           description:
-            "Ovulation: Day 10\nFertile window: Days 5-10\nBest conception days: Days 8-10",
+            "Ovulation typically occurs between days 12-18. Most women fall into this category with predictable patterns.",
         },
         {
-          title: "Longer Cycle (35 days)",
+          title: "Long Cycles (33+ days)",
           description:
-            "Ovulation: Day 21\nFertile window: Days 16-21\nBest conception days: Days 19-21",
+            "Later ovulation, often days 19-25 or later. Consider ovulation predictor kits for more precise timing.",
         },
       ],
     },
@@ -117,16 +89,16 @@ export default function ConceptionBasics() {
       type: "callout",
       callout: {
         type: "info",
-        title: "Important Note",
+        title: "Remember",
         content:
-          "Cycle lengths can vary between individuals and even month to month. These calculations provide estimates based on average cycles. For more precise timing, consider tracking ovulation signs or using ovulation predictor kits.",
+          "Every woman's cycle is unique and can vary month to month. Track for 2-3 cycles to understand your patterns. Most healthy couples conceive within 12 months of trying.",
       },
     },
   ];
 
   return (
     <InfoCard
-      title="Understanding Conception & Fertility"
+      title="Understanding Conception & Fertility Basics"
       sections={sections}
     />
   );

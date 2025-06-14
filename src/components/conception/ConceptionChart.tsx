@@ -1,259 +1,359 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
+import { useState } from "react";
 import { ConceptionResults, FertilityPeriod } from "@/types/conception";
 import { formatShortDate } from "@/utils/conceptionCalculations";
-import { Chart as ChartJS } from "chart.js/auto";
-
-// Dynamically import Chart.js components to avoid SSR issues
-const Bar = dynamic(() => import("react-chartjs-2").then((mod) => mod.Bar), {
-  ssr: false,
-  loading: () => (
-    <div className="h-64 flex items-center justify-center">
-      Loading chart...
-    </div>
-  ),
-});
 
 interface ConceptionChartProps {
   results: ConceptionResults;
   multipleCycles: FertilityPeriod[];
+  cycleLength: number;
 }
 
 export default function ConceptionChart({
   results,
   multipleCycles,
+  cycleLength,
 }: ConceptionChartProps) {
-  const [isClient, setIsClient] = useState(false);
-  const [chartReady, setChartReady] = useState(false);
+  const [activeTab, setActiveTab] = useState<"current" | "upcoming">("current");
 
-  useEffect(() => {
-    setIsClient(true);
+  const getCurrentMonthCalendar = () => {
+    // Use the ovulation date to determine which month to show
+    const ovulationDate = results.ovulationDate;
+    const year = ovulationDate.getFullYear();
+    const month = ovulationDate.getMonth();
 
-    // Dynamically import and register Chart.js components
-    const initChart = async () => {
-      const {
-        Chart,
-        CategoryScale,
-        LinearScale,
-        BarElement,
-        Title,
-        Tooltip,
-        Legend,
-      } = await import("chart.js");
+    // Get first day of month and how many days
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
 
-      ChartJS.register(
-        CategoryScale,
-        LinearScale,
-        BarElement,
-        Title,
-        Tooltip,
-        Legend
-      );
+    // Create calendar grid
+    const calendar = [];
+    let date = 1;
 
-      setChartReady(true);
-    };
-
-    initChart();
-  }, []);
-
-  const generateTimelineData = () => {
-    const startDate = new Date(results.fertilityWindowStart);
-    startDate.setDate(startDate.getDate() - 2);
-
-    const endDate = new Date(results.fertilityWindowEnd);
-    endDate.setDate(endDate.getDate() + 2);
-
-    const labels: string[] = [];
-    const fertilityData: number[] = [];
-    const ovulationData: number[] = [];
-    const conceptionData: number[] = [];
-
-    const currentDate = new Date(startDate);
-
-    while (currentDate <= endDate) {
-      const dateStr = formatShortDate(currentDate);
-      labels.push(dateStr);
-
-      const isFertile =
-        currentDate >= results.fertilityWindowStart &&
-        currentDate <= results.fertilityWindowEnd;
-      fertilityData.push(isFertile ? 1 : 0);
-
-      const isOvulation =
-        currentDate.toDateString() === results.ovulationDate.toDateString();
-      ovulationData.push(isOvulation ? 1.2 : 0);
-
-      const isConception =
-        currentDate >= results.conceptionDateRange.earliest &&
-        currentDate <= results.conceptionDateRange.latest;
-      conceptionData.push(isConception ? 0.8 : 0);
-
-      currentDate.setDate(currentDate.getDate() + 1);
+    // Create 6 weeks (42 days) to ensure full month display
+    for (let week = 0; week < 6; week++) {
+      const weekDays = [];
+      for (let day = 0; day < 7; day++) {
+        if (week === 0 && day < startingDayOfWeek) {
+          weekDays.push(null); // Empty cell
+        } else if (date > daysInMonth) {
+          weekDays.push(null); // Empty cell
+        } else {
+          weekDays.push(new Date(year, month, date));
+          date++;
+        }
+      }
+      calendar.push(weekDays);
+      if (date > daysInMonth) break;
     }
 
-    return {
-      labels,
-      datasets: [
-        {
-          label: "Fertility Window",
-          data: fertilityData,
-          backgroundColor: "rgba(34, 197, 94, 0.6)",
-          borderColor: "rgba(34, 197, 94, 1)",
-          borderWidth: 1,
-        },
-        {
-          label: "Most Likely Conception",
-          data: conceptionData,
-          backgroundColor: "rgba(251, 191, 36, 0.6)",
-          borderColor: "rgba(251, 191, 36, 1)",
-          borderWidth: 1,
-        },
-        {
-          label: "Ovulation Day",
-          data: ovulationData,
-          backgroundColor: "rgba(236, 72, 153, 0.8)",
-          borderColor: "rgba(236, 72, 153, 1)",
-          borderWidth: 2,
-        },
-      ],
-    };
+    return calendar;
   };
 
-  const generateCycleData = () => {
-    const labels = multipleCycles.map((cycle) => `Cycle ${cycle.cycleNumber}`);
-    const ovulationDates = multipleCycles.map((cycle) =>
-      cycle.ovulationDate.getDate()
-    );
+  const getUpcomingCyclesCalendar = () => {
+    // Show the next cycle's month based on the current ovulation date
+    const currentOvulation = results.ovulationDate;
+    const nextCycleDate = new Date(currentOvulation);
+    nextCycleDate.setDate(nextCycleDate.getDate() + cycleLength);
+    const year = nextCycleDate.getFullYear();
+    const month = nextCycleDate.getMonth();
 
-    return {
-      labels,
-      datasets: [
-        {
-          label: "Ovulation Day of Month",
-          data: ovulationDates,
-          backgroundColor: "rgba(147, 51, 234, 0.6)",
-          borderColor: "rgba(147, 51, 234, 1)",
-          borderWidth: 1,
-        },
-      ],
-    };
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+
+    const calendar = [];
+    let date = 1;
+
+    for (let week = 0; week < 6; week++) {
+      const weekDays = [];
+      for (let day = 0; day < 7; day++) {
+        if (week === 0 && day < startingDayOfWeek) {
+          weekDays.push(null);
+        } else if (date > daysInMonth) {
+          weekDays.push(null);
+        } else {
+          weekDays.push(new Date(year, month, date));
+          date++;
+        }
+      }
+      calendar.push(weekDays);
+      if (date > daysInMonth) break;
+    }
+
+    return calendar;
   };
 
-  const timelineOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Fertility Timeline - Current Cycle",
-      },
-      tooltip: {
-        callbacks: {
-          label: function (context: any) {
-            const label = context.dataset.label || "";
-            if (context.parsed.y > 0) {
-              return `${label}: Active`;
-            }
-            return "";
-          },
-        },
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 1.5,
-        ticks: {
-          display: false,
-        },
-        grid: {
-          display: false,
-        },
-      },
-      x: {
-        ticks: {
-          maxRotation: 45,
-          minRotation: 45,
-        },
-      },
-    },
+  const getDayStatus = (date: Date, isUpcoming = false) => {
+    if (!date) return null;
+
+    const dateStr = date.toDateString();
+    const today = new Date().toDateString();
+
+    // For current month
+    if (!isUpcoming) {
+      if (dateStr === results.ovulationDate.toDateString()) {
+        return { type: "ovulation", label: "Ovulation" };
+      }
+
+      // Best conception days (2 days before ovulation through ovulation) - check this FIRST
+      const bestStart = new Date(results.ovulationDate);
+      bestStart.setDate(bestStart.getDate() - 2);
+
+      // Use date-only comparison to avoid time issues
+      const dateOnly = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+      );
+      const bestStartOnly = new Date(
+        bestStart.getFullYear(),
+        bestStart.getMonth(),
+        bestStart.getDate()
+      );
+      const ovulationOnly = new Date(
+        results.ovulationDate.getFullYear(),
+        results.ovulationDate.getMonth(),
+        results.ovulationDate.getDate()
+      );
+
+      if (dateOnly >= bestStartOnly && dateOnly <= ovulationOnly) {
+        return { type: "best", label: "Best" };
+      }
+
+      // Then check for general fertile window
+      if (
+        date >= results.fertilityWindowStart &&
+        date <= results.fertilityWindowEnd
+      ) {
+        return { type: "fertile", label: "Fertile" };
+      }
+    } else {
+      // For upcoming cycles
+      const upcomingCycle = multipleCycles.find((cycle) => {
+        const cycleMonth = cycle.ovulationDate.getMonth();
+        const dateMonth = date.getMonth();
+        return cycleMonth === dateMonth;
+      });
+
+      if (upcomingCycle) {
+        if (dateStr === upcomingCycle.ovulationDate.toDateString()) {
+          return { type: "ovulation", label: "Ovulation" };
+        }
+
+        // Best conception days for upcoming cycle
+        const bestStart = new Date(upcomingCycle.ovulationDate);
+        bestStart.setDate(bestStart.getDate() - 2);
+
+        // Use date-only comparison to avoid time issues
+        const dateOnly = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate()
+        );
+        const bestStartOnly = new Date(
+          bestStart.getFullYear(),
+          bestStart.getMonth(),
+          bestStart.getDate()
+        );
+        const ovulationOnly = new Date(
+          upcomingCycle.ovulationDate.getFullYear(),
+          upcomingCycle.ovulationDate.getMonth(),
+          upcomingCycle.ovulationDate.getDate()
+        );
+
+        if (dateOnly >= bestStartOnly && dateOnly <= ovulationOnly) {
+          return { type: "best", label: "Best" };
+        }
+
+        if (
+          date >= upcomingCycle.fertilityWindowStart &&
+          date <= upcomingCycle.fertilityWindowEnd
+        ) {
+          return { type: "fertile", label: "Fertile" };
+        }
+      }
+    }
+
+    if (dateStr === today) {
+      return { type: "today", label: "Today" };
+    }
+
+    return null;
   };
 
-  const cycleOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Ovulation Dates - Next 6 Cycles",
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 31,
-        title: {
-          display: true,
-          text: "Day of Month",
-        },
-      },
-    },
+  const getDayClasses = (status: any) => {
+    const baseClasses =
+      "w-8 h-8 flex items-center justify-center text-xs font-medium rounded-full";
+
+    if (!status) return `${baseClasses} text-gray-700 hover:bg-gray-100`;
+
+    switch (status.type) {
+      case "ovulation":
+        return `${baseClasses} bg-pink-500 text-white`;
+      case "best":
+        return `${baseClasses} bg-green-500 text-white`;
+      case "fertile":
+        return `${baseClasses} bg-green-200 text-green-800`;
+      case "today":
+        return `${baseClasses} bg-blue-500 text-white ring-2 ring-blue-300`;
+      default:
+        return `${baseClasses} text-gray-700 hover:bg-gray-100`;
+    }
   };
 
-  if (!isClient || !chartReady) {
+  const getMonthName = (date: Date) => {
+    return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  };
+
+  const renderCalendar = (calendar: (Date | null)[][], isUpcoming = false) => {
+    const monthDate = isUpcoming
+      ? (() => {
+          const currentOvulation = results.ovulationDate;
+          const nextCycleDate = new Date(currentOvulation);
+          nextCycleDate.setDate(nextCycleDate.getDate() + cycleLength);
+          return nextCycleDate;
+        })()
+      : results.ovulationDate;
+
     return (
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-6 text-gray-800">
-          Fertility Charts
-        </h2>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-gray-500">Loading charts...</div>
+      <div>
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">
+          {getMonthName(monthDate)}
+        </h3>
+
+        {/* Calendar Header */}
+        <div className="grid grid-cols-7 gap-1 mb-2">
+          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+            <div
+              key={day}
+              className="text-center text-xs font-medium text-gray-500 py-2"
+            >
+              {day}
+            </div>
+          ))}
+        </div>
+
+        {/* Calendar Body */}
+        <div className="grid grid-cols-7 gap-1">
+          {calendar.map((week, weekIndex) =>
+            week.map((date, dayIndex) => {
+              const status = date ? getDayStatus(date, isUpcoming) : null;
+              return (
+                <div
+                  key={`${weekIndex}-${dayIndex}`}
+                  className="flex justify-center"
+                >
+                  {date ? (
+                    <div
+                      className={getDayClasses(status)}
+                      title={status?.label}
+                    >
+                      {date.getDate()}
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8"></div>
+                  )}
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
     );
-  }
+  };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-6 text-gray-800">
-        Fertility Charts
-      </h2>
-
-      <div className="space-y-8">
-        {/* Current Cycle Timeline */}
-        <div>
-          <Bar data={generateTimelineData()} options={timelineOptions} />
-        </div>
-
-        {/* Multiple Cycles Overview */}
-        <div>
-          <Bar data={generateCycleData()} options={cycleOptions} />
-        </div>
+      <div className="flex border-b border-gray-200 mb-6">
+        <button
+          onClick={() => setActiveTab("current")}
+          className={`py-2 px-4 font-medium text-sm mr-4 ${
+            activeTab === "current"
+              ? "text-primary-600 border-b-2 border-primary-500"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+          aria-label="View current month calendar"
+        >
+          This Month
+        </button>
+        <button
+          onClick={() => setActiveTab("upcoming")}
+          className={`py-2 px-4 font-medium text-sm ${
+            activeTab === "upcoming"
+              ? "text-primary-600 border-b-2 border-primary-500"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+          aria-label="View upcoming cycles calendar"
+        >
+          Next Month
+        </button>
       </div>
 
-      {/* Chart Legend */}
-      <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-        <h3 className="text-sm font-medium text-gray-800 mb-3">Chart Legend</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-          <div className="flex items-center">
-            <div className="w-4 h-4 bg-green-500 rounded mr-2"></div>
-            <span>Fertility Window (6 days)</span>
+      <div className="w-full">
+        {activeTab === "current" ? (
+          <div>
+            {renderCalendar(getCurrentMonthCalendar(), false)}
+
+            {/* Current Month Legend */}
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+              <h3 className="text-sm font-medium text-gray-800 mb-3">
+                Calendar Legend
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                <div className="flex items-center">
+                  <div className="w-4 h-4 bg-pink-500 rounded-full mr-2"></div>
+                  <span>Ovulation Day</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
+                  <span>Best Days</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-4 h-4 bg-green-200 rounded-full mr-2"></div>
+                  <span>Fertile Window</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-4 h-4 bg-blue-500 rounded-full mr-2"></div>
+                  <span>Today</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center">
-            <div className="w-4 h-4 bg-yellow-500 rounded mr-2"></div>
-            <span>Most Likely Conception (3 days)</span>
+        ) : (
+          <div>
+            {renderCalendar(getUpcomingCyclesCalendar(), true)}
+
+            {/* Next Month Legend */}
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+              <h3 className="text-sm font-medium text-gray-800 mb-3">
+                Calendar Legend
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                <div className="flex items-center">
+                  <div className="w-4 h-4 bg-pink-500 rounded-full mr-2"></div>
+                  <span>Ovulation Day</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
+                  <span>Best Days</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-4 h-4 bg-green-200 rounded-full mr-2"></div>
+                  <span>Fertile Window</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-4 h-4 bg-blue-500 rounded-full mr-2"></div>
+                  <span>Today</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center">
-            <div className="w-4 h-4 bg-pink-500 rounded mr-2"></div>
-            <span>Ovulation Day</span>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

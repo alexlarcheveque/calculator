@@ -75,6 +75,7 @@ export default function ConceptionPage() {
               <ConceptionChart
                 results={results}
                 multipleCycles={multipleCycles}
+                cycleLength={formValues.cycleLength}
               />
               <FertilityTable data={multipleCycles} />
             </>
@@ -82,15 +83,15 @@ export default function ConceptionPage() {
         </div>
       </div>
 
-      {/* FAQ Section */}
-      <FAQSection />
-
       {/* Info Sections */}
       <div className="space-y-8 mb-16">
         <ConceptionBasics />
         <FertilityTips />
         <ConceptionMethods />
       </div>
+
+      {/* FAQ Section */}
+      <FAQSection />
     </div>
   );
 }

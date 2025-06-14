@@ -99,33 +99,6 @@ export default function ConceptionForm({
             The average number of days in your menstrual cycle
           </p>
         </div>
-
-        {/* Calculate Button */}
-        <div className="form-group pt-4">
-          <button
-            type="button"
-            className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 font-medium text-base"
-            onClick={() => {
-              // Trigger recalculation by updating a timestamp or similar
-              // This is handled by the parent component's useEffect
-            }}
-          >
-            Calculate
-          </button>
-        </div>
-      </div>
-
-      {/* Information Box */}
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-        <h3 className="text-sm font-medium text-blue-800 mb-2">
-          How This Calculator Works
-        </h3>
-        <p className="text-xs text-blue-700 leading-relaxed">
-          This calculator estimates your most fertile days and possible
-          conception dates based on your menstrual cycle. It assumes ovulation
-          occurs 14 days before your next period and that sperm can survive up
-          to 5 days in the female reproductive tract.
-        </p>
       </div>
     </div>
   );
