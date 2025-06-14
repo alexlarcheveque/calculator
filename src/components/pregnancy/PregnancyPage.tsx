@@ -5,9 +5,10 @@ import PregnancyForm from "@/components/pregnancy/PregnancyForm";
 import PregnancySummary from "@/components/pregnancy/PregnancySummary";
 import PregnancyCharts from "@/components/pregnancy/PregnancyCharts";
 import PregnancyTimeline from "@/components/pregnancy/PregnancyTimeline";
-import DueDateCalculator from "@/components/pregnancy/DueDateCalculator";
-import PregnancyWeightGain from "@/components/pregnancy/PregnancyWeightGain";
-import ConceptionDateCalculator from "@/components/pregnancy/ConceptionDateCalculator";
+import PregnancyBasics from "@/components/pregnancy/PregnancyBasics";
+import PregnancyDevelopment from "@/components/pregnancy/PregnancyDevelopment";
+import PregnancyHealth from "@/components/pregnancy/PregnancyHealth";
+
 import { calculatePregnancy } from "@/utils/pregnancyCalculations";
 import {
   PregnancyFormValues,
@@ -23,9 +24,9 @@ export default function PregnancyPage() {
     "pregnancyFormValues",
     {
       calculationMethod: CalculationMethod.DUE_DATE,
-      dueDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
+      dueDate: new Date(Date.now() + 119 * 24 * 60 * 60 * 1000)
         .toISOString()
-        .split("T")[0], // 90 days from now
+        .split("T")[0], // ~17 weeks from now (to show week 23)
       lastPeriodDate: new Date(
         Date.now() - 10 * 7 * 24 * 60 * 60 * 1000 // 10 weeks ago
       )
@@ -120,11 +121,11 @@ export default function PregnancyPage() {
         </div>
       </div>
 
-      {/* Additional Calculators */}
+      {/* Info Sections */}
       <div className="space-y-8 mb-16">
-        <DueDateCalculator />
-        <ConceptionDateCalculator />
-        <PregnancyWeightGain />
+        <PregnancyBasics />
+        <PregnancyDevelopment />
+        <PregnancyHealth />
       </div>
 
       {/* FAQ Section */}

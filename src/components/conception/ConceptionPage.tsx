@@ -6,6 +6,9 @@ import ConceptionSummary from "@/components/conception/ConceptionSummary";
 import ConceptionChart from "@/components/conception/ConceptionChart";
 import FertilityTable from "@/components/conception/FertilityTable";
 import FAQSection from "./FAQSection";
+import ConceptionBasics from "./ConceptionBasics";
+import FertilityTips from "./FertilityTips";
+import ConceptionMethods from "./ConceptionMethods";
 import {
   calculateConception,
   calculateMultipleCycles,
@@ -81,6 +84,13 @@ export default function ConceptionPage() {
 
       {/* FAQ Section */}
       <FAQSection />
+
+      {/* Info Sections */}
+      <div className="space-y-8 mb-16">
+        <ConceptionBasics />
+        <FertilityTips />
+        <ConceptionMethods />
+      </div>
     </div>
   );
 }

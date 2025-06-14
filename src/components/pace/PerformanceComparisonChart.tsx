@@ -10,8 +10,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import annotationPlugin from "chartjs-plugin-annotation";
 import { Bar } from "react-chartjs-2";
-import { PaceResults } from "@/types/pace";
+import { PaceResults, PaceFormValues, DistanceUnit } from "@/types/pace";
 
 ChartJS.register(
   CategoryScale,
@@ -19,15 +20,18 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  annotationPlugin
 );
 
 interface PerformanceComparisonChartProps {
   results: PaceResults;
+  formValues: PaceFormValues;
 }
 
 export default function PerformanceComparisonChart({
   results,
+  formValues,
 }: PerformanceComparisonChartProps) {
   const chartRef = useRef<ChartJS<"bar">>(null);
 
@@ -39,27 +43,78 @@ export default function PerformanceComparisonChart({
     };
   }, []);
 
-  // Performance benchmarks in seconds per mile
-  const performanceBenchmarks = [
-    { name: "Elite", pace: 300, color: "rgba(239, 68, 68, 0.8)" }, // 5:00
-    { name: "Competitive", pace: 360, color: "rgba(245, 158, 11, 0.8)" }, // 6:00
-    { name: "Advanced", pace: 420, color: "rgba(34, 197, 94, 0.8)" }, // 7:00
-    { name: "Intermediate", pace: 480, color: "rgba(59, 130, 246, 0.8)" }, // 8:00
-    { name: "Recreational", pace: 540, color: "rgba(147, 51, 234, 0.8)" }, // 9:00
-    { name: "Beginner", pace: 600, color: "rgba(156, 163, 175, 0.8)" }, // 10:00
-  ];
+  const isMetric = formValues.distanceUnit === DistanceUnit.KILOMETERS;
 
-  // Get user's current pace in seconds
+  // Performance benchmarks in seconds per unit (mile or km)
+  const getPerformanceBenchmarks = () => {
+    if (isMetric) {
+      // Benchmarks in seconds per km
+      return [
+        { name: "Beginner", pace: 372, color: "rgba(156, 163, 175, 0.8)" }, // 6:12/km (10:00/mile)
+        { name: "Recreational", pace: 335, color: "rgba(147, 51, 234, 0.8)" }, // 5:35/km (9:00/mile)
+        { name: "Intermediate", pace: 298, color: "rgba(59, 130, 246, 0.8)" }, // 4:58/km (8:00/mile)
+        { name: "Advanced", pace: 261, color: "rgba(34, 197, 94, 0.8)" }, // 4:21/km (7:00/mile)
+        { name: "Competitive", pace: 224, color: "rgba(245, 158, 11, 0.8)" }, // 3:44/km (6:00/mile)
+        { name: "Elite", pace: 186, color: "rgba(239, 68, 68, 0.8)" }, // 3:06/km (5:00/mile)
+      ];
+    } else {
+      // Benchmarks in seconds per mile
+      return [
+        { name: "Beginner", pace: 600, color: "rgba(156, 163, 175, 0.8)" }, // 10:00/mile
+        { name: "Recreational", pace: 540, color: "rgba(147, 51, 234, 0.8)" }, // 9:00/mile
+        { name: "Intermediate", pace: 480, color: "rgba(59, 130, 246, 0.8)" }, // 8:00/mile
+        { name: "Advanced", pace: 420, color: "rgba(34, 197, 94, 0.8)" }, // 7:00/mile
+        { name: "Competitive", pace: 360, color: "rgba(245, 158, 11, 0.8)" }, // 6:00/mile
+        { name: "Elite", pace: 300, color: "rgba(239, 68, 68, 0.8)" }, // 5:00/mile
+      ];
+    }
+  };
+
+  const performanceBenchmarks = getPerformanceBenchmarks();
+
+  // Get user's current pace in seconds per current unit (mile or km)
   const getUserPaceSeconds = () => {
     if (!results.pace) return null;
 
-    const paceMatch = results.pace.match(/(\d+):(\d+)/);
-    if (!paceMatch) return null;
+    // Extract time part before " per"
+    const timeStr = results.pace.split(" per")[0];
 
-    return parseInt(paceMatch[1]) * 60 + parseInt(paceMatch[2]);
+    // Try HH:MM:SS format first
+    let paceMatch = timeStr.match(/(\d+):(\d+):(\d+)/);
+    if (paceMatch) {
+      const hours = parseInt(paceMatch[1]);
+      const minutes = parseInt(paceMatch[2]);
+      const seconds = parseInt(paceMatch[3]);
+      return hours * 3600 + minutes * 60 + seconds;
+    }
+
+    // Try MM:SS format
+    paceMatch = timeStr.match(/(\d+):(\d+)/);
+    if (paceMatch) {
+      const minutes = parseInt(paceMatch[1]);
+      const seconds = parseInt(paceMatch[2]);
+      return minutes * 60 + seconds;
+    }
+
+    return null;
   };
 
   const userPaceSeconds = getUserPaceSeconds();
+
+  // Find which category the user falls into
+  const getUserCategoryIndex = () => {
+    if (!userPaceSeconds) return -1;
+
+    // Compare against the current unit system's benchmarks
+    for (let i = 0; i < performanceBenchmarks.length; i++) {
+      if (userPaceSeconds >= performanceBenchmarks[i].pace) {
+        return i;
+      }
+    }
+    return performanceBenchmarks.length - 1; // Elite (fastest category)
+  };
+
+  const userCategoryIndex = getUserCategoryIndex();
 
   const chartData = {
     labels: performanceBenchmarks.map((b) => b.name),
@@ -67,15 +122,9 @@ export default function PerformanceComparisonChart({
       {
         label: "Benchmark Pace",
         data: performanceBenchmarks.map((b) => b.pace / 60), // Convert to minutes for display
-        backgroundColor: performanceBenchmarks.map((b, index) =>
-          userPaceSeconds && Math.abs(userPaceSeconds - b.pace) < 30
-            ? "rgba(59, 130, 246, 0.9)" // Highlight user's level
-            : b.color
-        ),
-        borderColor: performanceBenchmarks.map((b, index) =>
-          userPaceSeconds && Math.abs(userPaceSeconds - b.pace) < 30
-            ? "rgb(59, 130, 246)"
-            : b.color.replace("0.8", "1")
+        backgroundColor: performanceBenchmarks.map((b) => b.color),
+        borderColor: performanceBenchmarks.map((b) =>
+          b.color.replace("0.8", "1")
         ),
         borderWidth: 2,
       },
@@ -85,6 +134,11 @@ export default function PerformanceComparisonChart({
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: {
+        top: 40,
+      },
+    },
     plugins: {
       legend: {
         display: false,
@@ -103,7 +157,9 @@ export default function PerformanceComparisonChart({
             const totalSeconds = context.parsed.y * 60;
             const minutes = Math.floor(totalSeconds / 60);
             const seconds = Math.round(totalSeconds % 60);
-            return `${minutes}:${seconds.toString().padStart(2, "0")} per mile`;
+            return `${minutes}:${seconds.toString().padStart(2, "0")} per ${
+              isMetric ? "km" : "mile"
+            }`;
           },
         },
       },
@@ -111,11 +167,11 @@ export default function PerformanceComparisonChart({
     scales: {
       y: {
         beginAtZero: false,
-        min: 4, // Start at 4 minutes
-        max: 11, // End at 11 minutes
+        min: isMetric ? 2.5 : 4, // Start at 2.5 min for km, 4 min for miles
+        max: isMetric ? 8 : 13, // End at 8 min for km, 13 min for miles
         title: {
           display: true,
-          text: "Pace (minutes per mile)",
+          text: `Pace (minutes per ${isMetric ? "km" : "mile"})`,
           font: {
             weight: "bold" as const,
           },
@@ -143,27 +199,26 @@ export default function PerformanceComparisonChart({
   const getUserPerformanceLevel = () => {
     if (!userPaceSeconds) return "Unknown";
 
-    if (userPaceSeconds < 360) return "Elite"; // < 6:00
-    if (userPaceSeconds < 420) return "Competitive"; // < 7:00
-    if (userPaceSeconds < 480) return "Advanced"; // < 8:00
-    if (userPaceSeconds < 540) return "Intermediate"; // < 9:00
-    if (userPaceSeconds < 600) return "Recreational"; // < 10:00
-    return "Beginner"; // > 10:00
+    // Use the current unit system's benchmarks
+    for (let i = performanceBenchmarks.length - 1; i >= 0; i--) {
+      if (userPaceSeconds < performanceBenchmarks[i].pace) {
+        return performanceBenchmarks[i].name;
+      }
+    }
+    return performanceBenchmarks[0].name; // Beginner (slowest category)
   };
 
   return (
     <div className="w-full h-full">
-      <Bar ref={chartRef} data={chartData} options={options} />
-
       {userPaceSeconds && (
-        <div className="mt-4 text-center">
+        <div className="Whtext-center">
           <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
             <h4 className="font-medium text-blue-800 mb-2">
               Your Performance Level
             </h4>
             <div className="text-sm text-blue-700">
               <p>
-                <strong>Current Pace:</strong> {results.pace} per mile
+                <strong>Current Pace:</strong> {results.pace}
               </p>
               <p>
                 <strong>Performance Level:</strong> {getUserPerformanceLevel()}
@@ -172,6 +227,10 @@ export default function PerformanceComparisonChart({
           </div>
         </div>
       )}
+
+      <div className="h-96">
+        <Bar ref={chartRef} data={chartData} options={options} />
+      </div>
 
       <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
         {performanceBenchmarks.map((benchmark) => (

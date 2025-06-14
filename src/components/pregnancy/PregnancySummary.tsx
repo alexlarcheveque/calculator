@@ -26,6 +26,73 @@ export default function PregnancySummary({ results }: PregnancySummaryProps) {
     return Math.ceil(timeDiff / (1000 * 3600 * 24));
   };
 
+  const getBabySize = (week: number) => {
+    // Baby size data based on gestational week (approximate averages)
+    const sizeData: {
+      [key: number]: {
+        length: number;
+        lengthCm: number;
+        weight: number;
+        weightGrams: number;
+      };
+    } = {
+      8: { length: 0.6, lengthCm: 1.6, weight: 0.002, weightGrams: 1 },
+      12: { length: 2.1, lengthCm: 5.4, weight: 0.03, weightGrams: 14 },
+      16: { length: 4.6, lengthCm: 11.6, weight: 0.22, weightGrams: 100 },
+      20: { length: 6.5, lengthCm: 16.4, weight: 0.66, weightGrams: 300 },
+      24: { length: 11.8, lengthCm: 30.0, weight: 1.32, weightGrams: 600 },
+      28: { length: 14.8, lengthCm: 37.6, weight: 2.2, weightGrams: 1000 },
+      32: { length: 16.7, lengthCm: 42.4, weight: 3.75, weightGrams: 1700 },
+      36: { length: 18.7, lengthCm: 47.4, weight: 5.78, weightGrams: 2622 },
+      40: { length: 20.2, lengthCm: 51.2, weight: 7.63, weightGrams: 3462 },
+    };
+
+    // Find the closest week data or interpolate
+    const weeks = Object.keys(sizeData)
+      .map(Number)
+      .sort((a, b) => a - b);
+
+    if (week <= weeks[0]) return sizeData[weeks[0]];
+    if (week >= weeks[weeks.length - 1])
+      return sizeData[weeks[weeks.length - 1]];
+
+    // Find the two closest weeks for interpolation
+    let lowerWeek = weeks[0];
+    let upperWeek = weeks[weeks.length - 1];
+
+    for (let i = 0; i < weeks.length - 1; i++) {
+      if (week >= weeks[i] && week <= weeks[i + 1]) {
+        lowerWeek = weeks[i];
+        upperWeek = weeks[i + 1];
+        break;
+      }
+    }
+
+    // Linear interpolation
+    const ratio = (week - lowerWeek) / (upperWeek - lowerWeek);
+    const lowerData = sizeData[lowerWeek];
+    const upperData = sizeData[upperWeek];
+
+    return {
+      length: +(
+        lowerData.length +
+        (upperData.length - lowerData.length) * ratio
+      ).toFixed(1),
+      lengthCm: +(
+        lowerData.lengthCm +
+        (upperData.lengthCm - lowerData.lengthCm) * ratio
+      ).toFixed(1),
+      weight: +(
+        lowerData.weight +
+        (upperData.weight - lowerData.weight) * ratio
+      ).toFixed(2),
+      weightGrams: Math.round(
+        lowerData.weightGrams +
+          (upperData.weightGrams - lowerData.weightGrams) * ratio
+      ),
+    };
+  };
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold mb-6 text-gray-800">
@@ -104,12 +171,17 @@ export default function PregnancySummary({ results }: PregnancySummaryProps) {
           </div>
 
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div className="text-sm text-gray-600 mb-1">Gestational Age</div>
-            <div className="text-xl font-bold text-gray-900">
-              {Math.floor(results.totalDays / 7)}w {results.totalDays % 7}d
+            <div className="text-sm text-gray-600 mb-1">Baby Size</div>
+            <div className="text-lg font-bold text-gray-900">
+              {getBabySize(results.currentWeek).length}" (
+              {getBabySize(results.currentWeek).lengthCm} cm)
+            </div>
+            <div className="text-sm font-semibold text-gray-700">
+              {getBabySize(results.currentWeek).weight} lbs (
+              {getBabySize(results.currentWeek).weightGrams}g)
             </div>
             <div className="text-xs text-gray-500 mt-1">
-              {results.totalDays} total days
+              Average at {results.currentWeek} weeks
             </div>
           </div>
         </div>

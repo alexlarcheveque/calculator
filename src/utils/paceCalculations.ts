@@ -121,9 +121,29 @@ export function calculatePace(formValues: PaceFormValues): PaceResults {
       const speedMph = distanceInMiles / (timeInSeconds / 3600);
       const speedKph = distanceInKm / (timeInSeconds / 3600);
 
-      calculatedValue = secondsToTimeString(pacePerMileSeconds);
-      paceFormatted = `${secondsToTimeString(pacePerMileSeconds)} per mile`;
-      speedFormatted = `${speedMph.toFixed(2)} mph`;
+      // Use the selected pace unit to determine output format
+      if (paceUnit === PaceUnit.TIME_PER_MILE) {
+        calculatedValue = secondsToTimeString(pacePerMileSeconds);
+        paceFormatted = `${secondsToTimeString(pacePerMileSeconds)} per mile`;
+        speedFormatted = `${speedMph.toFixed(2)} mph`;
+      } else if (paceUnit === PaceUnit.TIME_PER_KILOMETER) {
+        calculatedValue = secondsToTimeString(pacePerKmSeconds);
+        paceFormatted = `${secondsToTimeString(pacePerKmSeconds)} per km`;
+        speedFormatted = `${speedKph.toFixed(2)} kph`;
+      } else if (paceUnit === PaceUnit.MILES_PER_HOUR) {
+        calculatedValue = speedMph.toFixed(2);
+        paceFormatted = `${secondsToTimeString(pacePerMileSeconds)} per mile`;
+        speedFormatted = `${speedMph.toFixed(2)} mph`;
+      } else if (paceUnit === PaceUnit.KILOMETERS_PER_HOUR) {
+        calculatedValue = speedKph.toFixed(2);
+        paceFormatted = `${secondsToTimeString(pacePerKmSeconds)} per km`;
+        speedFormatted = `${speedKph.toFixed(2)} kph`;
+      } else {
+        // Default to mile-based for other units
+        calculatedValue = secondsToTimeString(pacePerMileSeconds);
+        paceFormatted = `${secondsToTimeString(pacePerMileSeconds)} per mile`;
+        speedFormatted = `${speedMph.toFixed(2)} mph`;
+      }
     }
   } else if (calculatorType === CalculatorType.TIME) {
     // Calculate time from pace and distance
@@ -467,16 +487,13 @@ export function getPresetDistances(): {
   unit: DistanceUnit;
 }[] {
   return [
-    { label: "Marathon", distance: 26.2, unit: DistanceUnit.MILES },
-    { label: "Half-Marathon", distance: 13.1, unit: DistanceUnit.MILES },
-    { label: "1K", distance: 1, unit: DistanceUnit.KILOMETERS },
-    { label: "5K", distance: 5, unit: DistanceUnit.KILOMETERS },
-    { label: "10K", distance: 10, unit: DistanceUnit.KILOMETERS },
     { label: "1 Mile", distance: 1, unit: DistanceUnit.MILES },
     { label: "5 Miles", distance: 5, unit: DistanceUnit.MILES },
     { label: "10 Miles", distance: 10, unit: DistanceUnit.MILES },
-    { label: "800 meters", distance: 800, unit: DistanceUnit.METERS },
-    { label: "1500 meters", distance: 1500, unit: DistanceUnit.METERS },
+    { label: "Half-Marathon", distance: 13.1, unit: DistanceUnit.MILES },
+    { label: "Marathon", distance: 26.2, unit: DistanceUnit.MILES },
+    { label: "5K", distance: 5, unit: DistanceUnit.KILOMETERS },
+    { label: "10K", distance: 10, unit: DistanceUnit.KILOMETERS },
   ];
 }
 
