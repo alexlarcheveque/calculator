@@ -6,21 +6,21 @@ export default function ConceptionMethods() {
       type: "text",
       content: (
         <>
-          There are various methods and tools available to help track ovulation
-          and optimize timing for conception. Understanding these different
-          approaches helps you choose the best method for your lifestyle and
-          needs.
+          There are various methods to track ovulation and optimize conception
+          timing. Choose approaches that fit your lifestyle and combine multiple
+          methods for the most accurate results.
         </>
       ),
     },
     {
       type: "subheader",
-      heading: "Natural Fertility Awareness Methods",
+      heading: "Natural Tracking Methods",
       headingLevel: "h3",
       content: (
         <>
-          These methods involve observing your body's natural signs of fertility
-          and ovulation without the use of medical devices or medications.
+          These free methods involve observing your body's natural fertility
+          signals. They require consistency but provide valuable insights into
+          your cycle.
         </>
       ),
     },
@@ -29,24 +29,24 @@ export default function ConceptionMethods() {
       gridCols: 2,
       gridItems: [
         {
-          title: "Basal Body Temperature (BBT)",
+          title: "Cervical Mucus",
           description:
-            "Track daily temperature upon waking\nTemperature rises 0.2-0.5°F after ovulation\nRequires consistent timing\nUse special BBT thermometer\nChart for 3+ months for patterns",
+            "Monitor daily changes in cervical fluid. Fertile mucus becomes clear, stretchy, and abundant (like egg whites). This gives 1-2 days advance notice of ovulation.",
         },
         {
-          title: "Cervical Mucus Monitoring",
+          title: "Basal Body Temperature",
           description:
-            "Observe daily changes in cervical fluid\nFertile mucus: clear, stretchy, egg-white consistency\nPeak fertility: most abundant, slippery mucus\nDries up after ovulation\nTakes practice to recognize patterns",
+            "Track daily temperature with a special BBT thermometer. Temperature rises 0.2-0.5°F after ovulation, confirming when it occurred.",
         },
         {
           title: "Calendar Method",
           description:
-            "Track menstrual cycle length\nPredict ovulation based on past cycles\nSubtract 14 days from cycle length\nLess accurate for irregular cycles\nBest combined with other methods",
+            "Track cycle length and predict ovulation by subtracting 14 days from your cycle length. Best combined with other methods for accuracy.",
         },
         {
-          title: "Cervical Position",
+          title: "Physical Signs",
           description:
-            "Check cervix position and texture\nFertile: high, soft, open\nInfertile: low, firm, closed\nRequires practice and consistency\nCombine with other fertility signs",
+            "Note ovulation pain (mittelschmerz), breast tenderness, increased libido, or mood changes that occur consistently in your cycle.",
         },
       ],
     },
@@ -56,8 +56,9 @@ export default function ConceptionMethods() {
       headingLevel: "h3",
       content: (
         <>
-          Technology has made fertility tracking more convenient and accurate
-          with various digital tools and devices.
+          Technology makes fertility tracking more convenient and accurate.
+          These tools can enhance natural methods and provide sophisticated
+          predictions.
         </>
       ),
     },
@@ -66,59 +67,30 @@ export default function ConceptionMethods() {
       gridCols: 2,
       gridItems: [
         {
-          title: "Ovulation Predictor Kits (OPKs)",
+          title: "Ovulation Predictor Kits",
           description:
-            "Detect luteinizing hormone (LH) surge\nPredict ovulation 12-36 hours in advance\nUse daily during fertile window\nDigital and strip options available\n99% accuracy when used correctly",
+            "Detect the LH hormone surge 24-36 hours before ovulation. Digital versions provide clear results. Use daily during your expected fertile window.",
         },
         {
           title: "Fertility Apps",
           description:
-            "Track cycles, symptoms, and predictions\nReminders for testing and fertile days\nData analysis and pattern recognition\nSome integrate with wearable devices\nPopular apps: Clue, Flo, Ovia, Glow",
+            "Track cycles, symptoms, and predictions on your phone. Popular options include Clue, Flo, Ovia, and Glow. Many provide reminders and educational content.",
         },
         {
-          title: "Wearable Fertility Monitors",
+          title: "Wearable Monitors",
           description:
-            "Continuous temperature monitoring\nAutomatic data collection\nAdvanced algorithms for predictions\nExamples: Ava bracelet, Tempdrop\nHigher accuracy than manual tracking",
+            "Devices like Ava bracelet and Tempdrop provide continuous temperature monitoring while you sleep, eliminating manual daily tracking.",
         },
         {
-          title: "Fertility Monitors",
+          title: "Advanced Monitors",
           description:
-            "Advanced hormone detection\nTrack multiple fertility indicators\nClearblue Fertility Monitor\nPersonalized fertility status\nMore expensive but comprehensive",
+            "Comprehensive systems like Clearblue Fertility Monitor track multiple hormones for personalized fertility status. More expensive but highly accurate.",
         },
       ],
     },
     {
       type: "subheader",
-      heading: "Medical Fertility Tracking",
-      headingLevel: "h3",
-    },
-    {
-      type: "list",
-      listItems: [
-        {
-          label: "Transvaginal Ultrasound",
-          description:
-            "Monitor follicle development and ovulation in real-time",
-        },
-        {
-          label: "Blood Hormone Tests",
-          description: "Measure LH, FSH, estrogen, and progesterone levels",
-        },
-        {
-          label: "Ovulation Induction",
-          description:
-            "Medications to stimulate ovulation in cases of irregular cycles",
-        },
-        {
-          label: "Fertility Specialist Consultation",
-          description:
-            "Comprehensive evaluation and personalized treatment plans",
-        },
-      ],
-    },
-    {
-      type: "subheader",
-      heading: "Choosing the Right Method",
+      heading: "Choosing Your Approach",
       headingLevel: "h3",
     },
     {
@@ -126,50 +98,19 @@ export default function ConceptionMethods() {
       gridCols: 3,
       gridItems: [
         {
-          title: "Beginners",
+          title: "Getting Started",
           description:
-            "Start with fertility apps\nAdd ovulation predictor kits\nLearn to observe cervical mucus\nTrack for 2-3 cycles",
+            "Begin with a fertility app and cervical mucus tracking. Add ovulation predictor kits for better timing. This combination works well for regular cycles.",
         },
         {
           title: "Irregular Cycles",
           description:
-            "Use ovulation predictor kits\nConsider fertility monitors\nTrack multiple signs\nConsult healthcare provider",
+            "Focus on daily fertility signs and consider investing in OPKs or fertility monitors. These provide more reliable predictions for unpredictable cycles.",
         },
         {
           title: "Advanced Tracking",
           description:
-            "Combine multiple methods\nWearable devices\nDetailed charting\nProfessional guidance",
-        },
-      ],
-    },
-    {
-      type: "subheader",
-      heading: "Tips for Success",
-      headingLevel: "h3",
-    },
-    {
-      type: "list",
-      listItems: [
-        {
-          label: "Consistency is key",
-          description: "Track daily at the same time for accurate patterns",
-        },
-        {
-          label: "Be patient",
-          description: "It takes 2-3 cycles to understand your unique patterns",
-        },
-        {
-          label: "Combine methods",
-          description: "Use multiple indicators for better accuracy",
-        },
-        {
-          label: "Stay relaxed",
-          description: "Stress can affect ovulation and cycle regularity",
-        },
-        {
-          label: "Record everything",
-          description:
-            "Note symptoms, mood, and external factors that might affect cycles",
+            "Combine multiple methods: wearable devices, apps, OPKs, and natural signs. Best for couples trying for several months or those wanting maximum precision.",
         },
       ],
     },
@@ -177,23 +118,12 @@ export default function ConceptionMethods() {
       type: "callout",
       callout: {
         type: "info",
-        title: "Method Accuracy",
+        title: "Tips for Success",
         content:
-          "No single method is 100% accurate. Combining multiple tracking methods (like BBT + cervical mucus + OPKs) provides the most reliable fertility awareness. Digital tools can help automate tracking and improve accuracy.",
-      },
-    },
-    {
-      type: "callout",
-      callout: {
-        type: "success",
-        title: "Getting Started",
-        content:
-          "Begin with simple methods like cycle tracking and cervical mucus observation. Add tools like OPKs or apps as you become more comfortable. Remember that learning your body's patterns takes time and patience.",
+          "Start simple and build your tracking toolkit gradually. Consistency is key - choose methods you'll use daily. It takes 2-3 cycles to understand your patterns, so be patient as you learn.",
       },
     },
   ];
 
-  return (
-    <InfoCard title="Conception Tracking Methods & Tools" sections={sections} />
-  );
+  return <InfoCard title="Fertility Tracking Methods" sections={sections} />;
 }
