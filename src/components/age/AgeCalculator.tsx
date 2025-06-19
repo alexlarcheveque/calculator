@@ -23,9 +23,16 @@ export default function AgeCalculator() {
       today.getDate()
     );
 
+    const formatLocalDate = (date: Date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
     setFormValues({
-      birthDate: defaultBirthDate.toISOString().split("T")[0],
-      targetDate: today.toISOString().split("T")[0],
+      birthDate: formatLocalDate(defaultBirthDate),
+      targetDate: formatLocalDate(today),
     });
   }, []);
 
@@ -62,9 +69,16 @@ export default function AgeCalculator() {
       today.getDate()
     );
 
+    const formatLocalDate = (date: Date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
     setFormValues({
-      birthDate: defaultBirthDate.toISOString().split("T")[0],
-      targetDate: today.toISOString().split("T")[0],
+      birthDate: formatLocalDate(defaultBirthDate),
+      targetDate: formatLocalDate(today),
     });
     setResult(null);
     setError("");
@@ -72,124 +86,154 @@ export default function AgeCalculator() {
 
   const setToday = () => {
     const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    const localDateString = `${year}-${month}-${day}`;
+
     setFormValues((prev) => ({
       ...prev,
-      targetDate: today.toISOString().split("T")[0],
+      targetDate: localDateString,
     }));
   };
 
   return (
     <div>
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-        <div className="text-center mb-6">
-          <p className="text-sm text-gray-600">
-            Modify the values and click the calculate button to use
-          </p>
+      <div className="bg-white border border-gray-200 rounded-lg p-6">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div className="text-center text-blue-700">
+            <p className="font-medium">
+              Enter your birth date and a target date to calculate your exact
+              age
+            </p>
+          </div>
         </div>
 
         {/* Date Inputs */}
-        <div className="space-y-6">
-          {/* Birth Date */}
-          <div className="flex items-center justify-center space-x-4">
-            <label className="text-sm font-medium text-gray-700 w-32 text-right">
-              Date of Birth
-            </label>
-            <div className="flex items-center space-x-2">
-              <input
-                type="date"
-                value={formValues.birthDate}
-                onChange={(e) => handleInputChange("birthDate", e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-              <svg
-                className="w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
-          </div>
+        <div className="flex justify-center">
+          <div className="max-w-4xl w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              {/* Birth Date Section */}
+              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 hover:border-blue-300 transition-colors">
+                <div className="text-center">
+                  <div className="mb-4">
+                    <svg
+                      className="w-8 h-8 text-blue-500 mx-auto mb-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                    <h4 className="text-lg font-semibold text-gray-800">
+                      Date of Birth
+                    </h4>
+                    <p className="text-sm text-gray-600 mt-1">
+                      When were you born?
+                    </p>
+                  </div>
+                  <input
+                    type="date"
+                    value={formValues.birthDate}
+                    onChange={(e) =>
+                      handleInputChange("birthDate", e.target.value)
+                    }
+                    className="w-full px-4 py-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors text-lg text-center"
+                  />
+                </div>
+              </div>
 
-          {/* Target Date */}
-          <div className="flex items-center justify-center space-x-4">
-            <label className="text-sm font-medium text-gray-700 w-32 text-right">
-              Age at the Date of
-            </label>
-            <div className="flex items-center space-x-2">
-              <input
-                type="date"
-                value={formValues.targetDate}
-                onChange={(e) =>
-                  handleInputChange("targetDate", e.target.value)
-                }
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-              <svg
-                className="w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
+              {/* Target Date Section */}
+              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 hover:border-blue-300 transition-colors">
+                <div className="text-center">
+                  <div className="mb-4">
+                    <svg
+                      className="w-8 h-8 text-green-500 mx-auto mb-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <h4 className="text-lg font-semibold text-gray-800">
+                      Calculate Age At
+                    </h4>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Target date for age calculation
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <input
+                      type="date"
+                      value={formValues.targetDate}
+                      onChange={(e) =>
+                        handleInputChange("targetDate", e.target.value)
+                      }
+                      className="w-full px-4 py-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors text-lg text-center"
+                    />
+                    <button
+                      onClick={setToday}
+                      className="w-full px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors font-medium text-sm"
+                    >
+                      🗓️ Set to Today
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-center space-x-4">
               <button
-                onClick={setToday}
-                className="px-3 py-2 text-xs bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+                onClick={calculate}
+                className="bg-blue-600 text-white px-10 py-4 rounded-lg hover:bg-blue-700 transition-colors font-semibold text-lg shadow-md hover:shadow-lg"
               >
-                Today
+                Calculate Age
+              </button>
+              <button
+                onClick={clear}
+                className="bg-gray-500 text-white px-8 py-4 rounded-lg hover:bg-gray-600 transition-colors font-semibold text-lg shadow-md hover:shadow-lg"
+              >
+                Reset
               </button>
             </div>
           </div>
         </div>
 
-        {/* Buttons */}
-        <div className="text-center mt-6 space-x-4">
-          <button
-            onClick={calculate}
-            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors"
-          >
-            Calculate
-          </button>
-          <button
-            onClick={clear}
-            className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition-colors"
-          >
-            Clear
-          </button>
-        </div>
-
         {/* Error Display */}
         {error && (
-          <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-            {error}
+          <div className="mt-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-r-lg">
+            <div className="flex items-center">
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span>
+                <strong>Error:</strong> {error}
+              </span>
+            </div>
           </div>
         )}
-
-        {/* Instructions */}
-        <div className="mt-6 text-sm text-gray-600">
-          <p className="font-medium mb-2">Instructions:</p>
-          <ul className="list-disc list-inside space-y-1">
-            <li>Select your birth date using the date picker</li>
-            <li>Choose the target date to calculate your age at that time</li>
-            <li>Click "Today" to quickly set the target date to today</li>
-            <li>The calculator will show your exact age in multiple formats</li>
-          </ul>
-        </div>
       </div>
 
-      {/* Results */}
+      {/* Results Section - Separate Container */}
       {result && result.isValid && <AgeResults result={result} />}
     </div>
   );

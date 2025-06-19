@@ -283,10 +283,14 @@ export function calculateRequiredGPA(
   currentGPA: number,
   targetGPA: number,
   currentCredits: number,
-  additionalCredits: number
+  additionalCredits: number,
+  gpaScale: "4.0" | "4.3" | "5.0" = "4.0"
 ): GPAPlanningResult {
+  // Determine max GPA based on scale
+  const maxGPA = gpaScale === "5.0" ? 5.0 : gpaScale === "4.3" ? 4.3 : 4.0;
+
   // Validate inputs
-  if (currentGPA < 0 || currentGPA > 4.3) {
+  if (currentGPA < 0 || currentGPA > maxGPA) {
     return {
       requiredGPA: 0,
       isAchievable: false,
@@ -296,11 +300,11 @@ export function calculateRequiredGPA(
       currentCredits,
       additionalCredits,
       totalCredits: currentCredits + additionalCredits,
-      error: "Current GPA must be between 0 and 4.3",
+      error: `Current GPA must be between 0 and ${maxGPA}`,
     };
   }
 
-  if (targetGPA < 0 || targetGPA > 4.3) {
+  if (targetGPA < 0 || targetGPA > maxGPA) {
     return {
       requiredGPA: 0,
       isAchievable: false,
@@ -310,7 +314,7 @@ export function calculateRequiredGPA(
       currentCredits,
       additionalCredits,
       totalCredits: currentCredits + additionalCredits,
-      error: "Target GPA must be between 0 and 4.3",
+      error: `Target GPA must be between 0 and ${maxGPA}`,
     };
   }
 
@@ -348,7 +352,7 @@ export function calculateRequiredGPA(
   const requiredQualityPoints = targetQualityPoints - currentQualityPoints;
   const requiredGPA = requiredQualityPoints / additionalCredits;
 
-  const isAchievable = requiredGPA >= 0 && requiredGPA <= 4.3;
+  const isAchievable = requiredGPA >= 0 && requiredGPA <= maxGPA;
 
   return {
     requiredGPA: Math.max(0, requiredGPA),

@@ -139,9 +139,18 @@ export function calculateHoursBetweenDates(
   endDate: string,
   endTime: TimeInput
 ): DateHoursCalculationResult {
-  // Validate dates
-  const startDateObj = new Date(startDate);
-  const endDateObj = new Date(endDate);
+  // Validate dates using local time
+  const startDateParts = startDate.split("-").map(Number);
+  const endDateParts = endDate.split("-").map(Number);
+
+  const startDateObj =
+    startDateParts.length === 3
+      ? new Date(startDateParts[0], startDateParts[1] - 1, startDateParts[2])
+      : new Date(NaN);
+  const endDateObj =
+    endDateParts.length === 3
+      ? new Date(endDateParts[0], endDateParts[1] - 1, endDateParts[2])
+      : new Date(NaN);
 
   if (isNaN(startDateObj.getTime())) {
     return {
@@ -223,8 +232,9 @@ export function calculateHoursBetweenDates(
     };
   }
 
-  // Create full datetime objects
-  const startDateTime = new Date(startDate);
+  // Create full datetime objects using local time
+  const [startYear, startMonth, startDay] = startDate.split("-").map(Number);
+  const startDateTime = new Date(startYear, startMonth - 1, startDay);
   const startMinutes = convertTo24Hour(startTime);
   startDateTime.setHours(
     Math.floor(startMinutes / 60),
@@ -233,7 +243,8 @@ export function calculateHoursBetweenDates(
     0
   );
 
-  const endDateTime = new Date(endDate);
+  const [endYear, endMonth, endDay] = endDate.split("-").map(Number);
+  const endDateTime = new Date(endYear, endMonth - 1, endDay);
   const endMinutes = convertTo24Hour(endTime);
   endDateTime.setHours(Math.floor(endMinutes / 60), endMinutes % 60, 0, 0);
 
@@ -378,7 +389,11 @@ export function getCurrentTime(): TimeInput {
 }
 
 export function getCurrentDate(): string {
-  return new Date().toISOString().split("T")[0];
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 export function swapTimes(

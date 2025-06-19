@@ -308,13 +308,13 @@ export default function CurbCalculator() {
 
         <div className="flex items-center justify-center">
           <div className="text-center">
-            <div className="w-40 h-24 bg-orange-100 border-2 border-orange-300 rounded-lg mb-4 relative">
-              <div className="absolute left-0 top-0 w-8 h-full bg-orange-200 rounded-l-lg"></div>
-              <div className="absolute bottom-0 left-8 right-0 h-4 bg-orange-200 rounded-br-lg"></div>
-              <div className="absolute top-2 left-2 text-xs text-orange-600">
+            <div className="w-56 h-36 bg-orange-100 border-2 border-orange-300 rounded-lg mb-4 relative">
+              <div className="absolute left-0 top-0 w-12 h-full bg-orange-200 rounded-l-lg"></div>
+              <div className="absolute bottom-0 left-12 right-0 h-6 bg-orange-200 rounded-br-lg"></div>
+              <div className="absolute top-3 left-3 text-sm text-orange-600 font-medium">
                 curb
               </div>
-              <div className="absolute bottom-1 right-2 text-xs text-orange-600">
+              <div className="absolute bottom-2 right-3 text-sm text-orange-600 font-medium">
                 gutter
               </div>
             </div>

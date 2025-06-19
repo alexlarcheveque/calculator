@@ -214,15 +214,15 @@ export default function SlabCalculator() {
 
         <div className="flex items-center justify-center">
           <div className="text-center">
-            <div className="w-32 h-20 bg-blue-100 border-2 border-blue-300 rounded-lg mb-4 relative">
-              <div className="absolute inset-2 bg-blue-200 rounded"></div>
-              <div className="absolute top-1 left-1 text-xs text-blue-600">
+            <div className="w-48 h-32 bg-blue-100 border-2 border-blue-300 rounded-lg mb-4 relative">
+              <div className="absolute inset-3 bg-blue-200 rounded"></div>
+              <div className="absolute top-2 left-2 text-sm text-blue-600 font-medium">
                 l
               </div>
-              <div className="absolute bottom-1 right-1 text-xs text-blue-600">
+              <div className="absolute bottom-2 right-2 text-sm text-blue-600 font-medium">
                 w
               </div>
-              <div className="absolute right-[-20px] top-1/2 transform -translate-y-1/2 text-xs text-blue-600">
+              <div className="absolute right-[-30px] top-1/2 transform -translate-y-1/2 text-sm text-blue-600 font-medium">
                 h
               </div>
             </div>

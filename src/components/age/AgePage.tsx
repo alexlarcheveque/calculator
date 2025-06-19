@@ -8,9 +8,7 @@ export default function AgePage() {
     <div>
       <div className="space-y-8">
         {/* Age Calculator */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <AgeCalculator />
-        </div>
+        <AgeCalculator />
 
         {/* FAQ Section */}
         <FAQSection />

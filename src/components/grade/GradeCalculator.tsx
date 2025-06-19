@@ -17,7 +17,7 @@ export default function GradeCalculator() {
   const [formValues, setFormValues] = useState<GradeCalculationValues>({
     assignments: [
       { id: "1", name: "Homework 1", grade: "90", weight: 5, gradePoints: 90 },
-      { id: "2", name: "Project", grade: "B", weight: 20, gradePoints: 84.5 },
+      { id: "2", name: "Project", grade: "72", weight: 20, gradePoints: 84.5 },
       {
         id: "3",
         name: "Midterm exam",
@@ -33,9 +33,6 @@ export default function GradeCalculator() {
     ],
     gradeFormat: "percentage",
     weightFormat: "percentage",
-    showPlanning: true,
-    finalGradeGoal: "",
-    remainingWeight: 55,
   });
 
   const [result, setResult] = useState<GradeCalculationResult | null>(null);
@@ -90,23 +87,13 @@ export default function GradeCalculator() {
     }));
   };
 
-  const handlePlanningToggle = (show: boolean) => {
-    setFormValues((prev) => ({
-      ...prev,
-      showPlanning: show,
-    }));
-  };
-
   const updateRemainingWeight = () => {
+    // This function can be removed or kept for future use
     if (formValues.weightFormat === "percentage") {
       const totalWeight = formValues.assignments.reduce((sum, assignment) => {
         return sum + (assignment.weight || 0);
       }, 0);
-      const remaining = Math.max(0, 100 - totalWeight);
-      setFormValues((prev) => ({
-        ...prev,
-        remainingWeight: remaining,
-      }));
+      // Could be used for displaying remaining weight info in the future
     }
   };
 
@@ -133,9 +120,6 @@ export default function GradeCalculator() {
       ],
       gradeFormat: "percentage",
       weightFormat: "percentage",
-      showPlanning: true,
-      finalGradeGoal: "",
-      remainingWeight: 100,
     });
     setResult(null);
   };
@@ -271,82 +255,11 @@ export default function GradeCalculator() {
           </button>
         </div>
 
-        {/* Final Grade Planning */}
-        {formValues.showPlanning && (
-          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-            <h3 className="text-lg font-semibold text-green-800 mb-4">
-              Final Grade Planning (Optional)
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Final Grade Goal:
-                </label>
-                {formValues.gradeFormat === "letter" ? (
-                  <select
-                    value={formValues.finalGradeGoal || ""}
-                    onChange={(e) =>
-                      setFormValues((prev) => ({
-                        ...prev,
-                        finalGradeGoal: e.target.value,
-                      }))
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <option value="">-</option>
-                    {LETTER_GRADES.map((grade) => (
-                      <option key={grade} value={grade}>
-                        {grade}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    step="0.1"
-                    value={formValues.finalGradeGoal || ""}
-                    onChange={(e) =>
-                      setFormValues((prev) => ({
-                        ...prev,
-                        finalGradeGoal: e.target.value,
-                      }))
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="85"
-                  />
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Weight of Remaining Tasks:
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  step="0.1"
-                  value={formValues.remainingWeight || ""}
-                  onChange={(e) =>
-                    setFormValues((prev) => ({
-                      ...prev,
-                      remainingWeight: parseFloat(e.target.value) || 0,
-                    }))
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="40"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Settings */}
         <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <h3 className="text-lg font-semibold text-blue-800 mb-4">Settings</h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Grade Format:
@@ -405,20 +318,6 @@ export default function GradeCalculator() {
                   </label>
                 ))}
               </div>
-            </div>
-
-            <div>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={formValues.showPlanning}
-                  onChange={(e) => handlePlanningToggle(e.target.checked)}
-                  className="mr-2"
-                />
-                <span className="text-sm font-medium text-gray-700">
-                  Show Final Grade Planning Options
-                </span>
-              </label>
             </div>
           </div>
         </div>

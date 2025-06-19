@@ -8,6 +8,15 @@ import {
   BusinessDayOptions,
 } from "@/types/date";
 
+// Get local date in YYYY-MM-DD format
+export function getLocalDateString(date?: Date): string {
+  const d = date || new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 // Date validation
 export function validateDate(
   dateString: string,

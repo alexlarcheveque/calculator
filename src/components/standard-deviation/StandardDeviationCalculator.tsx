@@ -60,26 +60,47 @@ export default function StandardDeviationCalculator() {
 
   return (
     <div>
+      {/* Instructions */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+        <h3 className="text-xl font-semibold mb-3 text-blue-800">
+          How to Use the Standard Deviation Calculator
+        </h3>
+        <div className="text-blue-700 space-y-2">
+          <p className="font-medium">
+            Calculate population or sample standard deviation:
+          </p>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Enter numbers separated by commas (e.g., 1, 2, 3, 4, 5)</li>
+            <li>Choose between Population or Sample calculation</li>
+            <li>At least 2 numbers are required for calculation</li>
+            <li>Decimal numbers are fully supported</li>
+            <li>Get comprehensive statistical analysis including outliers</li>
+          </ul>
+        </div>
+      </div>
+
       <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
         {/* Data Input */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Enter numbers separated by commas:
+          <label className="block text-lg font-semibold text-gray-800 mb-3 text-center">
+            Enter Your Data
           </label>
           <textarea
             value={formValues.dataInput}
             onChange={(e) => handleInputChange("dataInput", e.target.value)}
-            className="w-full h-24 px-3 py-2 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full h-32 px-4 py-3 border-2 border-blue-300 rounded-lg resize-none focus:outline-none focus:border-blue-500 transition-colors text-lg"
             placeholder="e.g., 10, 12, 23, 23, 16, 23, 21, 16"
           />
         </div>
 
         {/* Calculation Type Selection */}
-        <div className="mb-6">
-          <div className="flex items-center space-x-6">
-            <span className="text-sm font-medium text-gray-700">It is a:</span>
+        <div className="mb-8">
+          <label className="block text-lg font-semibold text-gray-800 mb-4 text-center">
+            Data Type
+          </label>
 
-            <label className="flex items-center">
+          <div className="flex justify-center space-x-8">
+            <label className="flex items-center cursor-pointer">
               <input
                 type="radio"
                 name="calculationType"
@@ -88,12 +109,12 @@ export default function StandardDeviationCalculator() {
                 onChange={(e) =>
                   handleInputChange("calculationType", e.target.value)
                 }
-                className="mr-2"
+                className="w-5 h-5 text-blue-600 mr-3"
               />
-              <span className="text-sm">Population</span>
+              <span className="text-lg font-medium">Population</span>
             </label>
 
-            <label className="flex items-center">
+            <label className="flex items-center cursor-pointer">
               <input
                 type="radio"
                 name="calculationType"
@@ -102,34 +123,32 @@ export default function StandardDeviationCalculator() {
                 onChange={(e) =>
                   handleInputChange("calculationType", e.target.value)
                 }
-                className="mr-2"
+                className="w-5 h-5 text-blue-600 mr-3"
               />
-              <span className="text-sm">Sample</span>
+              <span className="text-lg font-medium">Sample</span>
             </label>
+          </div>
 
-            <div className="relative group">
-              <svg
-                className="w-4 h-4 text-gray-400 cursor-help"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none w-64 z-10">
-                <div className="text-center">
-                  <strong>Population:</strong> Select if the data contains all
-                  measurable values, or all of the values you are interested in.
-                  <br />
-                  <br />
-                  <strong>Sample:</strong> Select if the data is a sample of a
-                  large or unlimited population and you wish to make a statement
-                  about the entire population.
+          {/* Help Information */}
+          <div className="mt-4 bg-white border border-gray-200 rounded-lg p-4">
+            <div className="text-sm text-gray-600">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-semibold text-blue-600 mb-2">
+                    Population
+                  </h4>
+                  <p>
+                    Select if the data contains all measurable values, or all of
+                    the values you are interested in.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-green-600 mb-2">Sample</h4>
+                  <p>
+                    Select if the data is a sample of a large or unlimited
+                    population and you wish to make a statement about the entire
+                    population.
+                  </p>
                 </div>
               </div>
             </div>
@@ -140,13 +159,13 @@ export default function StandardDeviationCalculator() {
         <div className="text-center space-x-4">
           <button
             onClick={calculate}
-            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors"
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
           >
             Calculate
           </button>
           <button
             onClick={clear}
-            className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition-colors"
+            className="bg-gray-500 text-white px-8 py-3 rounded-lg hover:bg-gray-600 transition-colors font-medium"
           >
             Clear
           </button>
@@ -154,21 +173,10 @@ export default function StandardDeviationCalculator() {
 
         {/* Error Display */}
         {error && (
-          <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-            {error}
+          <div className="mt-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+            <strong>Error:</strong> {error}
           </div>
         )}
-
-        {/* Instructions */}
-        <div className="mt-6 text-sm text-gray-600">
-          <p className="font-medium mb-2">Instructions:</p>
-          <ul className="list-disc list-inside space-y-1">
-            <li>Enter numbers separated by commas (e.g., 1, 2, 3, 4, 5)</li>
-            <li>Choose between Population or Sample calculation</li>
-            <li>At least 2 numbers are required for calculation</li>
-            <li>Decimal numbers are supported</li>
-          </ul>
-        </div>
       </div>
 
       {/* Results */}

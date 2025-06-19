@@ -78,21 +78,33 @@ export default function PercentageChangeCalculator() {
   };
 
   return (
-    <div>
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-        <div className="flex items-center justify-center space-x-4 text-lg flex-wrap">
+    <div className="space-y-6">
+      {/* Main Calculator Interface */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <h3 className="font-semibold text-lg text-blue-800 mb-2">
+            How to Calculate Percentage Change
+          </h3>
+          <p className="text-blue-700 text-sm">
+            Enter any two values below and leave the third blank to calculate
+            percentage increase or decrease. Choose "increase" or "decrease" and
+            the calculator will determine the missing value.
+          </p>
+        </div>
+
+        <div className="flex items-center justify-center space-x-4 text-lg flex-wrap gap-y-4">
           <input
             type="number"
             value={formValues.originalValue}
             onChange={(e) => handleInputChange("originalValue", e.target.value)}
-            className="w-32 h-12 text-center border border-gray-300 rounded text-lg"
+            className="w-32 h-12 text-center border-2 border-blue-300 rounded-lg text-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
             placeholder="?"
           />
 
           <select
             value={formValues.changeType}
             onChange={(e) => handleInputChange("changeType", e.target.value)}
-            className="h-12 px-3 border border-gray-300 rounded text-lg bg-white"
+            className="h-12 px-3 border-2 border-emerald-300 rounded-lg text-lg bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 focus:outline-none transition-colors"
           >
             <option value="increase">Increase</option>
             <option value="decrease">Decrease</option>
@@ -104,7 +116,7 @@ export default function PercentageChangeCalculator() {
             onChange={(e) =>
               handleInputChange("changePercentage", e.target.value)
             }
-            className="w-24 h-12 text-center border border-gray-300 rounded text-lg"
+            className="w-24 h-12 text-center border-2 border-blue-300 rounded-lg text-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
             placeholder="?"
           />
           <span className="text-lg font-medium">% =</span>
@@ -113,106 +125,137 @@ export default function PercentageChangeCalculator() {
             type="number"
             value={formValues.finalValue}
             onChange={(e) => handleInputChange("finalValue", e.target.value)}
-            className="w-32 h-12 text-center border border-gray-300 rounded text-lg"
+            className="w-32 h-12 text-center border-2 border-blue-300 rounded-lg text-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
             placeholder="?"
           />
         </div>
 
-        <div className="text-center mt-6 space-x-4">
+        <div className="flex justify-center mb-6 mt-6">
           <button
             onClick={calculate}
-            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors"
+            className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors focus:ring-4 focus:ring-blue-200 focus:outline-none mr-3"
           >
             Calculate
           </button>
           <button
             onClick={clear}
-            className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition-colors"
+            className="px-8 py-3 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600 transition-colors focus:ring-4 focus:ring-gray-200 focus:outline-none"
           >
             Clear
           </button>
         </div>
 
         {error && (
-          <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-            {error}
+          <div className="text-center">
+            <div className="inline-block p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-sm">
+              {error}
+            </div>
           </div>
         )}
+      </div>
 
-        {result && (
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
-            <h3 className="font-semibold text-lg mb-3">Result:</h3>
+      {/* Results Section - Integrated like Fraction Calculator */}
+      {result && (
+        <div className="bg-white rounded-lg shadow-md p-6">
+          {/* Title */}
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Percentage Change Calculator
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Calculate percentage increase or decrease between two values. Enter
+            any two values to find the third missing value.
+          </p>
 
-            <div className="space-y-2">
-              {result.originalValue !== undefined && (
-                <p className="text-lg">
-                  <strong>Original Value:</strong>{" "}
-                  {formatNumber(result.originalValue, 4)}
-                </p>
-              )}
+          {/* Result Header */}
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">Result</h3>
+          </div>
 
-              {result.changePercentage !== undefined && (
-                <p className="text-lg">
-                  <strong>Change Percentage:</strong>{" "}
-                  {formatNumber(result.changePercentage, 4)}%
-                </p>
-              )}
-
-              {result.finalValue !== undefined && (
-                <p className="text-lg">
-                  <strong>Final Value:</strong>{" "}
-                  {formatNumber(result.finalValue, 4)}
-                </p>
-              )}
-
-              {result.changeAmount !== undefined && (
-                <p className="text-lg">
-                  <strong>Change Amount:</strong>{" "}
-                  {formatNumber(result.changeAmount, 4)}
-                </p>
-              )}
+          {/* Main Result Display */}
+          <div className="bg-gray-50 rounded-lg p-6 mb-6">
+            <div className="text-center mb-4">
+              <div className="text-xl font-medium text-gray-800">
+                {result.originalValue !== undefined
+                  ? formatNumber(result.originalValue, 2)
+                  : formValues.originalValue}{" "}
+                {formValues.changeType === "increase"
+                  ? "increased"
+                  : "decreased"}{" "}
+                by{" "}
+                {result.changePercentage !== undefined
+                  ? formatNumber(result.changePercentage, 2)
+                  : formValues.changePercentage}
+                % ={" "}
+                {result.finalValue !== undefined
+                  ? formatNumber(result.finalValue, 2)
+                  : formValues.finalValue}
+              </div>
             </div>
 
-            {result.steps.length > 0 && (
-              <div className="mt-4">
-                <h4 className="font-semibold mb-2">Calculation Steps:</h4>
-                <div className="space-y-1">
-                  {result.steps.map((step, index) => (
-                    <p key={index} className="text-sm font-mono">
+            <div className="space-y-3">
+              {result.originalValue !== undefined &&
+                formValues.originalValue === "" && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700 font-medium">
+                      Original Value:
+                    </span>
+                    <span className="text-2xl font-bold text-blue-600">
+                      {formatNumber(result.originalValue, 4)}
+                    </span>
+                  </div>
+                )}
+
+              {result.changePercentage !== undefined &&
+                formValues.changePercentage === "" && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700 font-medium">
+                      Change Percentage:
+                    </span>
+                    <span className="text-2xl font-bold text-blue-600">
+                      {formatNumber(result.changePercentage, 4)}%
+                    </span>
+                  </div>
+                )}
+
+              {result.finalValue !== undefined &&
+                formValues.finalValue === "" && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700 font-medium">
+                      Final Value:
+                    </span>
+                    <span className="text-2xl font-bold text-blue-600">
+                      {formatNumber(result.finalValue, 4)}
+                    </span>
+                  </div>
+                )}
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="border-t border-gray-200 my-6"></div>
+
+          {/* Calculation Steps */}
+          {result.steps.length > 0 && (
+            <div className="mt-6">
+              <h4 className="text-lg font-semibold text-gray-800 mb-4">
+                Calculation steps:
+              </h4>
+              <div className="space-y-4">
+                {result.steps.map((step, index) => (
+                  <div key={index} className="bg-gray-50 rounded-lg p-4">
+                    <div className="text-sm font-medium text-gray-600 mb-2">
+                      Step {index + 1}:
+                    </div>
+                    <div className="font-mono text-sm bg-white px-3 py-2 rounded border-l-2 border-blue-200">
                       {step}
-                    </p>
-                  ))}
-                </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
-        )}
-
-        <div className="mt-4 text-sm text-gray-600">
-          <p>
-            <strong>Instructions:</strong>
-          </p>
-          <ul className="list-disc list-inside mt-1">
-            <li>Enter any two values and leave the third blank</li>
-            <li>
-              Examples: "100 increase 25% = ?", "? decrease 10% = 90", "80
-              increase ? % = 100"
-            </li>
-          </ul>
-
-          <div className="mt-3">
-            <p>
-              <strong>About Percentage Change:</strong>
-            </p>
-            <p className="mt-1">
-              Percentage increase/decrease calculates how much a value has
-              changed relative to its original value. For increase: New Value =
-              Original × (1 + percentage/100) For decrease: New Value = Original
-              × (1 - percentage/100)
-            </p>
-          </div>
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 }

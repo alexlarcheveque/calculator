@@ -7,6 +7,7 @@ import {
   formatFraction,
   mixedToImproper,
 } from "@/utils/fractionCalculations";
+import SimplifyCalculationSummary from "./SimplifyCalculationSummary";
 
 export default function SimplifyFractionCalculator() {
   const [formValues, setFormValues] = useState<SimplifyFractionFormValues>({
@@ -75,126 +76,95 @@ export default function SimplifyFractionCalculator() {
   };
 
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-      <table className="w-full">
-        <tbody>
-          <tr>
-            <td rowSpan={3} className="text-center align-middle px-4">
-              <input
-                type="number"
-                value={formValues.wholeNumber}
-                onChange={(e) =>
-                  handleInputChange(
-                    "wholeNumber",
-                    parseInt(e.target.value) || 0
-                  )
-                }
-                className="w-20 h-10 text-center border border-gray-300 rounded text-lg"
-                maxLength={10}
-              />
-            </td>
-            <td className="text-center p-2">
-              <input
-                type="number"
-                value={formValues.numerator}
-                onChange={(e) =>
-                  handleInputChange("numerator", parseInt(e.target.value) || 0)
-                }
-                className="w-20 h-8 text-center border border-gray-300 rounded text-lg"
-                maxLength={10}
-              />
-            </td>
-            <td
-              rowSpan={3}
-              className="text-center align-middle px-4 text-2xl font-bold"
-            >
-              = {result ? formatFraction(result.simplified, true) : "?"}
-            </td>
-          </tr>
-          <tr>
-            <td className="bg-black h-0.5"></td>
-          </tr>
-          <tr>
-            <td className="text-center p-2">
-              <input
-                type="number"
-                value={formValues.denominator}
-                onChange={(e) =>
-                  handleInputChange(
-                    "denominator",
-                    parseInt(e.target.value) || 1
-                  )
-                }
-                className="w-20 h-8 text-center border border-gray-300 rounded text-lg"
-                maxLength={10}
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="space-y-6">
+      {/* Main Calculator Interface */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="flex items-center justify-center space-x-8 mb-8">
+          {/* Whole Number */}
+          <div className="flex flex-col items-center">
+            <input
+              type="number"
+              value={formValues.wholeNumber}
+              onChange={(e) =>
+                handleInputChange("wholeNumber", parseInt(e.target.value) || 0)
+              }
+              className="w-20 h-12 text-center text-lg font-medium border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
+              placeholder="0"
+            />
+            <div className="text-xs text-gray-500 mt-1">Whole</div>
+          </div>
 
-      <div className="text-center mt-6 space-x-4">
-        <button
-          onClick={calculate}
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors"
-        >
-          Calculate
-        </button>
-        <button
-          onClick={clear}
-          className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition-colors"
-        >
-          Clear
-        </button>
+          {/* Fraction */}
+          <div className="flex flex-col items-center">
+            <input
+              type="number"
+              value={formValues.numerator}
+              onChange={(e) =>
+                handleInputChange("numerator", parseInt(e.target.value) || 0)
+              }
+              className="w-20 h-12 text-center text-lg font-medium border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
+              placeholder="21"
+            />
+            <div className="w-20 h-0.5 bg-gray-800 my-2"></div>
+            <input
+              type="number"
+              value={formValues.denominator}
+              onChange={(e) =>
+                handleInputChange("denominator", parseInt(e.target.value) || 1)
+              }
+              className="w-20 h-12 text-center text-lg font-medium border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
+              placeholder="98"
+            />
+          </div>
+
+          {/* Equals Sign */}
+          <div className="text-3xl font-bold text-gray-600">=</div>
+
+          {/* Result Display */}
+          <div className="flex flex-col items-center">
+            <div className="w-32 h-12 text-center text-lg font-bold text-emerald-600 bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-300 rounded-lg flex items-center justify-center">
+              {result ? formatFraction(result.simplified, true) : "?"}
+            </div>
+          </div>
+        </div>
+
+        {/* Calculate Button */}
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={calculate}
+            className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors focus:ring-4 focus:ring-blue-200 focus:outline-none"
+          >
+            Calculate
+          </button>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="text-center">
+            <p className="text-red-600 font-medium">{error}</p>
+          </div>
+        )}
+
+        {/* Result Display */}
+        {result && !error && (
+          <div className="text-center text-gray-600">
+            <p>See detailed calculation below</p>
+          </div>
+        )}
       </div>
 
-      {error && (
-        <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
-        </div>
+      {/* Detailed Calculation Steps */}
+      {result && !error && (
+        <SimplifyCalculationSummary
+          wholeNumber={formValues.wholeNumber}
+          numerator={formValues.numerator}
+          denominator={formValues.denominator}
+          originalFraction={result.original}
+          simplifiedFraction={result.simplified}
+          decimal={result.decimal}
+          isAlreadySimplified={result.isAlreadySimplified}
+        />
       )}
-
-      {result && (
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
-          <h3 className="font-semibold text-lg mb-2">Result:</h3>
-
-          {result.isAlreadySimplified ? (
-            <p className="text-lg text-green-600">
-              <strong>The fraction is already in its simplest form!</strong>
-            </p>
-          ) : (
-            <>
-              <p className="text-lg">
-                <strong>Original:</strong>{" "}
-                {formatFraction(result.original, true)}
-              </p>
-              <p className="text-lg">
-                <strong>Simplified:</strong>{" "}
-                {formatFraction(result.simplified, true)}
-              </p>
-            </>
-          )}
-
-          <p className="text-lg">
-            <strong>Decimal:</strong> {result.decimal.toFixed(6)}
-          </p>
-          <p className="text-lg">
-            <strong>Improper Fraction:</strong>{" "}
-            {formatFraction(result.simplified)}
-          </p>
-        </div>
-      )}
-
-      <div className="mt-4 text-sm text-gray-600">
-        <p>
-          <strong>Instructions:</strong>
-        </p>
-        <ul className="list-disc list-inside mt-1">
-          <li>Enter a whole number (optional), numerator, and denominator</li>
-          <li>Leave whole number as 0 for simple fractions</li>
-          <li>Example: 2 21/98 = 2 3/14</li>
-        </ul>
-      </div>
     </div>
   );
 }

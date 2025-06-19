@@ -11,6 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://calcy.net"),
   title: "Calcy.net - Free Online Calculators",
   description:
     "Access a variety of free online calculators including mortgage, loan, financial, health, fitness, and math calculators to help with your everyday calculations.",
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
     title: "Calcy.net - Free Online Calculators",
     description:
       "Access a variety of free online calculators for all your calculation needs.",
-    creator: "@calcy",
+    creator: "@AlexanderL30004",
     images: ["/twitter-image.jpg"],
   },
   robots: {

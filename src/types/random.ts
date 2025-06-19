@@ -47,3 +47,8 @@ export enum SortOrder {
   DESCENDING = "desc",
   NONE = "none",
 }
+
+export enum RandomCalculatorType {
+  SIMPLE = "simple",
+  COMPREHENSIVE = "comprehensive",
+}

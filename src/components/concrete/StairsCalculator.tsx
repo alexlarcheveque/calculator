@@ -249,15 +249,15 @@ export default function StairsCalculator() {
 
         <div className="flex items-center justify-center">
           <div className="text-center">
-            <div className="w-32 h-28 bg-red-100 border-2 border-red-300 rounded-lg mb-4 relative">
-              <div className="absolute bottom-0 left-0 w-8 h-6 bg-red-200 border-t border-red-300"></div>
-              <div className="absolute bottom-6 left-8 w-8 h-6 bg-red-200 border-t border-red-300"></div>
-              <div className="absolute bottom-12 left-16 w-8 h-6 bg-red-200 border-t border-red-300"></div>
-              <div className="absolute bottom-18 left-24 w-8 h-6 bg-red-200 border-t border-red-300"></div>
-              <div className="absolute top-2 left-2 text-xs text-red-600">
+            <div className="w-48 h-40 bg-red-100 border-2 border-red-300 rounded-lg mb-4 relative">
+              <div className="absolute bottom-0 left-0 w-12 h-8 bg-red-200 border-t border-red-300"></div>
+              <div className="absolute bottom-8 left-12 w-12 h-8 bg-red-200 border-t border-red-300"></div>
+              <div className="absolute bottom-16 left-24 w-12 h-8 bg-red-200 border-t border-red-300"></div>
+              <div className="absolute bottom-24 left-36 w-12 h-8 bg-red-200 border-t border-red-300"></div>
+              <div className="absolute top-3 left-3 text-sm text-red-600 font-medium">
                 run
               </div>
-              <div className="absolute right-2 bottom-2 text-xs text-red-600">
+              <div className="absolute right-3 bottom-3 text-sm text-red-600 font-medium">
                 rise
               </div>
             </div>

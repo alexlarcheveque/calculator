@@ -89,3 +89,8 @@ export interface BusinessDayOptions {
 export interface DateCalculationMode {
   mode: "difference" | "arithmetic";
 }
+
+export enum CalculatorType {
+  DATE_DIFFERENCE = "date-difference",
+  DATE_ARITHMETIC = "date-arithmetic",
+}

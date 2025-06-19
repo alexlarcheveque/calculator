@@ -34,10 +34,11 @@ export interface CourseResult {
 }
 
 export interface GPAPlanningValues {
-  currentGPA: number;
-  targetGPA: number;
-  currentCredits: number;
-  additionalCredits: number;
+  currentGPA: number | "";
+  targetGPA: number | "";
+  currentCredits: number | "";
+  additionalCredits: number | "";
+  gpaScale: "4.0" | "4.3" | "5.0";
 }
 
 export interface GPAPlanningResult {

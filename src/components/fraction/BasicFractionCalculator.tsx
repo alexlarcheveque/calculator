@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   BasicFractionFormValues,
   FractionOperation,
@@ -10,214 +10,217 @@ import {
   performFractionOperation,
   formatFraction,
 } from "@/utils/fractionCalculations";
+import CalculationSummary from "./CalculationSummary";
 
 export default function BasicFractionCalculator() {
-  const [formValues, setFormValues] = useState<BasicFractionFormValues>({
-    numerator1: 2,
-    denominator1: 7,
-    operation: FractionOperation.ADD,
-    numerator2: 3,
-    denominator2: 8,
-  });
-
+  const [numerator1, setNumerator1] = useState<number | "">(2);
+  const [denominator1, setDenominator1] = useState<number | "">(7);
+  const [numerator2, setNumerator2] = useState<number | "">(3);
+  const [denominator2, setDenominator2] = useState<number | "">(8);
+  const [operation, setOperation] = useState<FractionOperation>(
+    FractionOperation.ADD
+  );
   const [result, setResult] = useState<FractionResult | null>(null);
   const [error, setError] = useState<string>("");
 
-  const handleInputChange = (
-    field: keyof BasicFractionFormValues,
-    value: number | FractionOperation
-  ) => {
-    setFormValues((prev) => ({ ...prev, [field]: value }));
-    setError("");
-  };
+  const denominatorsValid =
+    denominator1 !== "" &&
+    denominator1 !== 0 &&
+    denominator2 !== "" &&
+    denominator2 !== 0;
 
   const calculate = () => {
+    // Convert empty strings to 0 for numerators, but validate denominators
+    const num1 = numerator1 === "" ? 0 : Number(numerator1);
+    const den1 = denominator1 === "" ? 1 : Number(denominator1);
+    const num2 = numerator2 === "" ? 0 : Number(numerator2);
+    const den2 = denominator2 === "" ? 1 : Number(denominator2);
+
+    if (den1 === 0 || den2 === 0) {
+      setError("Denominators cannot be zero");
+      setResult(null);
+      return;
+    }
+
     try {
-      const { numerator1, denominator1, numerator2, denominator2, operation } =
-        formValues;
-
-      if (denominator1 === 0 || denominator2 === 0) {
-        setError("Denominator cannot be zero");
-        return;
-      }
-
-      const frac1 = { numerator: numerator1, denominator: denominator1 };
-      const frac2 = { numerator: numerator2, denominator: denominator2 };
-
       const calculationResult = performFractionOperation(
-        frac1,
-        frac2,
+        { numerator: num1, denominator: den1 },
+        { numerator: num2, denominator: den2 },
         operation
       );
       setResult(calculationResult);
+      setError("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError("Invalid calculation");
       setResult(null);
     }
   };
 
+  const handleNumeratorChange = (
+    value: string,
+    setter: (val: number | "") => void
+  ) => {
+    if (value === "") {
+      setter("");
+    } else {
+      const num = Number(value);
+      if (!isNaN(num)) {
+        setter(num);
+      }
+    }
+  };
+
+  const handleDenominatorChange = (
+    value: string,
+    setter: (val: number | "") => void
+  ) => {
+    if (value === "") {
+      setter("");
+    } else {
+      const num = Number(value);
+      if (!isNaN(num)) {
+        setter(num);
+      }
+    }
+  };
+
   const clear = () => {
-    setFormValues({
-      numerator1: 0,
-      denominator1: 1,
-      operation: FractionOperation.ADD,
-      numerator2: 0,
-      denominator2: 1,
-    });
+    setNumerator1(0);
+    setDenominator1(1);
+    setOperation(FractionOperation.ADD);
+    setNumerator2(0);
+    setDenominator2(1);
     setResult(null);
     setError("");
   };
 
   return (
-    <div>
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-        <table className="w-full">
-          <tbody>
-            <tr>
-              <td className="text-center p-2">
-                <input
-                  type="number"
-                  value={formValues.numerator1}
-                  onChange={(e) =>
-                    handleInputChange(
-                      "numerator1",
-                      parseInt(e.target.value) || 0
-                    )
-                  }
-                  className="w-16 h-8 text-center border border-gray-300 rounded text-lg"
-                  maxLength={8}
-                />
-              </td>
-              <td rowSpan={3} className="text-center align-middle px-4">
-                <select
-                  value={formValues.operation}
-                  onChange={(e) =>
-                    handleInputChange(
-                      "operation",
-                      e.target.value as FractionOperation
-                    )
-                  }
-                  className="w-16 h-10 text-center border border-gray-300 rounded text-lg"
-                >
-                  <option value={FractionOperation.ADD}>+</option>
-                  <option value={FractionOperation.SUBTRACT}>-</option>
-                  <option value={FractionOperation.MULTIPLY}>×</option>
-                  <option value={FractionOperation.DIVIDE}>÷</option>
-                </select>
-              </td>
-              <td className="text-center p-2">
-                <input
-                  type="number"
-                  value={formValues.numerator2}
-                  onChange={(e) =>
-                    handleInputChange(
-                      "numerator2",
-                      parseInt(e.target.value) || 0
-                    )
-                  }
-                  className="w-16 h-8 text-center border border-gray-300 rounded text-lg"
-                  maxLength={8}
-                />
-              </td>
-              <td
-                rowSpan={3}
-                className="text-center align-middle px-4 text-2xl font-bold"
-              >
-                =
-              </td>
-              <td className="text-center align-middle text-xl">
-                {result ? formatFraction(result.simplified) : "?"}
-              </td>
-            </tr>
-            <tr>
-              <td className="bg-black h-0.5"></td>
-              <td className="bg-black h-0.5"></td>
-              <td className="bg-black h-0.5"></td>
-            </tr>
-            <tr>
-              <td className="text-center p-2">
-                <input
-                  type="number"
-                  value={formValues.denominator1}
-                  onChange={(e) =>
-                    handleInputChange(
-                      "denominator1",
-                      parseInt(e.target.value) || 1
-                    )
-                  }
-                  className="w-16 h-8 text-center border border-gray-300 rounded text-lg"
-                  maxLength={8}
-                />
-              </td>
-              <td className="text-center p-2">
-                <input
-                  type="number"
-                  value={formValues.denominator2}
-                  onChange={(e) =>
-                    handleInputChange(
-                      "denominator2",
-                      parseInt(e.target.value) || 1
-                    )
-                  }
-                  className="w-16 h-8 text-center border border-gray-300 rounded text-lg"
-                  maxLength={8}
-                />
-              </td>
-              <td className="text-center align-middle text-xl">
-                {result ? "?" : "?"}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <div className="space-y-6">
+      {/* Main Calculator Interface */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="flex items-center justify-center space-x-8 mb-8">
+          {/* First Fraction */}
+          <div className="flex flex-col items-center">
+            <input
+              type="number"
+              value={numerator1}
+              onChange={(e) =>
+                handleNumeratorChange(e.target.value, setNumerator1)
+              }
+              className="w-20 h-12 text-center text-lg font-medium border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
+              placeholder="2"
+            />
+            <div className="w-20 h-0.5 bg-gray-800 my-2"></div>
+            <input
+              type="number"
+              value={denominator1}
+              onChange={(e) =>
+                handleDenominatorChange(e.target.value, setDenominator1)
+              }
+              className="w-20 h-12 text-center text-lg font-medium border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
+              placeholder="7"
+            />
+          </div>
 
-        <div className="text-center mt-6 space-x-4">
+          {/* Operation Selector */}
+          <div className="flex flex-col items-center space-y-3">
+            <select
+              value={operation}
+              onChange={(e) =>
+                setOperation(e.target.value as FractionOperation)
+              }
+              className="px-4 py-3 text-lg font-medium bg-white border-2 border-emerald-300 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 focus:outline-none transition-colors"
+            >
+              <option value={FractionOperation.ADD}>+</option>
+              <option value={FractionOperation.SUBTRACT}>−</option>
+              <option value={FractionOperation.MULTIPLY}>×</option>
+              <option value={FractionOperation.DIVIDE}>÷</option>
+            </select>
+          </div>
+
+          {/* Second Fraction */}
+          <div className="flex flex-col items-center">
+            <input
+              type="number"
+              value={numerator2}
+              onChange={(e) =>
+                handleNumeratorChange(e.target.value, setNumerator2)
+              }
+              className="w-20 h-12 text-center text-lg font-medium border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
+              placeholder="3"
+            />
+            <div className="w-20 h-0.5 bg-gray-800 my-2"></div>
+            <input
+              type="number"
+              value={denominator2}
+              onChange={(e) =>
+                handleDenominatorChange(e.target.value, setDenominator2)
+              }
+              className="w-20 h-12 text-center text-lg font-medium border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
+              placeholder="8"
+            />
+          </div>
+
+          {/* Equals Sign */}
+          <div className="text-3xl font-bold text-gray-600">=</div>
+
+          {/* Result Display - Always show input boxes */}
+          <div className="flex flex-col items-center">
+            <input
+              type="number"
+              value={result ? result.simplified.numerator : ""}
+              readOnly
+              className="w-20 h-12 text-center text-lg font-bold text-emerald-600 bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-300 rounded-lg focus:outline-none"
+              placeholder="?"
+            />
+            <div className="w-20 h-0.5 bg-gray-800 my-2"></div>
+            <input
+              type="number"
+              value={result ? result.simplified.denominator : ""}
+              readOnly
+              className="w-20 h-12 text-center text-lg font-bold text-emerald-600 bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-300 rounded-lg focus:outline-none"
+              placeholder="?"
+            />
+          </div>
+        </div>
+
+        {/* Calculate Button */}
+        <div className="flex justify-center mb-6">
           <button
             onClick={calculate}
-            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors"
+            disabled={!denominatorsValid}
+            className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors focus:ring-4 focus:ring-blue-200 focus:outline-none"
           >
             Calculate
           </button>
-          <button
-            onClick={clear}
-            className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition-colors"
-          >
-            Clear
-          </button>
         </div>
 
+        {/* Error Message */}
         {error && (
-          <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-            {error}
+          <div className="text-center">
+            <p className="text-red-600 font-medium">{error}</p>
           </div>
         )}
 
-        {result && (
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
-            <h3 className="font-semibold text-lg mb-2">Result:</h3>
-            <p className="text-lg">
-              <strong>Fraction:</strong> {formatFraction(result.simplified)}
-            </p>
-            <p className="text-lg">
-              <strong>Decimal:</strong> {result.decimal.toFixed(6)}
-            </p>
-            <p className="text-lg">
-              <strong>Mixed Number:</strong>{" "}
-              {formatFraction(result.simplified, true)}
-            </p>
-
-            {result.steps.length > 0 && (
-              <div className="mt-4">
-                <h4 className="font-semibold mb-2">Steps:</h4>
-                <div className="space-y-1">
-                  {result.steps.map((step, index) => (
-                    <p key={index} className="text-sm font-mono">
-                      {step}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            )}
+        {/* Result Display */}
+        {result && !error && (
+          <div className="text-center text-gray-600">
+            <p>See detailed calculation below</p>
           </div>
+        )}
+      </div>
+
+      <div className="mt-6">
+        {/* Calculation Summary - shown only when there's a result */}
+        {result && !error && (
+          <CalculationSummary
+            numerator1={numerator1 === "" ? 0 : Number(numerator1)}
+            denominator1={denominator1 === "" ? 1 : Number(denominator1)}
+            operation={operation}
+            numerator2={numerator2 === "" ? 0 : Number(numerator2)}
+            denominator2={denominator2 === "" ? 1 : Number(denominator2)}
+            result={result}
+          />
         )}
       </div>
     </div>

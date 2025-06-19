@@ -170,12 +170,12 @@ export default function RoundCalculator() {
 
         <div className="flex items-center justify-center">
           <div className="text-center">
-            <div className="w-20 h-24 bg-green-100 border-2 border-green-300 rounded-full mb-4 relative">
-              <div className="absolute inset-2 bg-green-200 rounded-full"></div>
-              <div className="absolute top-1 left-1/2 transform -translate-x-1/2 text-xs text-green-600">
+            <div className="w-32 h-40 bg-green-100 border-2 border-green-300 rounded-full mb-4 relative">
+              <div className="absolute inset-3 bg-green-200 rounded-full"></div>
+              <div className="absolute top-2 left-1/2 transform -translate-x-1/2 text-sm text-green-600 font-medium">
                 d
               </div>
-              <div className="absolute right-[-20px] top-1/2 transform -translate-y-1/2 text-xs text-green-600">
+              <div className="absolute right-[-30px] top-1/2 transform -translate-y-1/2 text-sm text-green-600 font-medium">
                 h
               </div>
             </div>

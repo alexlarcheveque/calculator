@@ -10,9 +10,6 @@ export interface GradeCalculationValues {
   assignments: Assignment[];
   gradeFormat: "percentage" | "letter";
   weightFormat: "percentage" | "points";
-  showPlanning: boolean;
-  finalGradeGoal?: string;
-  remainingWeight?: number;
 }
 
 export interface GradeCalculationResult {

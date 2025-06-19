@@ -47,8 +47,8 @@ export default function FinalGradeCalculator() {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold text-green-600 mb-4">
-        Final Grade Calculator
+      <h2 className="text-2xl font-bold text-blue-600 mb-4">
+        Grade Needed Calculator
       </h2>
       <p className="text-gray-600 mb-6">
         Use this calculator to find out the grade needed on the final exam in
@@ -74,7 +74,7 @@ export default function FinalGradeCalculator() {
                   parseFloat(e.target.value) || 0
                 )
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="88"
             />
           </div>
@@ -95,7 +95,7 @@ export default function FinalGradeCalculator() {
                   parseFloat(e.target.value) || 0
                 )
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="85"
             />
           </div>
@@ -119,7 +119,7 @@ export default function FinalGradeCalculator() {
                   parseFloat(e.target.value) || 0
                 )
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="40"
             />
           </div>
@@ -128,7 +128,7 @@ export default function FinalGradeCalculator() {
         <div className="flex justify-center gap-4 mt-6">
           <button
             onClick={calculate}
-            className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
           >
             Calculate
           </button>

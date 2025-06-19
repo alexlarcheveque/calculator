@@ -37,10 +37,22 @@ export default function CalculatorPage() {
       timestamp: new Date(),
     };
 
-    setState((prev) => ({
-      ...prev,
-      history: [...prev.history, historyItem].slice(-10), // Keep last 10 items
-    }));
+    setState((prev) => {
+      // Check if the last entry is the same to prevent duplicates
+      const lastEntry = prev.history[prev.history.length - 1];
+      if (
+        lastEntry &&
+        lastEntry.expression === expression &&
+        lastEntry.result === result
+      ) {
+        return prev; // Don't add duplicate
+      }
+
+      return {
+        ...prev,
+        history: [...prev.history, historyItem].slice(-10), // Keep last 10 items
+      };
+    });
   }, []);
 
   // Handle number input
@@ -109,10 +121,8 @@ export default function CalculatorPage() {
             );
             const formattedResult = formatNumber(result);
 
-            addToHistory(
-              `${prev.previousValue} ${prev.operation} ${inputValue}`,
-              formattedResult
-            );
+            // Only add to history when completing the final calculation (equals button)
+            // Not for intermediate operations
             setLastAnswer(result);
 
             return {
@@ -140,7 +150,7 @@ export default function CalculatorPage() {
         };
       });
     },
-    [state.display, addToHistory]
+    [state.display]
   );
 
   // Handle equals
@@ -388,10 +398,11 @@ export default function CalculatorPage() {
   }, [handleButtonClick]);
 
   return (
-    <div>
-      <div className="flex justify-center mb-16">
-        <div className="max-w-md">
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="space-y-16">
+      {/* Calculator Section */}
+      <div className="flex justify-center">
+        <div className="max-w-md w-full mx-4">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
             <CalculatorDisplay
               input={
                 state.operation
@@ -409,19 +420,34 @@ export default function CalculatorPage() {
             />
           </div>
 
-          {/* Instructions */}
-          <div className="mt-6 text-sm text-gray-600 text-center">
-            <p>You can use your keyboard for basic operations:</p>
-            <p>
-              Numbers (0-9), operators (+, -, *, /), Enter (=), Escape (AC),
-              Backspace
-            </p>
+          {/* Keyboard Shortcut Hint */}
+          <div className="mt-8 text-center">
+            <div className="inline-flex items-center px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full border border-white/30">
+              <svg
+                className="w-4 h-4 text-slate-600 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+              <span className="text-sm text-slate-600 font-medium">
+                Keyboard shortcuts supported
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* FAQ Section */}
-      <FAQSection />
+      <div className="bg-white/40 backdrop-blur-sm rounded-2xl border border-white/30 mx-4">
+        <FAQSection />
+      </div>
     </div>
   );
 }
