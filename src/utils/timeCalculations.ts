@@ -289,7 +289,6 @@ export function parseTimeExpression(expression: string): TimeExpressionResult {
 
     // Calculate result
     let totalSeconds = 0;
-    let currentOperator: "+" | "-" = "+";
 
     for (const token of tokens) {
       let unitSeconds = 0;
@@ -308,15 +307,12 @@ export function parseTimeExpression(expression: string): TimeExpressionResult {
           break;
       }
 
-      if (currentOperator === "+") {
+      // Use the operator from the current token (default to + for first token)
+      const operator = token.operator || "+";
+      if (operator === "+") {
         totalSeconds += unitSeconds;
       } else {
         totalSeconds -= unitSeconds;
-      }
-
-      // Update operator for next iteration
-      if (token.operator) {
-        currentOperator = token.operator;
       }
     }
 
@@ -511,7 +507,13 @@ export function getCurrentDateTime(): {
   ampm: "AM" | "PM";
 } {
   const now = new Date();
-  const date = now.toISOString().split("T")[0];
+
+  // Format date as YYYY-MM-DD using local time
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const date = `${year}-${month}-${day}`;
+
   let hours = now.getHours();
   const ampm: "AM" | "PM" = hours >= 12 ? "PM" : "AM";
 

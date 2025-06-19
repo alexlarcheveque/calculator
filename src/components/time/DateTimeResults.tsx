@@ -49,50 +49,57 @@ export default function DateTimeResults({ result }: DateTimeResultsProps) {
   };
 
   return (
-    <div className="mt-6 space-y-6">
-      <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-        <h3 className="text-xl font-bold text-green-800 mb-4">
-          Date-Time Calculation Result
-        </h3>
+    <div className="space-y-6">
+      {/* Main Result */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h3 className="text-xl font-bold text-gray-800 mb-2">Result</h3>
+        <p className="text-gray-600 mb-4">
+          The new date and time after adding or subtracting the specified time
+          period.
+        </p>
 
         <div className="text-center mb-6">
-          <div className="text-2xl font-bold text-green-600 mb-2">
+          <div className="text-3xl font-bold text-blue-600 mb-2">
             {formatResultDate()}
           </div>
-          <div className="text-xl font-semibold text-green-700">
+          <div className="text-2xl font-semibold text-blue-700">
             {formatResultTime()}
           </div>
         </div>
 
+        <hr className="border-gray-200 my-4" />
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="font-semibold text-green-700 mb-3">Result Date</h4>
+            <h4 className="font-semibold text-gray-700 mb-3">
+              Date Information
+            </h4>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-gray-700">Date:</span>
-                <span className="font-medium">
+                <span className="text-gray-600">Date:</span>
+                <span className="font-medium text-blue-600">
                   {result.resultDate.toLocaleDateString()}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Day of Week:</span>
-                <span className="font-medium">
+                <span className="text-gray-600">Day of Week:</span>
+                <span className="font-medium text-blue-600">
                   {result.resultDate.toLocaleDateString("en-US", {
                     weekday: "long",
                   })}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Month:</span>
-                <span className="font-medium">
+                <span className="text-gray-600">Month:</span>
+                <span className="font-medium text-blue-600">
                   {result.resultDate.toLocaleDateString("en-US", {
                     month: "long",
                   })}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Year:</span>
-                <span className="font-medium">
+                <span className="text-gray-600">Year:</span>
+                <span className="font-medium text-blue-600">
                   {result.resultDate.getFullYear()}
                 </span>
               </div>
@@ -100,35 +107,37 @@ export default function DateTimeResults({ result }: DateTimeResultsProps) {
           </div>
 
           <div>
-            <h4 className="font-semibold text-green-700 mb-3">Result Time</h4>
+            <h4 className="font-semibold text-gray-700 mb-3">
+              Time Information
+            </h4>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-gray-700">Time:</span>
-                <span className="font-medium">{formatResultTime()}</span>
+                <span className="text-gray-600">Time:</span>
+                <span className="font-medium text-green-600">
+                  {formatResultTime()}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Hour:</span>
-                <span className="font-medium">{result.resultTime.hours}</span>
+                <span className="text-gray-600">Hour:</span>
+                <span className="font-medium text-green-600">
+                  {result.resultTime.hours}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Minute:</span>
-                <span className="font-medium">{result.resultTime.minutes}</span>
+                <span className="text-gray-600">Minute:</span>
+                <span className="font-medium text-green-600">
+                  {result.resultTime.minutes}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Second:</span>
-                <span className="font-medium">{result.resultTime.seconds}</span>
+                <span className="text-gray-600">Second:</span>
+                <span className="font-medium text-green-600">
+                  {result.resultTime.seconds}
+                </span>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-semibold text-blue-700 mb-2">Summary</h4>
-        <p className="text-blue-800">
-          The calculation resulted in{" "}
-          <span className="font-bold">{result.formatted}</span>.
-        </p>
       </div>
     </div>
   );

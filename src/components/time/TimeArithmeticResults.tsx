@@ -22,46 +22,56 @@ export default function TimeArithmeticResults({
   const conversions = convertTime(result.result);
 
   return (
-    <div className="mt-6 space-y-6">
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h3 className="text-xl font-bold text-blue-800 mb-4">
-          Time Calculation Result
-        </h3>
+    <div className="space-y-6">
+      {/* Main Result */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h3 className="text-xl font-bold text-gray-800 mb-2">Result</h3>
+        <p className="text-gray-600 mb-4">
+          The calculated time after performing the arithmetic operation.
+        </p>
 
         <div className="text-center mb-6">
-          <div className="text-2xl font-bold text-blue-600 mb-2">
+          <div className="text-3xl font-bold text-blue-600 mb-2">
             {result.formatted}
           </div>
           <div className="text-lg text-blue-700">
-            Total: {formatNumber(result.totalSeconds)} seconds
+            Total:{" "}
+            <span className="text-blue-600">
+              {formatNumber(result.totalSeconds)}
+            </span>{" "}
+            seconds
           </div>
         </div>
 
+        <hr className="border-gray-200 my-4" />
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="font-semibold text-blue-700 mb-3">Time Breakdown</h4>
+            <h4 className="font-semibold text-gray-700 mb-3">
+              Time Components
+            </h4>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-gray-700">Days:</span>
-                <span className="font-medium">
+                <span className="text-gray-600">Days:</span>
+                <span className="font-medium text-blue-600">
                   {formatNumber(result.result.days)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Hours:</span>
-                <span className="font-medium">
+                <span className="text-gray-600">Hours:</span>
+                <span className="font-medium text-blue-600">
                   {formatNumber(result.result.hours)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Minutes:</span>
-                <span className="font-medium">
+                <span className="text-gray-600">Minutes:</span>
+                <span className="font-medium text-blue-600">
                   {formatNumber(result.result.minutes)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Seconds:</span>
-                <span className="font-medium">
+                <span className="text-gray-600">Seconds:</span>
+                <span className="font-medium text-blue-600">
                   {formatNumber(result.result.seconds)}
                 </span>
               </div>
@@ -69,29 +79,29 @@ export default function TimeArithmeticResults({
           </div>
 
           <div>
-            <h4 className="font-semibold text-blue-700 mb-3">Total Time</h4>
+            <h4 className="font-semibold text-gray-700 mb-3">Total Time</h4>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-gray-700">Total Days:</span>
-                <span className="font-medium">
+                <span className="text-gray-600">Total Days:</span>
+                <span className="font-medium text-green-600">
                   {formatNumber(result.breakdown.totalDays)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Total Hours:</span>
-                <span className="font-medium">
+                <span className="text-gray-600">Total Hours:</span>
+                <span className="font-medium text-green-600">
                   {formatNumber(result.breakdown.totalHours)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Total Minutes:</span>
-                <span className="font-medium">
+                <span className="text-gray-600">Total Minutes:</span>
+                <span className="font-medium text-green-600">
                   {formatNumber(result.breakdown.totalMinutes)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Total Seconds:</span>
-                <span className="font-medium">
+                <span className="text-gray-600">Total Seconds:</span>
+                <span className="font-medium text-green-600">
                   {formatNumber(result.breakdown.totalSeconds)}
                 </span>
               </div>
@@ -100,32 +110,39 @@ export default function TimeArithmeticResults({
         </div>
       </div>
 
-      <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-        <h4 className="font-semibold text-green-700 mb-3">Time Conversions</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className="text-xl font-bold text-green-600">
+      {/* Time Conversions */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h3 className="text-xl font-bold text-gray-800 mb-2">
+          Time Conversions
+        </h3>
+        <p className="text-gray-600 mb-4">
+          The result expressed in different time units for reference.
+        </p>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <div className="text-2xl font-bold text-green-600">
               {conversions.weeks.toFixed(2)}
             </div>
-            <div className="text-sm text-gray-600">Weeks</div>
+            <div className="text-sm text-gray-600 mt-1">Weeks</div>
           </div>
-          <div className="text-center">
-            <div className="text-xl font-bold text-green-600">
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <div className="text-2xl font-bold text-green-600">
               {conversions.months.toFixed(2)}
             </div>
-            <div className="text-sm text-gray-600">Months</div>
+            <div className="text-sm text-gray-600 mt-1">Months</div>
           </div>
-          <div className="text-center">
-            <div className="text-xl font-bold text-green-600">
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <div className="text-2xl font-bold text-green-600">
               {conversions.years.toFixed(3)}
             </div>
-            <div className="text-sm text-gray-600">Years</div>
+            <div className="text-sm text-gray-600 mt-1">Years</div>
           </div>
-          <div className="text-center">
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
             <div className="text-xl font-bold text-green-600">
               {formatNumber(conversions.milliseconds)}
             </div>
-            <div className="text-sm text-gray-600">Milliseconds</div>
+            <div className="text-sm text-gray-600 mt-1">Milliseconds</div>
           </div>
         </div>
       </div>

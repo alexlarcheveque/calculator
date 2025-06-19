@@ -37,130 +37,59 @@ export default function IPv6Results({ result }: IPv6ResultsProps) {
 
   return (
     <div className="mt-6 space-y-6">
-      {/* Main Results */}
+      {/* Essential IPv6 Information */}
       <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-        <h3 className="text-xl font-bold text-green-800 mb-4">
-          IPv6 Subnet Calculation Results
-        </h3>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h4 className="font-semibold text-green-700 mb-3">
-              Network Information
+              Network Details
             </h4>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-gray-700">Network Address:</span>
-                <span className="font-mono font-medium break-all">
-                  {result.networkAddress}
+                <span className="text-gray-700">Network:</span>
+                <span className="font-mono font-medium text-sm break-all">
+                  {result.networkAddress}/{result.prefixLength}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700">Prefix Length:</span>
-                <span className="font-mono font-medium">
-                  /{result.prefixLength}
+                <span className="text-gray-700">Compressed:</span>
+                <span className="font-mono font-medium text-sm break-all">
+                  {result.compressedAddress}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-700">Number of Addresses:</span>
-                <span className="font-medium">{result.numberOfAddresses}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700">Type:</span>
+                <div
+                  className={`px-2 py-1 rounded text-sm font-medium ${getAddressTypeColor(
+                    result.addressType
+                  )}`}
+                >
+                  {result.addressType}
+                </div>
               </div>
             </div>
           </div>
 
           <div>
             <h4 className="font-semibold text-green-700 mb-3">
-              Address Formats
+              Address Information
             </h4>
             <div className="space-y-2">
-              <div>
-                <span className="text-gray-700 block">Compressed:</span>
-                <span className="font-mono font-medium break-all">
-                  {result.compressedAddress}
+              <div className="flex justify-between">
+                <span className="text-gray-700">Total Addresses:</span>
+                <span className="font-medium text-lg text-green-600">
+                  {result.numberOfAddresses}
                 </span>
               </div>
-              <div>
-                <span className="text-gray-700 block">Expanded:</span>
-                <span className="font-mono font-medium break-all">
-                  {result.expandedAddress}
-                </span>
+              <div className="flex justify-between">
+                <span className="text-gray-700">Network Bits:</span>
+                <span className="font-medium">{result.prefixLength}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-700">Host Bits:</span>
+                <span className="font-medium">{128 - result.prefixLength}</span>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Address Type */}
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-        <h4 className="text-lg font-semibold text-gray-800 mb-4">
-          Address Classification
-        </h4>
-        <div className="flex flex-wrap gap-4">
-          <div
-            className={`px-3 py-2 rounded-lg border ${getAddressTypeColor(
-              result.addressType
-            )}`}
-          >
-            <span className="text-sm font-medium">{result.addressType}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Binary Breakdown */}
-      <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-        <h4 className="text-lg font-semibold text-purple-800 mb-4">
-          Binary Breakdown
-        </h4>
-        <div className="space-y-3">
-          <div>
-            <div className="text-sm font-medium text-purple-700 mb-1">
-              Network Prefix:
-            </div>
-            <div className="font-mono text-sm bg-white p-2 rounded border break-all">
-              {result.networkPrefix}
-            </div>
-          </div>
-          <div>
-            <div className="text-sm font-medium text-purple-700 mb-1">
-              Host Identifier:
-            </div>
-            <div className="font-mono text-sm bg-white p-2 rounded border break-all">
-              {result.hostIdentifier}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Additional Information */}
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-        <h4 className="text-lg font-semibold text-yellow-800 mb-4">
-          IPv6 Summary
-        </h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div>
-            <h5 className="font-semibold text-yellow-700 mb-2">Network</h5>
-            <p className="text-yellow-700 font-mono break-all">
-              {result.networkAddress}/{result.prefixLength}
-            </p>
-          </div>
-          <div>
-            <h5 className="font-semibold text-yellow-700 mb-2">Address Type</h5>
-            <p className="text-yellow-700">{result.addressType}</p>
-          </div>
-          <div>
-            <h5 className="font-semibold text-yellow-700 mb-2">
-              Total Addresses
-            </h5>
-            <p className="text-yellow-700">{result.numberOfAddresses}</p>
-          </div>
-          <div>
-            <h5 className="font-semibold text-yellow-700 mb-2">
-              Prefix Length
-            </h5>
-            <p className="text-yellow-700">
-              /{result.prefixLength} ({result.prefixLength} network bits,{" "}
-              {128 - result.prefixLength} host bits)
-            </p>
           </div>
         </div>
       </div>

@@ -218,15 +218,15 @@ export default function TubeCalculator() {
 
         <div className="flex items-center justify-center">
           <div className="text-center">
-            <div className="w-24 h-24 bg-purple-100 border-2 border-purple-300 rounded-full mb-4 relative">
-              <div className="absolute inset-3 bg-white border-2 border-purple-200 rounded-full"></div>
-              <div className="absolute top-1 left-1/2 transform -translate-x-1/2 text-xs text-purple-600">
+            <div className="w-36 h-36 bg-purple-100 border-2 border-purple-300 rounded-full mb-4 relative">
+              <div className="absolute inset-4 bg-white border-2 border-purple-200 rounded-full"></div>
+              <div className="absolute top-2 left-1/2 transform -translate-x-1/2 text-sm text-purple-600 font-medium">
                 d₁
               </div>
-              <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-xs text-purple-600">
+              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-sm text-purple-600 font-medium">
                 d₂
               </div>
-              <div className="absolute right-[-20px] top-1/2 transform -translate-y-1/2 text-xs text-purple-600">
+              <div className="absolute right-[-35px] top-1/2 transform -translate-y-1/2 text-sm text-purple-600 font-medium">
                 h
               </div>
             </div>

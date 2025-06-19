@@ -81,3 +81,9 @@ export interface TimeConversion {
   months: number;
   years: number;
 }
+
+export enum CalculatorType {
+  TIME_ARITHMETIC = "time-arithmetic",
+  DATE_TIME = "date-time",
+  TIME_EXPRESSION = "time-expression",
+}

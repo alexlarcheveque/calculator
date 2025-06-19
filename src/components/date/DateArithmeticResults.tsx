@@ -10,11 +10,13 @@ export default function DateArithmeticResults({
 }: DateArithmeticResultsProps) {
   if (!result.isValid) {
     return (
-      <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-        <h3 className="text-lg font-semibold text-red-800 mb-2">
-          Invalid Input
-        </h3>
-        <p className="text-red-700">Please check your date and try again.</p>
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+          <h3 className="text-lg font-semibold text-red-800 mb-2">
+            Invalid Input
+          </h3>
+          <p className="text-red-700">Please check your date and try again.</p>
+        </div>
       </div>
     );
   }
@@ -71,24 +73,32 @@ export default function DateArithmeticResults({
   };
 
   return (
-    <div className="mt-6 space-y-6">
-      <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-        <h3 className="text-xl font-bold text-green-800 mb-4">
-          Date Calculation Result
-        </h3>
+    <div className="bg-white rounded-lg shadow-md p-6">
+      {/* Title */}
+      <h2 className="text-2xl font-bold text-gray-800 mb-2">
+        Date Arithmetic Calculator
+      </h2>
+      <p className="text-gray-600 mb-6">
+        Add or subtract time from any date. Results show the calculated date
+        with detailed breakdown of changes made.
+      </p>
 
+      {/* Result Header */}
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold text-gray-800">Result</h3>
+      </div>
+
+      {/* Main Result Display */}
+      <div className="bg-gray-50 rounded-lg p-6 mb-6">
         <div className="text-center mb-6">
           <div className="text-3xl font-bold text-green-600 mb-2">
             {formatDate(result.resultDate)}
-          </div>
-          <div className="text-lg text-green-700">
-            {result.resultDate.toLocaleDateString("en-US", { weekday: "long" })}
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="font-semibold text-green-700 mb-3">
+            <h4 className="font-semibold text-gray-700 mb-3">
               Calculation Details
             </h4>
             <div className="space-y-2">
@@ -104,12 +114,6 @@ export default function DateArithmeticResults({
                   {result.operation}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-700">Result Date:</span>
-                <span className="font-medium">
-                  {formatDate(result.resultDate)}
-                </span>
-              </div>
               {result.businessDaysCalculated && (
                 <div className="flex justify-between">
                   <span className="text-gray-700">Calculation Type:</span>
@@ -120,14 +124,14 @@ export default function DateArithmeticResults({
           </div>
 
           <div>
-            <h4 className="font-semibold text-green-700 mb-3">
-              Time Added/Subtracted
+            <h4 className="font-semibold text-gray-700 mb-3">
+              Time {result.operation === "add" ? "Added" : "Subtracted"}
             </h4>
             <div className="space-y-2">
               {result.yearsAdded !== 0 && (
                 <div className="flex justify-between">
                   <span className="text-gray-700">Years:</span>
-                  <span className="font-medium">
+                  <span className="font-medium text-blue-600">
                     {result.yearsAdded > 0 ? "+" : ""}
                     {result.yearsAdded}
                   </span>
@@ -136,7 +140,7 @@ export default function DateArithmeticResults({
               {result.monthsAdded !== 0 && (
                 <div className="flex justify-between">
                   <span className="text-gray-700">Months:</span>
-                  <span className="font-medium">
+                  <span className="font-medium text-blue-600">
                     {result.monthsAdded > 0 ? "+" : ""}
                     {result.monthsAdded}
                   </span>
@@ -145,7 +149,7 @@ export default function DateArithmeticResults({
               {result.weeksAdded !== 0 && (
                 <div className="flex justify-between">
                   <span className="text-gray-700">Weeks:</span>
-                  <span className="font-medium">
+                  <span className="font-medium text-blue-600">
                     {result.weeksAdded > 0 ? "+" : ""}
                     {result.weeksAdded}
                   </span>
@@ -156,7 +160,7 @@ export default function DateArithmeticResults({
                   <span className="text-gray-700">
                     {result.businessDaysCalculated ? "Business Days:" : "Days:"}
                   </span>
-                  <span className="font-medium">
+                  <span className="font-medium text-blue-600">
                     {result.daysAdded > 0 ? "+" : ""}
                     {result.daysAdded}
                   </span>
@@ -167,6 +171,10 @@ export default function DateArithmeticResults({
         </div>
       </div>
 
+      {/* Divider */}
+      <div className="border-t border-gray-200 my-6"></div>
+
+      {/* Summary */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <h4 className="font-semibold text-blue-700 mb-2">Summary</h4>
         <p className="text-blue-800">

@@ -7,12 +7,15 @@ import {
   getGradeDescription,
   percentageToLetter,
 } from "@/utils/gradeCalculations";
+import { useState } from "react";
 
 interface GradeResultsProps {
   result: GradeCalculationResult;
 }
 
 export default function GradeResults({ result }: GradeResultsProps) {
+  const [showGradeScale, setShowGradeScale] = useState(false);
+
   if (!result.isValid) {
     return (
       <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -26,11 +29,8 @@ export default function GradeResults({ result }: GradeResultsProps) {
 
   return (
     <div className="mt-6 space-y-6">
+      {/* Main Result */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h3 className="text-xl font-bold text-blue-800 mb-4">
-          Grade Calculation Result
-        </h3>
-
         <div className="text-center mb-6">
           <div
             className={`text-4xl font-bold mb-2 ${getGradeColor(
@@ -45,63 +45,11 @@ export default function GradeResults({ result }: GradeResultsProps) {
               result.currentGrade
             )}`}
           >
-            {getGradeDescription(result.currentGrade)}
+            {getGradeDescription(result.currentGrade)} ({result.letterGrade})
           </div>
-          <div className="text-sm text-gray-600 mt-2">
-            Letter Grade: {result.letterGrade}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 className="font-semibold text-blue-700 mb-3">Summary</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-700">Current Grade:</span>
-                <span className="font-medium">
-                  {formatGrade(result.currentGrade)}%
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-700">Letter Grade:</span>
-                <span className="font-medium">{result.letterGrade}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-700">Total Weight:</span>
-                <span className="font-medium">
-                  {formatWeight(result.totalWeight)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-700">Weighted Score:</span>
-                <span className="font-medium">
-                  {formatGrade(result.weightedScore)}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-blue-700 mb-3">
-              Grade Distribution
-            </h4>
-            <div className="space-y-2">
-              {["A", "B", "C", "D", "F"].map((letterGrade) => {
-                const count = result.assignments.filter((assignment) => {
-                  const assignmentLetterGrade = percentageToLetter(
-                    assignment.gradePoints
-                  );
-                  return assignmentLetterGrade.charAt(0) === letterGrade;
-                }).length;
-
-                return (
-                  <div key={letterGrade} className="flex justify-between">
-                    <span className="text-gray-700">{letterGrade} Grades:</span>
-                    <span className="font-medium">{count}</span>
-                  </div>
-                );
-              })}
-            </div>
+          <div className="text-sm text-gray-600 mt-4">
+            Based on {result.assignments.length} assignments totaling{" "}
+            {formatWeight(result.totalWeight)} of course weight
           </div>
         </div>
       </div>
@@ -110,7 +58,7 @@ export default function GradeResults({ result }: GradeResultsProps) {
       {result.assignments.length > 0 && (
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
           <h4 className="text-lg font-semibold text-gray-800 mb-4">
-            Assignment Details
+            Assignment Breakdown
           </h4>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
@@ -126,10 +74,7 @@ export default function GradeResults({ result }: GradeResultsProps) {
                     Weight
                   </th>
                   <th className="border border-gray-300 px-4 py-2 text-left font-semibold">
-                    Grade Points
-                  </th>
-                  <th className="border border-gray-300 px-4 py-2 text-left font-semibold">
-                    Weighted Points
+                    Contribution
                   </th>
                 </tr>
               </thead>
@@ -146,30 +91,18 @@ export default function GradeResults({ result }: GradeResultsProps) {
                       {formatWeight(assignment.weight)}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {formatGrade(assignment.gradePoints)}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
                       {formatGrade(assignment.weightedPoints)}
                     </td>
                   </tr>
                 ))}
-                <tr className="bg-gray-100 font-semibold">
+                <tr className="bg-blue-100 font-semibold">
                   <td className="border border-gray-300 px-4 py-2">Total</td>
                   <td className="border border-gray-300 px-4 py-2">-</td>
                   <td className="border border-gray-300 px-4 py-2">
                     {formatWeight(result.totalWeight)}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">-</td>
                   <td className="border border-gray-300 px-4 py-2">
                     {formatGrade(result.weightedScore)}
-                  </td>
-                </tr>
-                <tr className="bg-blue-100 font-bold">
-                  <td className="border border-gray-300 px-4 py-2">Grade</td>
-                  <td className="border border-gray-300 px-4 py-2" colSpan={4}>
-                    {formatGrade(result.weightedScore)} ÷{" "}
-                    {formatWeight(result.totalWeight)} ={" "}
-                    {formatGrade(result.currentGrade)}%
                   </td>
                 </tr>
               </tbody>
@@ -178,38 +111,47 @@ export default function GradeResults({ result }: GradeResultsProps) {
         </div>
       )}
 
-      {/* Grade Scale Reference */}
-      <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-        <h4 className="text-lg font-semibold text-green-800 mb-4">
-          Grade Scale Reference
-        </h4>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-          <div>
-            <div className="font-semibold text-green-700 mb-2">A Range</div>
-            <div>A+ = 97-100%</div>
-            <div>A = 93-96%</div>
-            <div>A- = 90-92%</div>
+      {/* Grade Scale Reference - Collapsible */}
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <button
+          onClick={() => setShowGradeScale(!showGradeScale)}
+          className="w-full flex justify-between items-center text-left"
+        >
+          <h4 className="text-lg font-semibold text-gray-800">
+            Grade Scale Reference
+          </h4>
+          <span className="text-gray-500">{showGradeScale ? "−" : "+"}</span>
+        </button>
+
+        {showGradeScale && (
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div>
+              <div className="font-semibold text-blue-700 mb-2">A Range</div>
+              <div>A+ = 97-100%</div>
+              <div>A = 93-96%</div>
+              <div>A- = 90-92%</div>
+            </div>
+            <div>
+              <div className="font-semibold text-blue-700 mb-2">B Range</div>
+              <div>B+ = 87-89%</div>
+              <div>B = 83-86%</div>
+              <div>B- = 80-82%</div>
+            </div>
+            <div>
+              <div className="font-semibold text-blue-700 mb-2">C Range</div>
+              <div>C+ = 77-79%</div>
+              <div>C = 73-76%</div>
+              <div>C- = 70-72%</div>
+            </div>
+            <div>
+              <div className="font-semibold text-blue-700 mb-2">D/F Range</div>
+              <div>D+ = 67-69%</div>
+              <div>D = 63-66%</div>
+              <div>D- = 60-62%</div>
+              <div>F = 0-59%</div>
+            </div>
           </div>
-          <div>
-            <div className="font-semibold text-green-700 mb-2">B Range</div>
-            <div>B+ = 87-89%</div>
-            <div>B = 83-86%</div>
-            <div>B- = 80-82%</div>
-          </div>
-          <div>
-            <div className="font-semibold text-green-700 mb-2">C Range</div>
-            <div>C+ = 77-79%</div>
-            <div>C = 73-76%</div>
-            <div>C- = 70-72%</div>
-          </div>
-          <div>
-            <div className="font-semibold text-green-700 mb-2">D/F Range</div>
-            <div>D+ = 67-69%</div>
-            <div>D = 63-66%</div>
-            <div>D- = 60-62%</div>
-            <div>F = 0-59%</div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

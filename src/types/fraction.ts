@@ -61,5 +61,4 @@ export enum CalculatorType {
   SIMPLIFY = "simplify",
   DECIMAL_TO_FRACTION = "decimal-to-fraction",
   FRACTION_TO_DECIMAL = "fraction-to-decimal",
-  BIG_NUMBER = "big-number",
 }

@@ -149,25 +149,25 @@ export default function CalculatorKeypad({
   ];
 
   return (
-    <div className="bg-white p-4 rounded-b-lg">
+    <div className="bg-white/90 backdrop-blur-sm p-6">
       {/* Angle mode selector */}
-      <div className="mb-4 flex justify-center">
-        <div className="flex bg-gray-100 rounded-lg p-1">
+      <div className="mb-6 flex justify-center">
+        <div className="flex bg-slate-100/80 rounded-xl p-1.5 backdrop-blur-sm border border-slate-200/50">
           <button
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
               angleMode === "deg"
-                ? "bg-blue-500 text-white"
-                : "text-gray-600 hover:text-gray-900"
+                ? "bg-blue-500 text-white shadow-lg shadow-blue-500/25"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
             }`}
             onClick={() => onAngleModeChange("deg")}
           >
             Deg
           </button>
           <button
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
               angleMode === "rad"
-                ? "bg-blue-500 text-white"
-                : "text-gray-600 hover:text-gray-900"
+                ? "bg-blue-500 text-white shadow-lg shadow-blue-500/25"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
             }`}
             onClick={() => onAngleModeChange("rad")}
           >
@@ -177,9 +177,9 @@ export default function CalculatorKeypad({
       </div>
 
       {/* Scientific functions */}
-      <div className="mb-4">
+      <div className="mb-6">
         {scientificButtons.map((row, rowIndex) => (
-          <div key={rowIndex} className="grid grid-cols-5 gap-2 mb-2">
+          <div key={rowIndex} className="grid grid-cols-5 gap-2.5 mb-2.5">
             {row.map((button, buttonIndex) => (
               <CalculatorButton
                 key={`${rowIndex}-${buttonIndex}`}
@@ -194,7 +194,7 @@ export default function CalculatorKeypad({
       {/* Number pad and operations */}
       <div>
         {numberButtons.map((row, rowIndex) => (
-          <div key={rowIndex} className="grid grid-cols-5 gap-2 mb-2">
+          <div key={rowIndex} className="grid grid-cols-5 gap-2.5 mb-2.5">
             {row.map((button, buttonIndex) => (
               <CalculatorButton
                 key={`${rowIndex}-${buttonIndex}`}

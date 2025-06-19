@@ -19,19 +19,19 @@ export default function DateHoursResults({ result }: DateHoursResultsProps) {
 
   return (
     <div className="mt-6 space-y-6">
-      <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-        <h3 className="text-xl font-bold text-green-800 mb-4">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <h3 className="text-xl font-bold text-blue-800 mb-4">
           Date Hours Calculation Result
         </h3>
 
         <div className="text-center mb-6">
-          <div className="text-3xl font-bold text-green-600 mb-2">
+          <div className="text-3xl font-bold text-blue-600 mb-2">
             {result.formatted}
           </div>
-          <div className="text-lg text-green-700">
+          <div className="text-lg text-blue-700">
             {formatDecimal(result.breakdown.decimalHours)} hours (decimal)
           </div>
-          <div className="text-md text-green-600 mt-2">
+          <div className="text-md text-blue-600 mt-2">
             Total: {formatNumber(result.breakdown.totalHours)} hours,{" "}
             {formatNumber(result.breakdown.totalMinutes)} minutes
           </div>
@@ -39,9 +39,7 @@ export default function DateHoursResults({ result }: DateHoursResultsProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="font-semibold text-green-700 mb-3">
-              Time Breakdown
-            </h4>
+            <h4 className="font-semibold text-blue-700 mb-3">Time Breakdown</h4>
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-700">Days:</span>
@@ -83,7 +81,7 @@ export default function DateHoursResults({ result }: DateHoursResultsProps) {
           </div>
 
           <div>
-            <h4 className="font-semibold text-green-700 mb-3">
+            <h4 className="font-semibold text-blue-700 mb-3">
               Work Time Calculations
             </h4>
             <div className="space-y-2">
@@ -126,22 +124,6 @@ export default function DateHoursResults({ result }: DateHoursResultsProps) {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-semibold text-blue-700 mb-2">Summary</h4>
-        <p className="text-blue-800">
-          The time difference between the two dates is{" "}
-          <span className="font-bold">{result.formatted}</span>, which equals{" "}
-          <span className="font-bold">
-            {formatDecimal(result.breakdown.decimalHours)} decimal hours
-          </span>{" "}
-          or{" "}
-          <span className="font-bold">
-            {formatNumber(result.breakdown.totalMinutes)} total minutes
-          </span>
-          .
-        </p>
       </div>
     </div>
   );

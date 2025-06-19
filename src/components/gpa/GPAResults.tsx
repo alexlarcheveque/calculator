@@ -6,12 +6,15 @@ import {
   getGPAClassificationColor,
   gradePointsToLetter,
 } from "@/utils/gpaCalculations";
+import { useState } from "react";
 
 interface GPAResultsProps {
   result: GPACalculationResult;
 }
 
 export default function GPAResults({ result }: GPAResultsProps) {
+  const [showGradeScale, setShowGradeScale] = useState(false);
+
   if (!result.isValid) {
     return (
       <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -28,11 +31,8 @@ export default function GPAResults({ result }: GPAResultsProps) {
 
   return (
     <div className="mt-6 space-y-6">
+      {/* Main GPA Result */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h3 className="text-xl font-bold text-blue-800 mb-4">
-          GPA Calculation Result
-        </h3>
-
         <div className="text-center mb-6">
           <div className="text-4xl font-bold text-blue-600 mb-2">
             {formatGPA(displayGPA)}
@@ -52,24 +52,14 @@ export default function GPAResults({ result }: GPAResultsProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="font-semibold text-blue-700 mb-3">Summary</h4>
+            <h4 className="font-semibold text-blue-700 mb-3">
+              Academic Summary
+            </h4>
             <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-700">Current Semester GPA:</span>
-                <span className="font-medium">
-                  {formatGPA(result.currentGPA)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-700">Current Semester Credits:</span>
-                <span className="font-medium">
-                  {formatNumber(result.totalCredits)}
-                </span>
-              </div>
-              {result.cumulativeGPA && (
+              {result.cumulativeGPA ? (
                 <>
                   <div className="flex justify-between">
-                    <span className="text-gray-700">Cumulative GPA:</span>
+                    <span className="text-gray-700">Overall GPA:</span>
                     <span className="font-medium">
                       {formatGPA(result.cumulativeGPA)}
                     </span>
@@ -80,14 +70,37 @@ export default function GPAResults({ result }: GPAResultsProps) {
                       {formatNumber(result.cumulativeCredits!)}
                     </span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-700">Current Semester GPA:</span>
+                    <span className="font-medium">
+                      {formatGPA(result.currentGPA)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-700">
+                      Current Semester Credits:
+                    </span>
+                    <span className="font-medium">
+                      {formatNumber(result.totalCredits)}
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex justify-between">
+                    <span className="text-gray-700">Total Credits:</span>
+                    <span className="font-medium">
+                      {formatNumber(result.totalCredits)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-700">Quality Points:</span>
+                    <span className="font-medium">
+                      {formatGPA(result.totalGradePoints)}
+                    </span>
+                  </div>
                 </>
               )}
-              <div className="flex justify-between">
-                <span className="text-gray-700">Quality Points:</span>
-                <span className="font-medium">
-                  {formatGPA(result.totalGradePoints)}
-                </span>
-              </div>
             </div>
           </div>
 
@@ -163,7 +176,7 @@ export default function GPAResults({ result }: GPAResultsProps) {
                     </td>
                   </tr>
                 ))}
-                <tr className="bg-gray-100 font-semibold">
+                <tr className="bg-blue-100 font-semibold">
                   <td className="border border-gray-300 px-4 py-2">Total</td>
                   <td className="border border-gray-300 px-4 py-2">
                     {result.totalCredits}
@@ -174,51 +187,59 @@ export default function GPAResults({ result }: GPAResultsProps) {
                     {formatGPA(result.totalGradePoints)}
                   </td>
                 </tr>
-                <tr className="bg-blue-100 font-bold">
-                  <td className="border border-gray-300 px-4 py-2">GPA</td>
-                  <td className="border border-gray-300 px-4 py-2" colSpan={4}>
-                    {formatGPA(result.totalGradePoints)} ÷ {result.totalCredits}{" "}
-                    = {formatGPA(result.currentGPA)}
-                  </td>
-                </tr>
               </tbody>
             </table>
           </div>
         </div>
       )}
 
-      {/* GPA Scale Reference */}
-      <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-        <h4 className="text-lg font-semibold text-green-800 mb-4">
-          Grade Scale Reference
-        </h4>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-          <div>
-            <div className="font-semibold text-green-700 mb-2">A Range</div>
-            <div>A+ = 4.3</div>
-            <div>A = 4.0</div>
-            <div>A- = 3.7</div>
+      {/* Collapsible Grade Scale Reference */}
+      <div className="border border-gray-200 rounded-lg">
+        <button
+          onClick={() => setShowGradeScale(!showGradeScale)}
+          className="w-full p-4 text-left bg-gray-50 hover:bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+        >
+          <div className="flex justify-between items-center">
+            <h4 className="text-lg font-semibold text-gray-800">
+              Grade Scale Reference
+            </h4>
+            <span className="text-gray-500">{showGradeScale ? "−" : "+"}</span>
           </div>
-          <div>
-            <div className="font-semibold text-green-700 mb-2">B Range</div>
-            <div>B+ = 3.3</div>
-            <div>B = 3.0</div>
-            <div>B- = 2.7</div>
+        </button>
+
+        {showGradeScale && (
+          <div className="p-4 border-t border-gray-200">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div>
+                <div className="font-semibold text-blue-700 mb-2">A Range</div>
+                <div>A+ = 4.3</div>
+                <div>A = 4.0</div>
+                <div>A- = 3.7</div>
+              </div>
+              <div>
+                <div className="font-semibold text-blue-700 mb-2">B Range</div>
+                <div>B+ = 3.3</div>
+                <div>B = 3.0</div>
+                <div>B- = 2.7</div>
+              </div>
+              <div>
+                <div className="font-semibold text-blue-700 mb-2">C Range</div>
+                <div>C+ = 2.3</div>
+                <div>C = 2.0</div>
+                <div>C- = 1.7</div>
+              </div>
+              <div>
+                <div className="font-semibold text-blue-700 mb-2">
+                  D/F Range
+                </div>
+                <div>D+ = 1.3</div>
+                <div>D = 1.0</div>
+                <div>D- = 0.7</div>
+                <div>F = 0.0</div>
+              </div>
+            </div>
           </div>
-          <div>
-            <div className="font-semibold text-green-700 mb-2">C Range</div>
-            <div>C+ = 2.3</div>
-            <div>C = 2.0</div>
-            <div>C- = 1.7</div>
-          </div>
-          <div>
-            <div className="font-semibold text-green-700 mb-2">D/F Range</div>
-            <div>D+ = 1.3</div>
-            <div>D = 1.0</div>
-            <div>D- = 0.7</div>
-            <div>F = 0.0</div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

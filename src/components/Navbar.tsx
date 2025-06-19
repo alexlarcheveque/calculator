@@ -45,13 +45,12 @@ const calculatorCategories: CalculatorCategory[] = [
       { name: "Pace Calculator", path: "/pace" },
       { name: "Pregnancy Calculator", path: "/pregnancy" },
       { name: "Pregnancy Conception Calculator", path: "/conception" },
-      { name: "Due Date Calculator", path: "/due-date" },
     ],
   },
   {
     title: "Math Calculators",
     items: [
-      { name: "Scientific Calculator", path: "/scientific" },
+      // { name: "Scientific Calculator", path: "/scientific" },
       { name: "Fraction Calculator", path: "/fraction" },
       { name: "Percentage Calculator", path: "/percentage" },
       { name: "Random Number Generator", path: "/random" },

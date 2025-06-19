@@ -52,92 +52,128 @@ export default function SimpleRandomGenerator() {
   };
 
   return (
-    <div>
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-        <div className="space-y-4">
-          <div className="flex items-center space-x-4">
-            <label className="w-24 text-right font-medium">Lower Limit:</label>
-            <input
-              type="number"
-              value={formValues.lowerLimit}
-              onChange={(e) => handleInputChange("lowerLimit", e.target.value)}
-              className="flex-1 h-10 px-3 border border-gray-300 rounded text-left"
-              placeholder="Enter lower limit"
-            />
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <label className="w-24 text-right font-medium">Upper Limit:</label>
-            <input
-              type="number"
-              value={formValues.upperLimit}
-              onChange={(e) => handleInputChange("upperLimit", e.target.value)}
-              className="flex-1 h-10 px-3 border border-gray-300 rounded text-left"
-              placeholder="Enter upper limit"
-            />
-          </div>
+    <div className="space-y-6">
+      {/* Main Generator Interface */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        {/* Instructions styled like percentage calculators */}
+        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <h3 className="font-semibold text-lg text-blue-800 mb-2">
+            How to Use Simple Random Generator
+          </h3>
+          <p className="text-blue-700 text-sm mb-3">
+            Generate a random integer within your specified range. Enter the
+            lower and upper limits to define your range.
+          </p>
+          <ul className="text-blue-700 text-sm space-y-1">
+            <li>
+              • Both limits are inclusive (the generated number can equal either
+              limit)
+            </li>
+            <li>• Supports very large integers up to a few thousand digits</li>
+            <li>• Lower limit must be less than or equal to upper limit</li>
+          </ul>
         </div>
 
-        <div className="text-center mt-6 space-x-4">
-          <button
-            onClick={generate}
-            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors"
-          >
-            Generate
-          </button>
-          <button
-            onClick={clear}
-            className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition-colors"
-          >
-            Clear
-          </button>
-        </div>
-
-        {error && (
-          <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-            {error}
+        <div className="space-y-6">
+          <div className="flex items-center justify-center space-x-4 text-lg flex-wrap gap-y-4">
+            <div className="flex flex-col items-center">
+              <label className="text-xs text-gray-400 mb-1 font-medium">
+                LOWER LIMIT
+              </label>
+              <input
+                type="number"
+                value={formValues.lowerLimit}
+                onChange={(e) =>
+                  handleInputChange("lowerLimit", e.target.value)
+                }
+                className="w-32 h-12 text-center border-2 border-blue-300 rounded-lg text-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
+                placeholder="1"
+              />
+            </div>
+            <span className="text-lg font-medium text-gray-600">to</span>
+            <div className="flex flex-col items-center">
+              <label className="text-xs text-gray-400 mb-1 font-medium">
+                UPPER LIMIT
+              </label>
+              <input
+                type="number"
+                value={formValues.upperLimit}
+                onChange={(e) =>
+                  handleInputChange("upperLimit", e.target.value)
+                }
+                className="w-32 h-12 text-center border-2 border-blue-300 rounded-lg text-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
+                placeholder="100"
+              />
+            </div>
           </div>
-        )}
 
-        {result && (
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
-            <h3 className="font-semibold text-lg mb-3">Generated Number:</h3>
+          <div className="flex justify-center mb-6">
+            <button
+              onClick={generate}
+              className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors focus:ring-4 focus:ring-blue-200 focus:outline-none mr-3"
+            >
+              Generate
+            </button>
+            <button
+              onClick={clear}
+              className="px-8 py-3 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600 transition-colors focus:ring-4 focus:ring-gray-200 focus:outline-none"
+            >
+              Clear
+            </button>
+          </div>
 
+          {error && (
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-4">
+              <div className="inline-block p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-sm">
+                {error}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Results Section */}
+      {result && (
+        <div className="bg-white rounded-lg shadow-md p-6">
+          {/* Title */}
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Random Number Generator
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Your randomly generated number within the specified range.
+          </p>
+
+          {/* Result Header */}
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">
+              Generated Number
+            </h3>
+          </div>
+
+          {/* Main Result Display */}
+          <div className="bg-gray-50 rounded-lg p-6 mb-6">
+            <div className="text-center mb-4">
+              <div className="text-6xl font-bold text-blue-600 mb-4">
                 {result.numbers[0]}
               </div>
             </div>
-
-            <div className="text-sm text-gray-600">
-              <p>
-                <strong>Range:</strong> {result.settings.lowerLimit} to{" "}
-                {result.settings.upperLimit}
-              </p>
-              <p>
-                <strong>Generated at:</strong>{" "}
-                {result.generatedAt.toLocaleString()}
-              </p>
+            <div className="text-center space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700 font-medium">Range:</span>
+                <span className="text-lg font-medium text-gray-800">
+                  {result.settings.lowerLimit} to {result.settings.upperLimit}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700 font-medium">Generated at:</span>
+                <span className="text-lg font-medium text-gray-800">
+                  {result.generatedAt.toLocaleString()}
+                </span>
+              </div>
             </div>
           </div>
-        )}
-
-        <div className="mt-4 text-sm text-gray-600">
-          <p>
-            <strong>Instructions:</strong>
-          </p>
-          <ul className="list-disc list-inside mt-1">
-            <li>
-              Enter the lower and upper limits for your random number range
-            </li>
-            <li>
-              Both limits are inclusive (the generated number can equal either
-              limit)
-            </li>
-            <li>Supports very large integers up to a few thousand digits</li>
-          </ul>
         </div>
-      </div>
+      )}
     </div>
   );
 }

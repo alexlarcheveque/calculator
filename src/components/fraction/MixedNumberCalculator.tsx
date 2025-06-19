@@ -11,6 +11,7 @@ import {
   formatFraction,
   parseMixedNumber,
 } from "@/utils/fractionCalculations";
+import MixedNumberCalculationSummary from "./MixedNumberCalculationSummary";
 
 export default function MixedNumberCalculator() {
   const [formValues, setFormValues] = useState<MixedNumberFormValues>({
@@ -21,6 +22,10 @@ export default function MixedNumberCalculator() {
 
   const [result, setResult] = useState<FractionResult | null>(null);
   const [error, setError] = useState<string>("");
+  const [convertedFractions, setConvertedFractions] = useState<{
+    fraction1: { numerator: number; denominator: number };
+    fraction2: { numerator: number; denominator: number };
+  } | null>(null);
 
   const handleInputChange = (
     field: keyof MixedNumberFormValues,
@@ -43,6 +48,11 @@ export default function MixedNumberCalculator() {
         operation
       );
       setResult(calculationResult);
+      setConvertedFractions({
+        fraction1: frac1,
+        fraction2: frac2,
+      });
+      setError("");
     } catch (err) {
       setError(
         err instanceof Error
@@ -50,6 +60,7 @@ export default function MixedNumberCalculator() {
           : "Invalid mixed number format. Use format like '2 3/4' or '-1 1/2'"
       );
       setResult(null);
+      setConvertedFractions(null);
     }
   };
 
@@ -61,122 +72,110 @@ export default function MixedNumberCalculator() {
     });
     setResult(null);
     setError("");
+    setConvertedFractions(null);
   };
 
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-      <table className="w-full">
-        <tbody>
-          <tr>
-            <td className="text-center p-2">
-              <input
-                type="text"
-                value={formValues.mixedNumber1}
-                onChange={(e) =>
-                  handleInputChange("mixedNumber1", e.target.value)
-                }
-                className="w-32 h-10 text-center border border-gray-300 rounded text-lg"
-                placeholder="-2 3/4"
-                maxLength={10}
-              />
-            </td>
-            <td className="text-center align-middle px-4">
-              <select
-                value={formValues.operation}
-                onChange={(e) =>
-                  handleInputChange(
-                    "operation",
-                    e.target.value as FractionOperation
-                  )
-                }
-                className="w-16 h-10 text-center border border-gray-300 rounded text-lg"
-              >
-                <option value={FractionOperation.ADD}>+</option>
-                <option value={FractionOperation.SUBTRACT}>-</option>
-                <option value={FractionOperation.MULTIPLY}>×</option>
-                <option value={FractionOperation.DIVIDE}>÷</option>
-              </select>
-            </td>
-            <td className="text-center p-2">
-              <input
-                type="text"
-                value={formValues.mixedNumber2}
-                onChange={(e) =>
-                  handleInputChange("mixedNumber2", e.target.value)
-                }
-                className="w-32 h-10 text-center border border-gray-300 rounded text-lg"
-                placeholder="3 5/7"
-                maxLength={10}
-              />
-            </td>
-            <td className="text-center align-middle px-4 text-2xl font-bold">
-              = {result ? formatFraction(result.simplified, true) : "?"}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="space-y-6">
+      {/* Main Calculator Interface */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="flex items-center justify-center space-x-8 mb-8">
+          {/* First Mixed Number */}
+          <div className="flex flex-col items-center">
+            <input
+              type="text"
+              value={formValues.mixedNumber1}
+              onChange={(e) =>
+                handleInputChange("mixedNumber1", e.target.value)
+              }
+              className="w-32 h-12 text-center text-lg font-medium border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
+              placeholder="-2 3/4"
+              maxLength={10}
+            />
+          </div>
 
-      <div className="text-center mt-6 space-x-4">
-        <button
-          onClick={calculate}
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors"
-        >
-          Calculate
-        </button>
-        <button
-          onClick={clear}
-          className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition-colors"
-        >
-          Clear
-        </button>
-      </div>
+          {/* Operation Selector */}
+          <div className="flex flex-col items-center space-y-3">
+            <select
+              value={formValues.operation}
+              onChange={(e) =>
+                handleInputChange(
+                  "operation",
+                  e.target.value as FractionOperation
+                )
+              }
+              className="px-4 py-3 text-lg font-medium bg-white border-2 border-emerald-300 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 focus:outline-none transition-colors"
+            >
+              <option value={FractionOperation.ADD}>+</option>
+              <option value={FractionOperation.SUBTRACT}>−</option>
+              <option value={FractionOperation.MULTIPLY}>×</option>
+              <option value={FractionOperation.DIVIDE}>÷</option>
+            </select>
+          </div>
 
-      {error && (
-        <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
-        </div>
-      )}
+          {/* Second Mixed Number */}
+          <div className="flex flex-col items-center">
+            <input
+              type="text"
+              value={formValues.mixedNumber2}
+              onChange={(e) =>
+                handleInputChange("mixedNumber2", e.target.value)
+              }
+              className="w-32 h-12 text-center text-lg font-medium border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
+              placeholder="3 5/7"
+              maxLength={10}
+            />
+          </div>
 
-      {result && (
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
-          <h3 className="font-semibold text-lg mb-2">Result:</h3>
-          <p className="text-lg">
-            <strong>Mixed Number:</strong>{" "}
-            {formatFraction(result.simplified, true)}
-          </p>
-          <p className="text-lg">
-            <strong>Improper Fraction:</strong>{" "}
-            {formatFraction(result.simplified)}
-          </p>
-          <p className="text-lg">
-            <strong>Decimal:</strong> {result.decimal.toFixed(6)}
-          </p>
+          {/* Equals Sign */}
+          <div className="text-3xl font-bold text-gray-600">=</div>
 
-          {result.steps.length > 0 && (
-            <div className="mt-4">
-              <h4 className="font-semibold mb-2">Steps:</h4>
-              <div className="space-y-1">
-                {result.steps.map((step, index) => (
-                  <p key={index} className="text-sm font-mono">
-                    {step}
-                  </p>
-                ))}
-              </div>
+          {/* Result Display */}
+          <div className="flex flex-col items-center">
+            <div className="w-32 h-12 text-center text-lg font-bold text-emerald-600 bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-300 rounded-lg flex items-center justify-center">
+              {result ? formatFraction(result.simplified, true) : "?"}
             </div>
-          )}
+          </div>
         </div>
-      )}
 
-      <div className="mt-4 text-sm text-gray-600">
-        <p>
-          <strong>Format examples:</strong>
-        </p>
-        <ul className="list-disc list-inside mt-1">
-          <li>Mixed numbers: "2 3/4", "-1 1/2"</li>
-          <li>Fractions: "3/4", "-5/8"</li>
-          <li>Whole numbers: "5", "-3"</li>
-        </ul>
+        {/* Calculate Button */}
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={calculate}
+            className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors focus:ring-4 focus:ring-blue-200 focus:outline-none"
+          >
+            Calculate
+          </button>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="text-center">
+            <p className="text-red-600 font-medium">{error}</p>
+          </div>
+        )}
+
+        {/* Result Display */}
+        {result && !error && (
+          <div className="text-center text-gray-600">
+            <p>See detailed calculation below</p>
+          </div>
+        )}
       </div>
+
+      {/* Detailed Calculation Steps */}
+      {result && !error && convertedFractions && (
+        <MixedNumberCalculationSummary
+          mixedNumber1={formValues.mixedNumber1}
+          mixedNumber2={formValues.mixedNumber2}
+          operation={formValues.operation}
+          numerator1={convertedFractions.fraction1.numerator}
+          denominator1={convertedFractions.fraction1.denominator}
+          numerator2={convertedFractions.fraction2.numerator}
+          denominator2={convertedFractions.fraction2.denominator}
+          result={result}
+        />
+      )}
     </div>
   );
 }
